@@ -2,6 +2,7 @@ package com.solution.Ongi.domain.user;
 
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
+import com.solution.Ongi.global.base.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name="users")
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
