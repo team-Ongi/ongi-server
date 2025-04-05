@@ -2,18 +2,17 @@ package com.solution.Ongi.domain.user;
 
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.solution.Ongi.domain2.Meal;
+import com.solution.Ongi.domain2.Medication;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -23,8 +22,8 @@ import lombok.NoArgsConstructor;
 @Table(name="users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="user_id")
     private Long id;
 
     private String loginId;
@@ -47,5 +46,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private AlertInterval alertMax;
 
+    //entity mapping
+    @OneToMany(mappedBy = "member_id")
+    private List<Meal> meals=new ArrayList<>();
+
+    @OneToMany(mappedBy = "member_id")
+    private List<Medication> medications=new ArrayList<>();
 
 }
