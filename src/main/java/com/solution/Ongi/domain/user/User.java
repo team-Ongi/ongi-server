@@ -2,8 +2,8 @@ package com.solution.Ongi.domain.user;
 
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
-import com.solution.Ongi.domain2.Meal;
-import com.solution.Ongi.domain2.Medication;
+import com.solution.Ongi.domain.meal.Meal;
+import com.solution.Ongi.domain.medication.Medication;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -46,11 +46,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private AlertInterval alertMax;
 
-    //entity mapping
-    @OneToMany(mappedBy = "member_id")
+    @Builder.Default
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Meal> meals=new ArrayList<>();
 
-    @OneToMany(mappedBy = "member_id")
+    @Builder.Default
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Medication> medications=new ArrayList<>();
 
 }
