@@ -1,7 +1,8 @@
 package com.solution.Ongi.domain.user.controller;
 
-import com.solution.Ongi.domain.user.dto.SignupRequest;
 import com.solution.Ongi.domain.user.User;
+import com.solution.Ongi.domain.user.dto.LoginRequest;
+import com.solution.Ongi.domain.user.dto.SignupRequest;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,10 +32,17 @@ public class UserController {
          "relation": "SON",
          "alertMax": "MINUTES_30"
     """)
-    // TODO: 추후 수정
     public ResponseEntity<ApiResponse<User>> signup(@RequestBody SignupRequest request) {
-        User response = userService.signup(request);
+        User user = userService.signup(request);
+        return ResponseEntity.ok(ApiResponse.success(user));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginRequest request) {
+        String response = userService.login(request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+
 
 }

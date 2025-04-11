@@ -32,5 +32,13 @@ public record SignupRequest(
     RelationType relation,
     @NotNull
     @NotEmpty
-    AlertInterval alertMax
+    AlertInterval alertMax,
+    @NotNull
+    Boolean pushAgreement,
+    @NotNull
+    Boolean voiceAgreement,
+    @NotNull
+    Boolean backgroundAgreement,
+    @NotNull
+    Boolean personalInfoAgreement
 ) { }
