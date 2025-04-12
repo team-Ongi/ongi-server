@@ -1,6 +1,6 @@
 package com.solution.Ongi.global.config;
 
-import com.solution.Ongi.domain.auth.JwtFilter;
+import com.solution.Ongi.global.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

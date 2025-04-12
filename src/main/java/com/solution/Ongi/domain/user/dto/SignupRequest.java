@@ -38,7 +38,5 @@ public record SignupRequest(
     @NotNull
     Boolean voiceAgreement,
     @NotNull
-    Boolean backgroundAgreement,
-    @NotNull
-    Boolean personalInfoAgreement
+    Boolean backgroundAgreement
 ) { }

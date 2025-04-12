@@ -1,4 +1,4 @@
-package com.solution.Ongi.domain.auth;
+package com.solution.Ongi.global.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
