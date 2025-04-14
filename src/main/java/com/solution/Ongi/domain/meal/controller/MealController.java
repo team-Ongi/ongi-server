@@ -2,11 +2,13 @@ package com.solution.Ongi.domain.meal.controller;
 
 import com.solution.Ongi.domain.meal.dto.CreateMealRequest;
 import com.solution.Ongi.domain.meal.Meal;
+import com.solution.Ongi.domain.meal.dto.CreateMealResponse;
 import com.solution.Ongi.domain.meal.service.MealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,23 +18,31 @@ public class MealController {
 
     private final MealService mealService;
 
-    @PostMapping("/post/{user_id}")
-    public ResponseEntity<Long> createMeal(@PathVariable("user_id") Long user_id, @RequestBody CreateMealRequest createMealRequest) {
-        Meal meal = mealService.createMeal(user_id, createMealRequest);
-        return ResponseEntity.ok(user_id);
-    }
-    //TODO: 확장성 위해 PathVariable -> RequestParam 바꾸자
+    @PostMapping("/post/{userId}/meals")
+    public ResponseEntity<CreateMealResponse> createMeal(
+            @PathVariable("userId") Long userId,
+            @RequestBody CreateMealRequest request) {
 
-    @GetMapping("/get/{user_id}")
-    public ResponseEntity<List<Meal>> getAllMeals(@PathVariable("user_id") Long user_id) {
+        Meal meal = mealService.createMeal(userId, request);
+
+        //location 헤더 리소스
+        URI location= URI.create("/users/"+userId+"/meals/"+meal.getId());
+
+        return ResponseEntity
+                .created(location)
+                .body(new CreateMealResponse(meal.getId(),"식사가 등록되었습니다."));
+    }
+
+    @GetMapping("/users/{userId}/meals")
+    public ResponseEntity<List<Meal>> getAllMeals(@PathVariable("userId") Long user_id) {
         List<Meal> meals = mealService.getAllMeals(user_id);
         return ResponseEntity.ok(meals);
     }
 
-    // Meal 삭제 엔드포인트
-    @DeleteMapping("/delete/{meal_id}")
-    public ResponseEntity<Void> deleteMeal(@PathVariable Long meal_id) {
-        mealService.deleteMeal(meal_id);
-        return ResponseEntity.noContent().build();
+    //Meal 삭제 엔드포인트
+    @DeleteMapping("/delete/{mealId}")
+    public ResponseEntity<Void> deleteMeal(@PathVariable Long mealId) {
+        mealService.deleteMeal(mealId);
+        return ResponseEntity.noContent().build();//204 no
     }
 }

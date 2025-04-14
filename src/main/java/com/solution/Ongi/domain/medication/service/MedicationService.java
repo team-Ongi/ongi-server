@@ -5,6 +5,7 @@ import com.solution.Ongi.domain.medication.dto.CreateMedicationRequest;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.repository.UserRepository;
+import com.solution.Ongi.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,13 @@ import java.util.List;
 public class MedicationService {
 
     private final UserRepository userRepository;
+    private final UserService userService;
     private final MedicationRepository medicationRepository;
     private final DateTimeFormatter timeFormatter=DateTimeFormatter.ofPattern("HH:mm");
 
     //Meal 생성
-    public Medication createMedication(Long user_id, CreateMedicationRequest createMedicationRequest){
-        User user=userRepository.findById(user_id)
-                .orElseThrow(()-> new RuntimeException("사용자가 존재하지 않습니다."));
+    public Medication createMedication(Long userId, CreateMedicationRequest createMedicationRequest){
+        User user=userService.getUserByIdOrThrow(userId);
 
         Medication medication=Medication.builder()
                 .medication_title(createMedicationRequest.getMedication_title())
@@ -36,13 +37,10 @@ public class MedicationService {
         return medicationRepository.save(medication);
     }
 
-    //TODO: Exception 처리
-
     //유저의 Meal 전체 조회
-    public List<Medication> getAllMedication(Long user_id){
-        userRepository.findById(user_id)
-                .orElseThrow(()->new RuntimeException("사용자가 존재하지 않습니다."));
-        return medicationRepository.findByUserId(user_id);
+    public List<Medication> getAllMedication(Long userId){
+        userService.getUserByIdOrThrow(userId);
+        return medicationRepository.findByUserId(userId);
     }
 
     //Meal 삭제

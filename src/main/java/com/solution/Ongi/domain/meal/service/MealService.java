@@ -6,6 +6,7 @@ import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.enums.MealType;
 import com.solution.Ongi.domain.user.repository.UserRepository;
+import com.solution.Ongi.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MealService {
     private final UserRepository userRepository;
+    private final UserService userService;
     private final MealRepository mealRepository;
     private final DateTimeFormatter timeFormatter=DateTimeFormatter.ofPattern("HH:mm");
 
     //Meal 생성
-    public Meal createMeal(Long user_id, CreateMealRequest createMealRequest){
-        User user=userRepository.findById(user_id)
-                .orElseThrow(()-> new RuntimeException("사용자가 존재하지 않습니다."));
+    public Meal createMeal(Long userId, CreateMealRequest createMealRequest){
+        User user=userService.getUserByIdOrThrow(userId);
 
         Meal meal=Meal.builder()
                 .meal_type(MealType.valueOf(createMealRequest.getMeal_type().toUpperCase()))
@@ -36,18 +37,15 @@ public class MealService {
         return mealRepository.save(meal);
     }
 
-    //TODO: Exception 처리
-
     //유저의 Meal 전체 조회
-    public List<Meal> getAllMeals(Long user_id){
-        userRepository.findById(user_id)
-                .orElseThrow(()->new RuntimeException("사용자가 존재하지 않습니다."));
-        return mealRepository.findByUserId(user_id);
+    public List<Meal> getAllMeals(Long userId){
+        userService.getUserByIdOrThrow(userId);
+        return mealRepository.findByUserId(userId);
     }
 
     //Meal 삭제
-    public void deleteMeal(Long meal_id){
-        Meal meal=mealRepository.findById(meal_id)
+    public void deleteMeal(Long mealId){
+        Meal meal=mealRepository.findById(mealId)
                 .orElseThrow(()->new RuntimeException("식사가 존재하지 않습니다."));
         mealRepository.delete(meal);
     }
