@@ -18,7 +18,6 @@ public class SmsVerificationService {
 
     public String sendVerificationCode(String phoneNumber) {
         smsVerificationRepository.deleteByPhoneNumber(phoneNumber);
-
         String code = generateRandomCode();
 
         // 인증번호 저장
@@ -39,6 +38,10 @@ public class SmsVerificationService {
         SmsVerification verification = smsVerificationRepository
             .findTopByPhoneNumberOrderByCreatedAtDesc(phoneNumber)
             .orElseThrow(() -> new GeneralException(ErrorStatus.VERIFICATION_CODE_NOT_FOUND));
+
+        if (verification.getIsVerified()) {
+            throw new GeneralException(ErrorStatus.ALREADY_VERIFIED);
+        }
 
         if (verification.getCode().equals(inputCode)){
             verification.verify();
