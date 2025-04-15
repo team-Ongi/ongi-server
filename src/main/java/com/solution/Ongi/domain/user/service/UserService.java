@@ -1,6 +1,8 @@
 package com.solution.Ongi.domain.user.service;
 
 import com.solution.Ongi.domain.agreement.Agreement;
+import com.solution.Ongi.domain.smsverification.SmsVerification;
+import com.solution.Ongi.domain.smsverification.SmsVerificationRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.LoginRequest;
 import com.solution.Ongi.domain.user.dto.SignupRequest;
@@ -15,16 +17,25 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
+    private final SmsVerificationRepository smsVerificationRepository;
     private final JwtTokenProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
     public User signup(SignupRequest request) {
         if (userRepository.existsByLoginId(request.loginId())) {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+
+        SmsVerification verification = smsVerificationRepository
+            .findTopByPhoneNumberOrderByCreatedAtDesc(request.guardianPhone())
+            .orElseThrow(() -> new GeneralException(ErrorStatus.VERIFICATION_CODE_NOT_FOUND));
+
+        if (!verification.getIsVerified()) {
+            throw new GeneralException(ErrorStatus.VERIFICATION_NOT_COMPLETED);
         }
 
         Agreement agreement = Agreement.builder()

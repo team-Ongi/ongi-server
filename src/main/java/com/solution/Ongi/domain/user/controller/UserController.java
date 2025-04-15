@@ -27,10 +27,10 @@ public class UserController {
         "loginId": "hihi123",
          "password": "1234",
         "guardianName": "김보호",
-        "guardianPhoneNumber": "010-1234-5678",
+        "guardianPhoneNumber": "01012345678",
         "seniorName": "이어르신",
         "seniorAge": 80,
-        "seniorPhone": "010-5678-1234",
+        "seniorPhone": "01056781234",
          "relation": "SON",
          "alertMax": "MINUTES_30"
          "pushAgreement": true,
