@@ -15,6 +15,9 @@ public enum ErrorStatus implements BaseCode {
     USER_NOT_FOUND(400, HttpStatus.BAD_REQUEST, "존재 하지 않는 UserId입니다."),
     INVALID_PASSWORD(400, HttpStatus.BAD_REQUEST, "비밀번호가 유효하지 않습니다"),
 
+    // Sms
+    VERIFICATION_CODE_NOT_FOUND(400, HttpStatus.BAD_REQUEST, "올바르지 않은 인증번호입니다.")
+
 
     ;
 

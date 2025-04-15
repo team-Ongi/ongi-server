@@ -1,11 +1,11 @@
 package com.solution.Ongi.domain.user.service;
 
 import com.solution.Ongi.domain.agreement.Agreement;
-import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.LoginRequest;
 import com.solution.Ongi.domain.user.dto.SignupRequest;
 import com.solution.Ongi.domain.user.repository.UserRepository;
+import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
 import jakarta.transaction.Transactional;
@@ -68,4 +68,5 @@ public class UserService {
         boolean exists = userRepository.existsByLoginId(loginId);
         return exists ? "이미 사용 중인 아이디입니다." : "사용 가능한 아이디입니다.";
     }
+
 }
