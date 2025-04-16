@@ -68,14 +68,6 @@ public class User extends BaseTimeEntity {
         this.password = passwordEncoder.encode(this.password);
     }
 
-    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true ,fetch = FetchType.LAZY)
-    @JoinColumn(name = "agreement_id")
-    private Agreement agreement;
-
-    public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
-    }
-
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Meal> meals=new ArrayList<>();

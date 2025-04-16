@@ -1,5 +1,8 @@
 package com.solution.Ongi.domain.user.service;
 
+import com.solution.Ongi.domain.agreement.Agreement;
+import com.solution.Ongi.domain.smsverification.SmsVerification;
+import com.solution.Ongi.domain.smsverification.SmsVerificationRepository;
 import com.solution.Ongi.domain.user.dto.SignupRequest;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.LoginRequest;
