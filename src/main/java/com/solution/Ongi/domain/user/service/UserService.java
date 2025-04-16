@@ -41,6 +41,7 @@ public class UserService {
         return userRepository.findById(userId)
                 .orElseThrow(()->new UserNotFoundException(userId));
     }
+    //TODO: 글로벌 익셉션으로 변경
 
 
 }
