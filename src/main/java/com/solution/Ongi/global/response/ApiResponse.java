@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ApiResponse<T> {
     private boolean success;
-    private int code;
+    private String code;
     private String message;
     private T data;
 
@@ -18,7 +18,7 @@ public class ApiResponse<T> {
     }
 
     public static ApiResponse<?> error (BaseCode code) {
-        return new ApiResponse<>(false, code.getHttpStatus().value(), code.getMessage(), null);
+        return new ApiResponse<>(false, code.getCode(), code.getMessage(), null);
     }
 
 }
