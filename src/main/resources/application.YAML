@@ -6,6 +6,10 @@ spring:
   sql:
     init:
       platform: mysql
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
@@ -14,6 +18,10 @@ spring:
     show-sql: true
     properties:
       format_sql: true
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true      # 쿼리 로그 포맷 (정렬)
+        show_sql: true
   logging:
     level:
       org.springframework.web: DEBUG

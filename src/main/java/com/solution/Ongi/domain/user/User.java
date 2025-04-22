@@ -15,12 +15,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import com.solution.Ongi.domain.meal.Meal;
+import com.solution.Ongi.domain.medication.Medication;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -30,8 +36,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Table(name="users")
 public class User extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="user_id")
     private Long id;
 
     private String loginId;
@@ -62,5 +68,12 @@ public class User extends BaseTimeEntity {
         this.password = passwordEncoder.encode(this.password);
     }
 
+    @Builder.Default
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Meal> meals=new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Medication> medications=new ArrayList<>();
 
 }
