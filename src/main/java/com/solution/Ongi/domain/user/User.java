@@ -57,7 +57,8 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RelationType relation;
 
-    //임시로 넣었습니다
+    //임시로 넣었습니다!
+    private Integer ignore_cnt;
 
     @Enumerated(EnumType.STRING)
     private AlertInterval alertMax;
