@@ -35,8 +35,7 @@ public class MealSchedule {
     @Setter
     private boolean status;    //default=false
 
-    //meal 다대일 매핑
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="meal_id")
     private Meal meal;
 
