@@ -52,5 +52,4 @@ public class MealService {
                 .orElseThrow(()->new RuntimeException("식사가 존재하지 않습니다."));
         mealRepository.delete(meal);
     }
-
 }
