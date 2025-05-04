@@ -1,7 +1,6 @@
 package com.solution.Ongi.domain.user;
 
 import com.solution.Ongi.domain.agreement.Agreement;
-import com.solution.Ongi.domain.alarmlog.AlarmLog;
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
 import com.solution.Ongi.global.base.BaseTimeEntity;
@@ -79,9 +78,5 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Medication> medications=new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<AlarmLog> alarmLogs=new ArrayList<>();
 
 }
