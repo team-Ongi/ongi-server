@@ -3,9 +3,8 @@ package com.solution.Ongi.domain.meal.service;
 
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.MealSchedule;
-import com.solution.Ongi.domain.meal.dto.MealScheduleStatusUpdateRequest;
+import com.solution.Ongi.domain.meal.dto.UpdateMealScheduleStatusesRequest;
 import com.solution.Ongi.domain.meal.repository.MealScheduleRepository;
-import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +28,9 @@ import java.util.List;
 public class MealScheduleService {
 
     private final MealScheduleRepository mealScheduleRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
 
-    public MealSchedule create(Meal meal){
+    public MealSchedule createMealSchedule(Meal meal){
         MealSchedule schedule=MealSchedule.builder()
                 .meal(meal)
                 .meal_schedule_time(meal.getMeal_time())
@@ -42,8 +40,8 @@ public class MealScheduleService {
         return mealScheduleRepository.save(schedule);
     }
 
-    //schedule 상태 업데이트
-    public void updateMealScheduleStatus(Long userId,Long scheduleId,boolean newStatus){
+    //단일 schedule 상태 업데이트
+    public void updateMealScheduleStatus(Long scheduleId,boolean newStatus){
         MealSchedule mealSchedule=mealScheduleRepository.findById(scheduleId)
                 .orElseThrow(()->new RuntimeException("스케줄 ID " + scheduleId + "를 찾을 수 없습니다."));
 
@@ -52,9 +50,9 @@ public class MealScheduleService {
     }
 
     //사용자 meal schedules 상태 업데이트
-    public void updateMealSchedules(Long userId, List<MealScheduleStatusUpdateRequest> requests){
-        for(MealScheduleStatusUpdateRequest rq:requests){
-            updateMealScheduleStatus(userId,rq.getScheduleId(),rq.isStatus());
+    public void updateMealSchedules(Long userId, List<UpdateMealScheduleStatusesRequest> requests){
+        for(UpdateMealScheduleStatusesRequest rq:requests){
+            updateMealScheduleStatus(rq.getScheduleId(),rq.isStatus());
         }
     }
 

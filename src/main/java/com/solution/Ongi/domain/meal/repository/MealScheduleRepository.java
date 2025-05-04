@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface MealScheduleRepository extends JpaRepository<MealSchedule,Long> {
     List<MealSchedule> findByMeal_User_Id(Long userId);
+    List<MealSchedule> findByMeal_User_IdAndStatusFalse(Long userId);
 }

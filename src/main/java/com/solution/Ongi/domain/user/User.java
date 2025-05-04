@@ -1,6 +1,7 @@
 package com.solution.Ongi.domain.user;
 
 import com.solution.Ongi.domain.agreement.Agreement;
+import com.solution.Ongi.domain.alarmlog.AlarmLog;
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
 import com.solution.Ongi.global.base.BaseTimeEntity;
@@ -57,8 +58,8 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RelationType relation;
 
-    //임시로 넣었습니다!
-    private Integer ignore_cnt;
+    //임시로 넣었습니다! User 생성 시점에 0으로 초기화 필요
+    private Integer ignoreCnt;
 
     @Enumerated(EnumType.STRING)
     private AlertInterval alertMax;
@@ -78,5 +79,9 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Medication> medications=new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<AlarmLog> alarmLogs=new ArrayList<>();
 
 }

@@ -1,5 +1,6 @@
 package com.solution.Ongi.domain.meal;
 
+import com.solution.Ongi.global.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,7 +25,7 @@ meal schedule list 를 멤버가 관리? Meal이 관리?
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MealSchedule {
+public class MealSchedule extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "meal_schedule_id")

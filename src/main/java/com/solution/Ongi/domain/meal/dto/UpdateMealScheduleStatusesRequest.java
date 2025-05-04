@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MealScheduleStatusUpdateRequest {
+public class UpdateMealScheduleStatusesRequest {
     private Long scheduleId;
     private boolean status;
 }

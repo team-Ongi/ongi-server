@@ -1,17 +1,14 @@
 package com.solution.Ongi.domain.meal;
 
 import com.solution.Ongi.domain.user.User;
-import com.solution.Ongi.domain.user.enums.MealType;
+import com.solution.Ongi.domain.meal.enums.MealType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder

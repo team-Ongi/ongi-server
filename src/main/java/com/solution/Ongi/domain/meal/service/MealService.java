@@ -1,17 +1,14 @@
 package com.solution.Ongi.domain.meal.service;
 
-import com.solution.Ongi.domain.meal.MealSchedule;
 import com.solution.Ongi.domain.meal.dto.CreateMealRequest;
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.user.User;
-import com.solution.Ongi.domain.user.enums.MealType;
+import com.solution.Ongi.domain.meal.enums.MealType;
 import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -38,7 +35,7 @@ public class MealService {
                 .user(user)
                 .build();
 
-        mealScheduleService.create(meal);
+        mealScheduleService.createMealSchedule(meal);
 
         return mealRepository.save(meal);
     }
