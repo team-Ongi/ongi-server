@@ -3,7 +3,6 @@ package com.solution.Ongi.domain.user.service;
 import com.solution.Ongi.domain.agreement.Agreement;
 import com.solution.Ongi.domain.smsverification.SmsVerification;
 import com.solution.Ongi.domain.smsverification.SmsVerificationRepository;
-import com.solution.Ongi.domain.user.dto.SignupRequest;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.LoginRequest;
 import com.solution.Ongi.domain.user.dto.SignupRequest;
@@ -12,14 +11,14 @@ import com.solution.Ongi.exception.UserNotFoundException;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -56,9 +55,9 @@ public class UserService {
             .seniorPhone(request.seniorPhone())
             .relation(request.relation())
             .alertMax(request.alertMax())
+            .ignoreCnt(request.ignoreCnt())
             .agreement(agreement)
             .build();
-
 
         user.encodePassword(passwordEncoder);
 
@@ -86,6 +85,11 @@ public class UserService {
     public User getUserByIdOrThrow(Long userId){
         return userRepository.findById(userId)
                 .orElseThrow(()->new UserNotFoundException(userId));
+    }
+
+    public User getUserByLoginIdOrThrow(String userId){
+        return userRepository.findByLoginId(userId)
+            .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
 }

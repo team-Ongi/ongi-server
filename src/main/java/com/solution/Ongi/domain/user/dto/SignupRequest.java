@@ -34,6 +34,9 @@ public record SignupRequest(
     @NotEmpty
     AlertInterval alertMax,
     @NotNull
+    @NotEmpty
+    Integer ignoreCnt,
+    @NotNull
     Boolean pushAgreement,
     @NotNull
     Boolean voiceAgreement,

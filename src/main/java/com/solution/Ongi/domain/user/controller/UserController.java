@@ -33,6 +33,7 @@ public class UserController {
         "seniorPhone": "01056781234",
          "relation": "SON",
          "alertMax": "MINUTES_30"
+         "maxMissedResponses": 3,
          "pushAgreement": true,
          "voiceAgreement": true,
          "backgroundAgreement": true
