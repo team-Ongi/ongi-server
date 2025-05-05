@@ -1,15 +1,9 @@
 spring:
-  application:
-    name: ongi
-  config:
-    import: optional:application-local.yml
-  sql:
-    init:
-      platform: mysql
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ongi?serverTimezone=Asia/Seoul
+    username: ${USERNAME}
+    password: ${PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
@@ -18,10 +12,14 @@ spring:
     show-sql: true
     properties:
       format_sql: true
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-        format_sql: true      # 쿼리 로그 포맷 (정렬)
-        show_sql: true
   logging:
     level:
       org.springframework.web: DEBUG
+jwt:
+  secret: your-secret-key-must-be-very-long-and-secure
+
+coolsms:
+  api:
+    key: ${SMSKEY}
+    secret: ${SMSSECRET}
+    number: ${SMSNUMBER}

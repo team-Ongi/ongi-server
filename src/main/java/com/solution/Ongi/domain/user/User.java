@@ -57,6 +57,9 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RelationType relation;
 
+    //임시로 넣었습니다! User 생성 시점에 0으로 초기화 필요
+    private Integer ignoreCnt;
+
     @Enumerated(EnumType.STRING)
     private AlertInterval alertMax;
 

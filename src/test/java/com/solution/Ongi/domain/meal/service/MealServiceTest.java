@@ -5,7 +5,7 @@ import com.solution.Ongi.domain.meal.dto.CreateMealRequest;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.enums.AlertInterval;
-import com.solution.Ongi.domain.user.enums.MealType;
+import com.solution.Ongi.domain.meal.enums.MealType;
 import com.solution.Ongi.domain.user.enums.RelationType;
 import com.solution.Ongi.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;

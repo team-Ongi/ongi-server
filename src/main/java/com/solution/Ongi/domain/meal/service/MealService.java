@@ -4,7 +4,7 @@ import com.solution.Ongi.domain.meal.dto.CreateMealRequest;
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.user.User;
-import com.solution.Ongi.domain.user.enums.MealType;
+import com.solution.Ongi.domain.meal.enums.MealType;
 import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -23,6 +23,7 @@ public class MealService {
     private final UserService userService;
     private final MealRepository mealRepository;
     private final DateTimeFormatter timeFormatter=DateTimeFormatter.ofPattern("HH:mm");
+    private final MealScheduleService mealScheduleService;
 
     //Meal 생성
     public Meal createMeal(Long userId, CreateMealRequest createMealRequest){
@@ -33,6 +34,8 @@ public class MealService {
                 .meal_time(LocalTime.parse(createMealRequest.getMeal_time(), timeFormatter))
                 .user(user)
                 .build();
+
+        mealScheduleService.createMealSchedule(meal);
 
         return mealRepository.save(meal);
     }
