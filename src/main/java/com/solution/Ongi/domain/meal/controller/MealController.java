@@ -3,7 +3,10 @@ package com.solution.Ongi.domain.meal.controller;
 import com.solution.Ongi.domain.meal.dto.CreateMealRequest;
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.dto.CreateMealResponse;
+import com.solution.Ongi.domain.meal.dto.MealResponse;
 import com.solution.Ongi.domain.meal.service.MealService;
+import com.solution.Ongi.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ public class MealController {
     private final MealService mealService;
 
     @PostMapping("/post/{userId}/meals")
+    @Operation(summary = "식사 정보 등록")
     public ResponseEntity<CreateMealResponse> createMeal(
             @PathVariable("userId") Long userId,
             @RequestBody CreateMealRequest request) {
@@ -34,13 +38,20 @@ public class MealController {
     }
 
     @GetMapping("/users/{userId}/meals")
-    public ResponseEntity<List<Meal>> getAllMeals(@PathVariable("userId") Long user_id) {
-        List<Meal> meals = mealService.getAllMeals(user_id);
-        return ResponseEntity.ok(meals);
+    @Operation(summary = "사용자의 모든 식사 정보 조회")
+    public ResponseEntity<ApiResponse<List<MealResponse>>> getAllMeals(
+            @PathVariable Long userId){
+        List<Meal> meals=mealService.getAllMeals(userId);
+        List<MealResponse> responseList=meals.stream()
+                .map(MealResponse::from)
+                .toList();
+
+        return ResponseEntity.ok(ApiResponse.success(responseList));
     }
 
     //Meal 삭제 엔드포인트
     @DeleteMapping("/delete/{mealId}")
+    @Operation(summary = "식사 정보 삭제")
     public ResponseEntity<Void> deleteMeal(@PathVariable Long mealId) {
         mealService.deleteMeal(mealId);
         return ResponseEntity.noContent().build();//204 no
