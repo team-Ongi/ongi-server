@@ -13,6 +13,10 @@ java {
 	}
 }
 
+bootJar {
+	archiveFileName = 'Ongi.jar'
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor

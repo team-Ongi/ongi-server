@@ -21,12 +21,16 @@ public class Agreement extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Builder.Default
     private Boolean pushAgreement = false;
 
+    @Builder.Default
     private Boolean voiceAgreement = false;
 
+    @Builder.Default
     private Boolean backgroundAgreement = false;
 
+    @Builder.Default
     private Boolean personalInfoAgreement = false;
 
 
