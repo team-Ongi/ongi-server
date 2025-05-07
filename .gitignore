@@ -44,5 +44,6 @@ HELP.md
 
 # 로컬 db 설정 파일
 application-local.yml
+application-prod.yml
 
 ._DS_Store
