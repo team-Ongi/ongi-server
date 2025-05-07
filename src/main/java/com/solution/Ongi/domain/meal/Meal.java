@@ -34,14 +34,8 @@ public class Meal extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    //mealSchedule 일대다 매핑
-    @OneToOne(mappedBy = "meal",cascade = CascadeType.ALL)
-    private MealSchedule mealSchedule;
-    //일정-달력 삭제 미반영 -> CASCADE 막기: persist 로 영속성 부여 (삭제 반영 안 되는지 확인 필요)
-
-
     //mealSchedule ver2
     @Builder.Default
     @OneToMany(mappedBy = "meal",cascade = CascadeType.ALL)
-    private List<MealSchedule2> mealSchedules=new ArrayList<>();
+    private List<MealSchedule> mealSchedules=new ArrayList<>();
 }
