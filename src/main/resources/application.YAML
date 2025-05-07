@@ -15,6 +15,7 @@ spring:
   logging:
     level:
       org.springframework.web: DEBUG
+
 jwt:
   secret: your-secret-key-must-be-very-long-and-secure
 

@@ -3,7 +3,10 @@ package com.solution.Ongi.domain.meal.service;
 
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.MealSchedule;
+import com.solution.Ongi.domain.meal.MealSchedule2;
+import com.solution.Ongi.domain.meal.dto.MealScheduleResponse;
 import com.solution.Ongi.domain.meal.dto.UpdateMealScheduleStatusesRequest;
+import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.meal.repository.MealScheduleRepository;
 import com.solution.Ongi.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -28,6 +31,7 @@ import java.util.List;
 public class MealScheduleService {
 
     private final MealScheduleRepository mealScheduleRepository;
+    private final MealRepository mealRepository;
     private final UserService userService;
 
     public MealSchedule createMealSchedule(Meal meal){
@@ -57,18 +61,28 @@ public class MealScheduleService {
     }
 
     //매일 자정 status 초기화
+    //-> 매일 자정 생성
     @Scheduled(cron = "0 0 0 * * *")
     public void resetMealScheduleStatus(){
-        List<MealSchedule>mealSchedules=mealScheduleRepository.findAll();
-        for(MealSchedule mealSchedule:mealSchedules){
-            mealSchedule.setStatus(false);
-        }
-        mealScheduleRepository.saveAll(mealSchedules);
+//        List<MealSchedule>mealSchedules=mealScheduleRepository.findAll();
+//        for(MealSchedule mealSchedule:mealSchedules){
+//            mealSchedule.setStatus(false);
+//        }
+//        mealScheduleRepository.saveAll(mealSchedules);
     }
 
     //오늘 meal schedule 가져오기
+    //현재 날짜에 대응하는 MealSchedule 가져와
     public List<MealSchedule> getMealSchedulesByUserId(Long userId){
         userService.getUserByIdOrThrow(userId);
         return mealScheduleRepository.findByMeal_User_Id(userId);
     }
+
+    /*
+     * 수정 사안
+     * 1. 조회 가능해야 -> 일대다 매핑으로
+     * 2. 스케줄러 -> 값 초기화가 아닌 생성으로
+     * 3. 추가: 해당 날짜 조회
+     * +) 사용자 이름 반환
+     */
 }

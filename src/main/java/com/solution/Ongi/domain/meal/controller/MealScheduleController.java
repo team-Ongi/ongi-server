@@ -52,8 +52,6 @@ public class MealScheduleController {
             @PathVariable Long userId,
             @RequestBody List<UpdateMealScheduleStatusesRequest> requests){
 
-//        mealScheduleService.updateMealSchedules(userId, requests);
-//        return ResponseEntity.ok("사용자의 스케줄 상태가 모두 업데이트 되었습니다.");
         List<UpdateMealScheduleStatusesResponse> responseList = requests.stream()
                 .map(rq -> new UpdateMealScheduleStatusesResponse(
                         rq.getScheduleId(),
