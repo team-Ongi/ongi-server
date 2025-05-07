@@ -1,8 +1,9 @@
 package com.solution.Ongi.domain.meal.controller;
 
-import com.solution.Ongi.domain.meal.MealSchedule;
+
+import com.solution.Ongi.domain.meal.MealSchedule2;
 import com.solution.Ongi.domain.meal.dto.*;
-import com.solution.Ongi.domain.meal.service.MealScheduleService;
+import com.solution.Ongi.domain.meal.service.MealSchedule2Service;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -10,19 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/meal-schedules2")
 @RequiredArgsConstructor
-@RequestMapping("/meal-schedules")
-public class MealScheduleController {
+public class MealSchedule2Controller {
 
-    private final MealScheduleService mealScheduleService;
-
-    //TODO: 리팩터링 시 Mapper 로 today, by-date 코드 최적화
+    private final MealSchedule2Service mealSchedule2Service;
 
     @Operation(summary = "금일 식사 일정 조회", description = """
             금일 MealSchedule2 목록을 조회합니다.
@@ -30,10 +28,19 @@ public class MealScheduleController {
         """
     )
     @GetMapping("/today")
-    public ResponseEntity<ApiResponse<List<MealScheduleResponse>>>getMealSchedules(
+    public ResponseEntity<ApiResponse<List<MealSchedule2Response>>>getMealSchedules(
             Authentication authentication){
-        List<MealScheduleResponse> responseList = mealScheduleService
-                .getMealSchedulesByExactDate(authentication.getName(),LocalDate.now());
+        List<MealSchedule2> schedules=mealSchedule2Service.getMealSchedulesByUserId(authentication.getName());
+
+        List<MealSchedule2Response> responseList = schedules.stream()
+                .map(s -> new MealSchedule2Response(
+                        s.getId(),
+                        s.getMealScheduleDate(),
+                        s.getMealScheduleTime(),
+                        s.isStatus(),
+                        s.getMeal().getId()
+                ))
+                .toList();
 
         return ResponseEntity.ok(ApiResponse.success(responseList));
     }
@@ -44,11 +51,19 @@ public class MealScheduleController {
         """
     )
     @GetMapping("/by-date")
-    public ResponseEntity<ApiResponse<List<MealScheduleResponse>>>getMealSchedulesByExactDate(
-            Authentication authentication,
-            @RequestBody LocalDate date){
-        List<MealScheduleResponse> responseList = mealScheduleService
-                .getMealSchedulesByExactDate(authentication.getName(),date);
+    public ResponseEntity<ApiResponse<List<MealSchedule2Response>>>getMealSchedulesByExactDate(
+            Authentication authentication){
+        List<MealSchedule2> schedules=mealSchedule2Service.getMealSchedulesByUserId(authentication.getName());
+
+        List<MealSchedule2Response> responseList = schedules.stream()
+                .map(s -> new MealSchedule2Response(
+                        s.getId(),
+                        s.getMealScheduleDate(),
+                        s.getMealScheduleTime(),
+                        s.isStatus(),
+                        s.getMeal().getId()
+                ))
+                .toList();
 
         return ResponseEntity.ok(ApiResponse.success(responseList));
     }
@@ -59,11 +74,11 @@ public class MealScheduleController {
         """
     )
     @GetMapping("/by-term")
-    public ResponseEntity<ApiResponse<List<MealScheduleResponse>>> getMealSchedulesByDate(
+    public ResponseEntity<ApiResponse<List<MealSchedule2Response>>> getMealSchedulesByDate(
             Authentication authentication,
             @ModelAttribute MealScheduleDateTermRequest termRequest) {
 
-        List<MealScheduleResponse> responseList = mealScheduleService
+        List<MealSchedule2Response> responseList = mealSchedule2Service
                 .getMealSchedulesByDate(authentication.getName(), termRequest.startDate(), termRequest.endDate());
 
         return ResponseEntity.ok(ApiResponse.success(responseList));
@@ -78,7 +93,7 @@ public class MealScheduleController {
             Authentication authentication,
             @RequestBody List<UpdateMealScheduleStatusesRequest> requests){
 
-        List<MealSchedule> todaySchedules= mealScheduleService.getMealSchedulesByUserId(authentication.getName());
+        List<MealSchedule2> todaySchedules=mealSchedule2Service.getMealSchedulesByUserId(authentication.getName());
         Map<Long,Boolean>requestedStatusMap=requests.stream()
                 .collect(Collectors.toMap(
                         UpdateMealScheduleStatusesRequest::getScheduleId,
@@ -89,13 +104,14 @@ public class MealScheduleController {
                 .filter(ms -> requestedStatusMap.containsKey(ms.getId()))
                 .map(ms -> {
                     boolean newStatus = requestedStatusMap.get(ms.getId());
-                    mealScheduleService.updateMealScheduleStatus(ms.getId(), newStatus);
+                    mealSchedule2Service.updateMealScheduleStatus(ms.getId(), newStatus);
                     return new UpdateMealScheduleStatusesResponse(
                             ms.getId(),
-                            "스케줄 상태가 업데이트되었습니다."
+                            "스케줄 상태가 성공적으로 업데이트되었습니다."
                     );
                 })
                 .toList();
+
 
         return ResponseEntity.ok(ApiResponse.success(responseList));
     }
@@ -109,7 +125,7 @@ public class MealScheduleController {
             @PathVariable Long scheduleId,
             @RequestBody UpdateMealScheduleStatusRequest request) {
 
-        mealScheduleService.updateMealScheduleStatus(scheduleId, request.isStatus());
+        mealSchedule2Service.updateMealScheduleStatus(scheduleId, request.isStatus());
         return ResponseEntity.ok(ApiResponse.success("식사 스케줄 상태가 업데이트되었습니다."));
     }
 

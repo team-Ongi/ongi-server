@@ -35,7 +35,7 @@ public class Meal{
     @JoinColumn(name = "user_id")
     private User user;
 
-    //mealSchedule ver2
+    //mealSchedule 일대다 매핑
     @Builder.Default
     @OneToMany(mappedBy = "meal",cascade = CascadeType.ALL)
     private List<MealSchedule> mealSchedules=new ArrayList<>();
