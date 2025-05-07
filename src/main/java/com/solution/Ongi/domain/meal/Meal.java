@@ -5,6 +5,9 @@ import com.solution.Ongi.global.base.BaseTimeEntity;
 import com.solution.Ongi.domain.meal.enums.MealType;
 import jakarta.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +18,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Meal extends BaseTimeEntity {
+
+public class Meal{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +36,7 @@ public class Meal extends BaseTimeEntity {
     private User user;
 
     //mealSchedule 일대다 매핑
-    @OneToOne(mappedBy = "meal",cascade = CascadeType.ALL)
-    private MealSchedule mealSchedule;
-    //일정-달력 삭제 미반영 -> CASCADE 막기: persist 로 영속성 부여 (삭제 반영 안 되는지 확인 필요)
+    @Builder.Default
+    @OneToMany(mappedBy = "meal",cascade = CascadeType.ALL)
+    private List<MealSchedule> mealSchedules=new ArrayList<>();
 }
