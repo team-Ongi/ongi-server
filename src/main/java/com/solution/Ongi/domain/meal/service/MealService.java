@@ -26,8 +26,8 @@ public class MealService {
     private final MealScheduleService mealScheduleService;
 
     //Meal 생성
-    public Meal createMeal(Long userId, CreateMealRequest createMealRequest){
-        User user=userService.getUserByIdOrThrow(userId);
+    public Meal createMeal(String loginId, CreateMealRequest createMealRequest){
+        User user=userService.getUserByLoginIdOrThrow(loginId);
 
         Meal meal=Meal.builder()
                 .meal_type(MealType.valueOf(createMealRequest.getMeal_type().toUpperCase()))
@@ -41,9 +41,9 @@ public class MealService {
     }
 
     //유저의 Meal 전체 조회
-    public List<Meal> getAllMeals(Long userId){
-        userService.getUserByIdOrThrow(userId);
-        return mealRepository.findByUserId(userId);
+    public List<Meal> getAllMeals(String loginId){
+        User user=userService.getUserByLoginIdOrThrow(loginId);
+        return mealRepository.findByUserId(user.getId());
     }
 
     //Meal 삭제
