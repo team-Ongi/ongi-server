@@ -5,6 +5,7 @@ spring:
     username: ${USERNAME}
     password: ${PASSWORD}
   jpa:
+    database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update

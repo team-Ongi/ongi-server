@@ -18,7 +18,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Meal extends BaseTimeEntity {
+
+public class Meal{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

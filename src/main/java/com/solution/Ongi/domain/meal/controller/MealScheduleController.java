@@ -92,7 +92,7 @@ public class MealScheduleController {
                     mealScheduleService.updateMealScheduleStatus(ms.getId(), newStatus);
                     return new UpdateMealScheduleStatusesResponse(
                             ms.getId(),
-                            "스케줄 상태가 성공적으로 업데이트되었습니다."
+                            "스케줄 상태가 업데이트되었습니다."
                     );
                 })
                 .toList();
