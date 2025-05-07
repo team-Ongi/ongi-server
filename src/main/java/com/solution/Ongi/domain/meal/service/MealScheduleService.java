@@ -3,8 +3,6 @@ package com.solution.Ongi.domain.meal.service;
 
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.MealSchedule;
-import com.solution.Ongi.domain.meal.MealSchedule2;
-import com.solution.Ongi.domain.meal.dto.MealScheduleResponse;
 import com.solution.Ongi.domain.meal.dto.MealScheduleResponse;
 import com.solution.Ongi.domain.meal.dto.UpdateMealScheduleStatusesRequest;
 import com.solution.Ongi.domain.meal.repository.MealRepository;

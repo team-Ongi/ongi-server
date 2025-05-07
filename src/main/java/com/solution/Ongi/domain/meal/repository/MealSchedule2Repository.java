@@ -1,6 +1,5 @@
 package com.solution.Ongi.domain.meal.repository;
 
-import com.solution.Ongi.domain.meal.MealSchedule2;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
