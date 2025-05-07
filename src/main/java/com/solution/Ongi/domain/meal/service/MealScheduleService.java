@@ -40,8 +40,7 @@ public class MealScheduleService {
     }
 
     //매일 자정 meal schedule 생성
-//    @Scheduled(cron="0 0 0 * * *")
-    @Scheduled(cron="0 0/1 * * * ?")
+    @Scheduled(cron="0 0 0 * * *")
     public void createDailyMealSchedule(){
         mealRepository.findAll()
                 .forEach(this::createMealSchedule);
