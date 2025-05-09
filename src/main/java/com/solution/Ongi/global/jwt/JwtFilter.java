@@ -33,16 +33,27 @@ public class JwtFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
 
         String token = resolveToken(request);
+        String uri = request.getRequestURI();
 
         if (token != null && validateToken(token)) {
-            String loginId = getLoginIdFromToken(token);
+            // 토큰에서 타입이 access일 경우만 인증 처리
+            if (isAccessToken(token)) {
+                String loginId = getLoginIdFromToken(token);
 
-            UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(loginId, null, Collections.emptyList());
+                UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(loginId, null, Collections.emptyList());
 
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                // refreshToken이면 reissue 요청이 아닐 때 401 에러
+                if (!uri.equals("/user/reissue")) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access token required");
+                    return;
+                }
+            }
         }
 
         filterChain.doFilter(request, response);
@@ -63,6 +74,12 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private boolean isAccessToken(String token) {
+        Claims claims = getClaims(token);
+        String tokenType = claims.get("type", String.class);
+        return "access".equals(tokenType);
     }
 
     private String getLoginIdFromToken(String token) {

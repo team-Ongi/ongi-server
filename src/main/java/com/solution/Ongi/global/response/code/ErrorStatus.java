@@ -18,6 +18,9 @@ public enum ErrorStatus implements BaseCode {
 
     // Auth
     UNAUTHORIZED_ACCESS("AUTH400", HttpStatus.FORBIDDEN, "해당 리소스에 접근할 권한이 없습니다."),
+    INVALID_TOKEN("AUTH401", HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다."),
+    TOKEN_MISMATCH("AUTH402", HttpStatus.BAD_REQUEST, "일치하지 않는 토큰입니다"),
+
 
 
     // Sms

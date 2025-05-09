@@ -42,7 +42,7 @@ public class AuthenticationConfig {
                         "/swagger-resources/**",
                         "/webjars/**"
                     ).permitAll()
-                .requestMatchers("/user/login", "/user/signup").permitAll()
+                .requestMatchers("/user/login", "/user/signup", "/user/reissue", "/user/check-id").permitAll()
                 .requestMatchers(HttpMethod.POST, "/user/**").authenticated()
                 .anyRequest().permitAll()
             )

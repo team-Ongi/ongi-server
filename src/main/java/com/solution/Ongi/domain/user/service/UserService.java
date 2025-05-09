@@ -5,9 +5,10 @@ import com.solution.Ongi.domain.smsverification.SmsVerification;
 import com.solution.Ongi.domain.smsverification.SmsVerificationRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.LoginRequest;
+import com.solution.Ongi.domain.user.dto.LoginResponse;
 import com.solution.Ongi.domain.user.dto.SignupRequest;
+import com.solution.Ongi.domain.user.dto.SignupResponse;
 import com.solution.Ongi.domain.user.repository.UserRepository;
-import com.solution.Ongi.exception.UserNotFoundException;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
@@ -27,7 +28,7 @@ public class UserService {
     private final JwtTokenProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public User signup(SignupRequest request) {
+    public SignupResponse signup(SignupRequest request) {
         if (userRepository.existsByLoginId(request.loginId())) {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
@@ -62,16 +63,41 @@ public class UserService {
 
         user.encodePassword(passwordEncoder);
 
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        return new SignupResponse(user.getId(), user.getLoginId());
 
     }
 
-    public String login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByLoginId(request.id())
             .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new GeneralException(ErrorStatus.INVALID_PASSWORD);
+        }
+
+        String accessToken = jwtProvider.createToken(user.getLoginId());
+        String refreshToken = jwtProvider.createRefreshToken(user.getLoginId());
+
+        user.updateRefreshToken(refreshToken);
+        userRepository.save(user);
+
+        return new LoginResponse(accessToken, refreshToken, request.mode());
+
+    }
+
+    public String reissue(String refreshToken) {
+        if (!jwtProvider.isValidToken(refreshToken)) {
+            throw new GeneralException(ErrorStatus.INVALID_TOKEN);
+        }
+
+        String loginId = jwtProvider.getLoginIdFromToken(refreshToken);
+        User user = userRepository.findByLoginId(loginId)
+            .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        if (!refreshToken.equals(user.getRefreshToken())) {
+            throw new GeneralException(ErrorStatus.TOKEN_MISMATCH);
         }
 
         return jwtProvider.createToken(user.getLoginId());
@@ -80,12 +106,6 @@ public class UserService {
     public String isDuplicatedId(String loginId) {
         boolean exists = userRepository.existsByLoginId(loginId);
         return exists ? "이미 사용 중인 아이디입니다." : "사용 가능한 아이디입니다.";
-    }
-
-    //user 검색
-    public User getUserByIdOrThrow(Long userId){
-        return userRepository.findById(userId)
-                .orElseThrow(()->new UserNotFoundException(userId));
     }
 
     public User getUserByLoginIdOrThrow(String userId){

@@ -16,6 +16,7 @@ public class JwtTokenProvider {
 
     private Key key;
     private final long expiration = 1000 * 60 * 60; // 1시간
+    private final long refreshTokenExpiration = 30 * 24 * 60 * 60 * 1000L; // 30일
 
     @PostConstruct
     protected void init() {
@@ -29,6 +30,21 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
             .setSubject(loginId)
+            .claim("type", "access")
+            .setIssuedAt(now)
+            .setExpiration(expiryDate)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
+    }
+
+    // refreshToken 생성
+    public String createRefreshToken(String loginId) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + refreshTokenExpiration);
+
+        return Jwts.builder()
+            .setSubject(loginId)
+            .claim("type", "refresh")
             .setIssuedAt(now)
             .setExpiration(expiryDate)
             .signWith(key, SignatureAlgorithm.HS256)
@@ -42,5 +58,23 @@ public class JwtTokenProvider {
             .parseClaimsJws(token)
             .getBody()
             .getSubject();
+    }
+
+    // 토큰 검증 (만료 여부만 체크)
+    public boolean isValidToken(String token) {
+        try {
+            getClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
     }
 }
