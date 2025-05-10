@@ -1,13 +1,14 @@
 package com.solution.Ongi.domain.user.controller;
 
 import com.solution.Ongi.domain.user.dto.LoginRequest;
+import com.solution.Ongi.domain.user.dto.LoginResponse;
 import com.solution.Ongi.domain.user.dto.SignupRequest;
 import com.solution.Ongi.domain.user.dto.SignupResponse;
-import com.solution.Ongi.domain.user.dto.LoginResponse;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class UserController {
          "voiceAgreement": true,
          "backgroundAgreement": true
     """)
-    public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody @Valid SignupRequest request) {
         SignupResponse response = userService.signup(request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -53,7 +54,7 @@ public class UserController {
           accessToken은 Authorization 헤더에 담아 API 호출 시 사용합니다.
         - accessToken 유효기간은 1시간입니다.
     """)
-    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
         LoginResponse response = userService.login(request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }

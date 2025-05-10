@@ -1,7 +1,6 @@
 package com.solution.Ongi.domain.meal;
 
 import com.solution.Ongi.domain.user.User;
-import com.solution.Ongi.global.base.BaseTimeEntity;
 import com.solution.Ongi.domain.meal.enums.MealType;
 import jakarta.persistence.*;
 import java.time.LocalTime;
@@ -27,8 +26,8 @@ public class Meal{
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private MealType meal_type;
-    private LocalTime meal_time;
+    private MealType mealType;
+    private LocalTime mealTime;
 
     //user 다대일 매핑
     @ManyToOne(fetch = FetchType.LAZY)//지연 로딩

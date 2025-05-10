@@ -53,7 +53,7 @@
 //
 //        //Given
 //        CreateMedicationRequest request=CreateMedicationRequest.builder()
-//                .medication_title("testMedication")
+//                .title("testMedication")
 //                .medication_time("10:00")
 //                .build();
 //        //When
@@ -69,14 +69,14 @@
 //
 //        //Given
 //        Medication medication1=Medication.builder()
-//                .medication_title("medication1")
+//                .title("medication1")
 //                .medication_time(LocalTime.of(8,30))
 //                .user(testUser)
 //                .build();
 //        medicationRepository.save(medication1);
 //
 //        Medication medication2=Medication.builder()
-//                .medication_title("medication2")
+//                .title("medication2")
 //                .medication_time(LocalTime.of(12,30))
 //                .user(testUser)
 //                .build();
@@ -96,7 +96,7 @@
 //
 //        //Given
 //        Medication medication=Medication.builder()
-//                .medication_title("testMedication")
+//                .title("testMedication")
 //                .medication_time(LocalTime.of(10,0))
 //                .user(testUser)
 //                .build();

@@ -29,7 +29,7 @@ public class MealScheduleService {
     public MealSchedule createMealSchedule(Meal meal){
         MealSchedule schedule= MealSchedule.builder()
                 .meal(meal)
-                .mealScheduleTime(meal.getMeal_time())
+                .mealScheduleTime(meal.getMealTime())
                 .mealScheduleDate(LocalDate.now())
                 .status(false)
                 .build();
