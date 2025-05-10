@@ -4,6 +4,7 @@ import com.solution.Ongi.domain.agreement.Agreement;
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
 import com.solution.Ongi.global.base.BaseTimeEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -54,11 +55,16 @@ public class User extends BaseTimeEntity {
 
     private String seniorPhone;
 
+    private Integer ignoreCnt;
+
+    @Schema(
+            description = "유저 생성시와 스케줄 서비스에서만 생성 및 업데이트합니다.",
+            accessMode  = Schema.AccessMode.READ_ONLY
+    )
+    private Integer currentIgnoreCnt;
+
     @Enumerated(EnumType.STRING)
     private RelationType relation;
-
-    //임시로 넣었습니다! User 생성 시점에 0으로 초기화 필요
-    private Integer ignoreCnt;
 
     @Enumerated(EnumType.STRING)
     private AlertInterval alertMax;
@@ -79,4 +85,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Medication> medications=new ArrayList<>();
 
+    public void addCurrentIgnoreCnt(){
+        this.currentIgnoreCnt++;
+    }
 }

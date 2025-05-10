@@ -14,7 +14,8 @@ public record UpcomingScheduleResponse(
         LocalDate date,
         LocalTime time,
         boolean done,
-        String title
+        String title,
+        Integer currentIgnoreCnt
 ) {
     public UpcomingScheduleResponse (MealSchedule mealSchedule){
         this(
@@ -23,7 +24,10 @@ public record UpcomingScheduleResponse(
                 mealSchedule.getMealScheduleDate(),
                 mealSchedule.getMealScheduleTime(),
                 mealSchedule.isStatus(),
-                mealSchedule.getMeal().getMeal_type().name()
+                mealSchedule.getMeal().getMeal_type().name(),
+                mealSchedule.getMeal()
+                        .getUser()
+                        .getCurrentIgnoreCnt()
         );
     }
 
@@ -34,7 +38,11 @@ public record UpcomingScheduleResponse(
                 medicationSchedule.getCheckDate(),
                 medicationSchedule.getMedicationTime(),
                 medicationSchedule.isTaken(),
-                medicationSchedule.getMedication().getMedication_title()
+                medicationSchedule.getMedication().getMedication_title(),
+                medicationSchedule
+                        .getMedication()
+                        .getUser()
+                        .getCurrentIgnoreCnt()
         );
     }
 }

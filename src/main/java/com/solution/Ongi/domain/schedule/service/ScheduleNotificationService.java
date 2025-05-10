@@ -77,6 +77,20 @@ public class ScheduleNotificationService {
         return getNext(loginId);
     }
 
+    @Transactional
+    public UpcomingScheduleResponse denyAndGetNext(String loginId){
+        UpcomingScheduleResponse current=getNext(loginId);
+        if("MEAL".equals(current.type())){
+            mealScheduleService.updateMealScheduleStatus(current.scheduleId(),false);
+        }
+        else{
+            medicationScheduleService.updateIsTaken(loginId, current.scheduleId(),
+                    new UpdateMedicationStatusRequest(false,null,null));
+        }
+        userService.addCurrentIgnoreCount(loginId);
+        return getNext(loginId);
+    }
+
 
     private UpcomingScheduleResponse mapMeal(MealSchedule mealSchedule){
         return new UpcomingScheduleResponse(mealSchedule);

@@ -58,6 +58,7 @@ public class UserService {
             .alertMax(request.alertMax())
             .ignoreCnt(request.ignoreCnt())
             .agreement(agreement)
+                .currentIgnoreCnt(0)
             .build();
 
         user.encodePassword(passwordEncoder);
@@ -93,4 +94,11 @@ public class UserService {
             .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
+    //user ignoreCount increase
+    public Long addCurrentIgnoreCount(String loginId){
+        User user=userRepository.findByLoginId(loginId)
+                .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        user.addCurrentIgnoreCnt();
+        return user.getCurrentIgnoreCnt().longValue();
+    }
 }
