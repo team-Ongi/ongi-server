@@ -20,7 +20,7 @@ spring:
       org.springframework.web: DEBUG
 
 jwt:
-  secret: your-secret-key-must-be-very-long-and-secure
+  secret: ${SECRETKEY}
 
 coolsms:
   api:
