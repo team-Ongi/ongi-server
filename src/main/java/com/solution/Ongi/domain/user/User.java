@@ -4,6 +4,7 @@ import com.solution.Ongi.domain.agreement.Agreement;
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
 import com.solution.Ongi.global.base.BaseTimeEntity;
+import com.solution.Ongi.infra.firebase.Subscription;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -84,6 +85,10 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Medication> medications=new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy="user",cascade = CascadeType.ALL)
+    private List<Subscription> subscriptions=new ArrayList<>();
 
     public void addCurrentIgnoreCnt(){
         this.currentIgnoreCnt++;
