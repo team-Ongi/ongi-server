@@ -1,7 +1,6 @@
 package com.solution.Ongi.domain.meal;
 
 import com.solution.Ongi.domain.user.User;
-import com.solution.Ongi.global.base.BaseTimeEntity;
 import com.solution.Ongi.domain.meal.enums.MealType;
 import jakarta.persistence.*;
 import java.time.LocalTime;

@@ -1,24 +1,13 @@
 package com.solution.Ongi.domain.user;
 
 import com.solution.Ongi.domain.agreement.Agreement;
+import com.solution.Ongi.domain.meal.Meal;
+import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
 import com.solution.Ongi.global.base.BaseTimeEntity;
 import com.solution.Ongi.infra.firebase.Subscription;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import com.solution.Ongi.domain.meal.Meal;
-import com.solution.Ongi.domain.medication.Medication;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -74,9 +63,7 @@ public class User extends BaseTimeEntity {
     @JoinColumn(name = "agreement_id")
     private Agreement agreement;
 
-    public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
-    }
+    private String refreshToken;
 
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
@@ -93,4 +80,13 @@ public class User extends BaseTimeEntity {
     public void addCurrentIgnoreCnt(){
         this.currentIgnoreCnt++;
     }
+
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
 }

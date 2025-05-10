@@ -17,7 +17,7 @@ public record MedicationScheduleResponse(
         return new MedicationScheduleResponse(
             schedule.getId(),
             schedule.getCheckDate(),
-            schedule.getMedication().getMedication_title(),
+            schedule.getMedication().getMedicationTitle(),
             schedule.getMedicationTime(),
             schedule.isTaken()
         );
