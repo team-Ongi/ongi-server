@@ -24,7 +24,7 @@ public record UpcomingScheduleResponse(
                 mealSchedule.getMealScheduleDate(),
                 mealSchedule.getMealScheduleTime(),
                 mealSchedule.isStatus(),
-                mealSchedule.getMeal().getMeal_type().name(),
+                mealSchedule.getMeal().getMealType().name(),
                 mealSchedule.getMeal()
                         .getUser()
                         .getCurrentIgnoreCnt()

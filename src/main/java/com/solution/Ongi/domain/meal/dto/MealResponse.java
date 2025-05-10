@@ -15,8 +15,8 @@ public record MealResponse (
     public static MealResponse from(Meal meal){
         return new MealResponse(
                 meal.getId(),
-                meal.getMeal_type(),
-                meal.getMeal_time()
+                meal.getMealType(),
+                meal.getMealTime()
         );
     }
 }
