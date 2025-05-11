@@ -101,7 +101,15 @@ public class UserController {
     }
 
     @PostMapping("/guardian-agreement")
-    @Operation(summary = "보호자 최초 로그인시 개인정보 약관 동의")
+    @Operation(
+        summary = "보호자 최초 로그인시 개인정보 약관 동의",
+        description = """
+        보호자 최초 로그인 시 개인정보 수집 및 이용 동의가 필요합니다. <br><br>
+        - 해당 API는 보호자 로그인 직후 최초 1회 호출되어야 하며,<br>
+        - 호출 시 해당 보호자의 `personalInfoAgreement` 값이 true로 업데이트됩니다.<br>
+        - 이후 이 값은 `/user/me` API에서 확인할 수 있습니다.
+        """
+    )
     public ResponseEntity<ApiResponse<String>> agreeGuardianTerms(Authentication authentication) {
         userService.markGuardianAgreement(authentication.getName());
         return ResponseEntity.ok(ApiResponse.success("약관에 동의하였습니다."));
