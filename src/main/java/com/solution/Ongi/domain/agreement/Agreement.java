@@ -33,6 +33,10 @@ public class Agreement extends BaseTimeEntity {
     @Builder.Default
     private Boolean personalInfoAgreement = false;
 
+    public void markPersonalInfoAgreement() {
+        this.personalInfoAgreement = true;
+    }
+
 
 
 }

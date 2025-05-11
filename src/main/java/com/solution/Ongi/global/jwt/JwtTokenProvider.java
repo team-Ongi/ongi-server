@@ -24,13 +24,14 @@ public class JwtTokenProvider {
     }
 
     // 토큰 생성 메서드
-    public String createToken(String loginId) {
+    public String createToken(String loginId, String mode) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
             .setSubject(loginId)
             .claim("type", "access")
+            .claim("mode", mode)
             .setIssuedAt(now)
             .setExpiration(expiryDate)
             .signWith(key, SignatureAlgorithm.HS256)
@@ -76,5 +77,9 @@ public class JwtTokenProvider {
             .build()
             .parseClaimsJws(token)
             .getBody();
+    }
+
+    public String getModeFromToken(String token) {
+        return getClaims(token).get("mode", String.class);
     }
 }
