@@ -1,10 +1,7 @@
 package com.solution.Ongi.domain.schedule.dto;
 
-import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.MealSchedule;
-import com.solution.Ongi.domain.meal.dto.MealResponse;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -38,7 +35,7 @@ public record UpcomingScheduleResponse(
                 medicationSchedule.getCheckDate(),
                 medicationSchedule.getMedicationTime(),
                 medicationSchedule.isTaken(),
-                medicationSchedule.getMedication().getMedication_title(),
+                medicationSchedule.getMedication().getMedicationTitle(),
                 medicationSchedule
                         .getMedication()
                         .getUser()

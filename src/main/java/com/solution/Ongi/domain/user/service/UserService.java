@@ -123,8 +123,14 @@ public class UserService {
         return exists ? "이미 사용 중인 아이디입니다." : "사용 가능한 아이디입니다.";
     }
 
-    public User getUserByLoginIdOrThrow(String userId){
-        return userRepository.findByLoginId(userId)
+    public User getUserByIdOrThrow(Long userId){
+        return userRepository.findByUserId(userId)
+            .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+
+    public User getUserByLoginIdOrThrow(String loginId){
+        return userRepository.findByLoginId(loginId)
             .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
