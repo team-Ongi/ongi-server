@@ -9,10 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/me")
     @Operation(
@@ -54,6 +51,14 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> agreeGuardianTerms(Authentication authentication) {
         userService.markGuardianAgreement(authentication.getName());
         return ResponseEntity.ok(ApiResponse.success("약관에 동의하였습니다."));
+    }
+
+    @DeleteMapping("")
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 시 사용하는 URI로 보호자와 어르신의 정보가 모두 삭제됩니다.")
+    public ResponseEntity<ApiResponse<String>> deleteGuardianTerms() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userService.deleteUser(authentication.getPrincipal().toString());
+        return ResponseEntity.ok(ApiResponse.success("회원 탈퇴 완료"));
     }
 
 }
