@@ -1,4 +1,4 @@
-package com.solution.Ongi.domain.user.dto;
+package com.solution.Ongi.domain.auth.dto;
 
 public record SignupResponse(
     Long userId,
