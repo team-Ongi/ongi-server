@@ -39,10 +39,6 @@ public class SmsVerificationService {
             .findTopByPhoneNumberOrderByCreatedAtDesc(phoneNumber)
             .orElseThrow(() -> new GeneralException(ErrorStatus.VERIFICATION_CODE_NOT_FOUND));
 
-        if (verification.getIsVerified()) {
-            throw new GeneralException(ErrorStatus.ALREADY_VERIFIED);
-        }
-
         if (verification.getCode().equals(inputCode)){
             verification.verify();
             return true;
