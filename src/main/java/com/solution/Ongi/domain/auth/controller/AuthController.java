@@ -2,6 +2,7 @@ package com.solution.Ongi.domain.auth.controller;
 
 import com.solution.Ongi.domain.auth.dto.*;
 import com.solution.Ongi.domain.auth.service.AuthService;
+import com.solution.Ongi.domain.auth.dto.SmsVerifyRequest;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -89,6 +90,20 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
         String response = authService.changePassword(request);
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/verify-phone")
+    @Operation(summary = "문자 인증번호 보내기", description = "해당 전화번호에 인증메시지를 보냅니다.")
+    public ResponseEntity<ApiResponse<String>> sendCode(@RequestParam String phoneNumber) {
+        String response = authService.sendVerificationCode(phoneNumber);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/verify-phone/confirm")
+    @Operation(summary = "인증번호 확인", description = "해당 전화번호의 인증번호를 확인합니다.")
+    public ResponseEntity<ApiResponse<Boolean>> verifyCode(@RequestBody SmsVerifyRequest request) {
+        boolean isValid = authService.verifyCode(request.phoneNumber(), request.code());
+        return ResponseEntity.ok(ApiResponse.success(isValid));
     }
 
 }

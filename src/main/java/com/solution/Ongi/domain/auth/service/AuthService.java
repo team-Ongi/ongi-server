@@ -9,17 +9,25 @@ import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
+import com.solution.Ongi.global.util.SmsUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Random;
 
 @Service
 @Slf4j
+@Transactional
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
     private final SmsVerificationRepository smsVerificationRepository;
+    private final SmsUtil smsUtil;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtProvider;
 
@@ -136,5 +144,54 @@ public class AuthService {
         return "비밀번호 변경 완료";
     }
 
+    // 인증번호 발송
+    public String sendVerificationCode(String phoneNumber) {
+        // 기존 정보 삭제 및 인증번호 생성
+        smsVerificationRepository.deleteByPhoneNumber(phoneNumber);
+        String code = generateRandomCode();
+
+        // 인증번호 저장
+        SmsVerification verification = SmsVerification.builder()
+                .phoneNumber(phoneNumber)
+                .code(code)
+                .build();
+        smsVerificationRepository.save(verification);
+
+        // 인증번호 전송
+        smsUtil.sendOne(phoneNumber, code);
+
+        return "인증번호가 전송되었습니다.";
+    }
+
+    // 인증번호 확인
+    public boolean verifyCode(String phoneNumber, String inputCode) {
+        // 저장된 핸드폰 번호인지 확인
+        SmsVerification verification = smsVerificationRepository
+                .findTopByPhoneNumberOrderByCreatedAtDesc(phoneNumber)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.VERIFICATION_CODE_NOT_FOUND));
+
+        // 인증번호 유효시간 검사
+        long seconds = ChronoUnit.SECONDS.between(verification.getCreatedAt(), LocalDateTime.now());
+        if (seconds >= 300 && !verification.getIsVerified())
+            throw new GeneralException(ErrorStatus.VERIFICATION_EXPIRED);
+
+        // 인증번호가 같다면 -> is_verified true로 변경
+        if (verification.getCode().equals(inputCode)){
+            verification.verify();
+            return true;
+        }
+
+        return false;
+    }
+
+    // 랜덤 4자리 생성
+    private String generateRandomCode() {
+        Random rand = new Random();
+        StringBuilder numStr = new StringBuilder();
+        for (int i = 0; i < 4; i++) {
+            numStr.append(rand.nextInt(10));
+        }
+        return numStr.toString();
+    }
 }
 

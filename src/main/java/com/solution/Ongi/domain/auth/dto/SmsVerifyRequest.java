@@ -1,4 +1,4 @@
-package com.solution.Ongi.domain.smsverification;
+package com.solution.Ongi.domain.auth.dto;
 
 
 public record SmsVerifyRequest(
