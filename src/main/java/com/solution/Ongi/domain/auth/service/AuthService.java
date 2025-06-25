@@ -94,9 +94,8 @@ public class AuthService {
     }
 
     // 로그인 아이디 중복 체크
-    public String isDuplicatedId(String loginId) {
-        boolean exists = userRepository.existsByLoginId(loginId);
-        return exists ? "이미 사용 중인 아이디입니다." : "사용 가능한 아이디입니다.";
+    public boolean isDuplicatedId(String loginId) {
+        return userRepository.existsByLoginId(loginId);
     }
 
     // Access Token 재발급

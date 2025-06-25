@@ -63,8 +63,8 @@ public class AuthController {
     @GetMapping("/id/duplicate")
     @Operation(summary = "아이디 중복 확인", description = "중복된 아이디가 존재하는지 확인합니다")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "아이디 중복 확인 완료", content = @Content( mediaType = "application/json"))
-    public ResponseEntity<ApiResponse<String>> checkLoginIdDuplicate(@RequestParam String id) {
-        String response = authService.isDuplicatedId(id);
+    public ResponseEntity<ApiResponse<Boolean>> checkLoginIdDuplicate(@RequestParam String id) {
+        boolean response = authService.isDuplicatedId(id);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
