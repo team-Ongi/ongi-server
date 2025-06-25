@@ -35,3 +35,5 @@ public enum ErrorStatus implements BaseCode {
     private final HttpStatus httpStatus;
     private final String message;
 }
+
+

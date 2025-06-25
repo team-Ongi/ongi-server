@@ -6,6 +6,8 @@ import com.solution.Ongi.domain.auth.dto.LoginResponse;
 import com.solution.Ongi.domain.auth.dto.SignupRequest;
 import com.solution.Ongi.domain.auth.dto.SignupResponse;
 import com.solution.Ongi.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@Tag(name = "인증")
+@Tag(name = "auth-controller")
 public class AuthController {
 
     private final AuthService authService;
@@ -38,6 +40,9 @@ public class AuthController {
          "voiceAgreement": true,
          "backgroundAgreement": true
     """)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원가입 성공", content = @Content(schema =@Schema(implementation = SignupResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "인증이 완료되지 않은 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우 or 인증 요청을 하지 않은 전화번호인 경우", content = @Content)
     public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody @Valid SignupRequest request) {
         SignupResponse response = authService.signup(request);
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -50,6 +55,9 @@ public class AuthController {
           accessToken은 Authorization 헤더에 담아 API 호출 시 사용합니다.
         - accessToken 유효기간은 1시간입니다.
     """)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "로그인 성공", content = @Content(schema =@Schema(implementation = LoginResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않는 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content)
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -57,6 +65,7 @@ public class AuthController {
 
     @GetMapping("/id/duplicate")
     @Operation(summary = "아이디 중복 확인", description = "중복된 아이디가 존재하는지 확인합니다")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "로그인 성공", content = @Content())
     public ResponseEntity<ApiResponse<String>> checkLoginIdDuplicate(@RequestParam String id) {
         String response = authService.isDuplicatedId(id);
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -64,6 +73,9 @@ public class AuthController {
 
     @PostMapping("/token/reissue")
     @Operation(summary = "accessToken 재발급", description = "refreshToken을 헤더에 담아 전송하면 새로운 accessToken을 발급합니다.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Access Token 재발급 성공", content = @Content())
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "토큰이 유효하지 않거나 일치하지 않는 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content)
     public ResponseEntity<ApiResponse<String>> reissue(@Parameter(hidden = true) @RequestHeader("Authorization") String refreshToken) {
         if (refreshToken.startsWith("Bearer ")) {
             refreshToken = refreshToken.substring(7);
@@ -71,4 +83,5 @@ public class AuthController {
         String newAccessToken = authService.reissueAccessToken(refreshToken);
         return ResponseEntity.ok(ApiResponse.success(newAccessToken));
     }
+
 }

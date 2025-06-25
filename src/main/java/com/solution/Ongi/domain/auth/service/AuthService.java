@@ -29,7 +29,7 @@ public class AuthService {
     // 회원가입
     public SignupResponse signup(SignupRequest request) {
 
-        // 로그인 아이디 중복 검사
+        // 로그인 아이디 유효 검사
         if (userRepository.existsByLoginId(request.loginId())) {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
@@ -96,6 +96,13 @@ public class AuthService {
         return new LoginResponse(accessToken, refreshToken, request.mode());
     }
 
+    // 로그인 아이디 중복 체크
+    public String isDuplicatedId(String loginId) {
+        boolean exists = userRepository.existsByLoginId(loginId);
+        return exists ? "이미 사용 중인 아이디입니다." : "사용 가능한 아이디입니다.";
+    }
+
+    // Access Token 재발급
     public String reissueAccessToken(String refreshToken) {
         if (!jwtProvider.isValidToken(refreshToken)) {
             throw new GeneralException(ErrorStatus.INVALID_TOKEN);
@@ -113,10 +120,5 @@ public class AuthService {
 
         return jwtProvider.createToken(user.getLoginId(), mode);
     }
-
-    public String isDuplicatedId(String loginId) {
-        boolean exists = userRepository.existsByLoginId(loginId);
-        return exists ? "이미 사용 중인 아이디입니다." : "사용 가능한 아이디입니다.";
-    }
-
 }
+
