@@ -1,10 +1,7 @@
 package com.solution.Ongi.domain.auth.controller;
 
+import com.solution.Ongi.domain.auth.dto.*;
 import com.solution.Ongi.domain.auth.service.AuthService;
-import com.solution.Ongi.domain.auth.dto.LoginRequest;
-import com.solution.Ongi.domain.auth.dto.LoginResponse;
-import com.solution.Ongi.domain.auth.dto.SignupRequest;
-import com.solution.Ongi.domain.auth.dto.SignupResponse;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -76,12 +73,22 @@ public class AuthController {
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Access Token 재발급 성공", content = @Content( mediaType = "application/json"))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "토큰이 유효하지 않거나 일치하지 않는 경우", content = @Content)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content)
-    public ResponseEntity<ApiResponse<String>> reissue(@Parameter(hidden = true) @RequestHeader("Authorization") String refreshToken) {
+    public ResponseEntity<ApiResponse<String>> reissueAccessToken(@Parameter(hidden = true) @RequestHeader("Authorization") String refreshToken) {
         if (refreshToken.startsWith("Bearer ")) {
             refreshToken = refreshToken.substring(7);
         }
         String newAccessToken = authService.reissueAccessToken(refreshToken);
         return ResponseEntity.ok(ApiResponse.success(newAccessToken));
+    }
+
+    @PutMapping("/password")
+    @Operation(summary = "비밀번호 변경", description = "비밀번호를 변경합니다")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "비밀번호 변경 완료", content = @Content( mediaType = "application/json"))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저(ID)가 존재하지 않는 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "기존 비밀번호와 같은 비밀번호를 입력한 경우", content = @Content)
+    public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+        String response = authService.changePassword(request);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
 }

@@ -89,4 +89,8 @@ public class User extends BaseTimeEntity {
         this.refreshToken = refreshToken;
     }
 
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
 }

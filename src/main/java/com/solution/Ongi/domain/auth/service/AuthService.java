@@ -1,13 +1,10 @@
 package com.solution.Ongi.domain.auth.service;
 
 import com.solution.Ongi.domain.agreement.Agreement;
+import com.solution.Ongi.domain.auth.dto.*;
 import com.solution.Ongi.domain.smsverification.SmsVerification;
 import com.solution.Ongi.domain.smsverification.SmsVerificationRepository;
 import com.solution.Ongi.domain.user.User;
-import com.solution.Ongi.domain.auth.dto.LoginRequest;
-import com.solution.Ongi.domain.auth.dto.LoginResponse;
-import com.solution.Ongi.domain.auth.dto.SignupRequest;
-import com.solution.Ongi.domain.auth.dto.SignupResponse;
 import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
@@ -120,5 +117,25 @@ public class AuthService {
 
         return jwtProvider.createToken(user.getLoginId(), mode);
     }
+
+    // 비밀번호 변경
+    public String changePassword(ChangePasswordRequest request) {
+        // 유저 정보 불러오기
+        User user = userRepository.findByLoginId(request.id())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        // 동일한 비밀번호인지 확인
+        if (passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new GeneralException(ErrorStatus.SAME_AS_OLD_PASSWORD);
+        }
+
+        // 새 비밀번호 암호화 및 저장
+        String encodedPassword = passwordEncoder.encode(request.password());
+        user.updatePassword(encodedPassword);
+        userRepository.save(user);
+
+        return "비밀번호 변경 완료";
+    }
+
 }
 
