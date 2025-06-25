@@ -26,21 +26,21 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입", description = """
-        "loginId": "hihi123",
-         "password": "1234",
-        "guardianName": "김보호",
-        "guardianPhoneNumber": "01012345678",
-        "seniorName": "이어르신",
-        "seniorAge": 80,
-        "seniorPhone": "01056781234",
-         "relation": "SON",
-         "alertMax": "MINUTES_30"
-         "ignoreCnt": 3,
-         "pushAgreement": true,
-         "voiceAgreement": true,
-         "backgroundAgreement": true
+        "loginId":"pooreum",
+        "password":"pooreum02!",
+        "guardianName":"정푸름",
+        "guardianPhoneNumber":"01052882669",
+        "seniorName":"온기",
+        "seniorAge":80,
+        "seniorPhone":"01012345678",
+        "relation":"SON",
+        "alertMax":"MINUTES_30"
+        "ignoreCnt":3,
+        "pushAgreement":true,
+        "voiceAgreement":true,
+        "backgroundAgreement":true
     """)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원가입 성공", content = @Content(schema =@Schema(implementation = SignupResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원가입 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = SignupResponse.class, type = "application/json")))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "인증이 완료되지 않은 경우", content = @Content)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우 or 인증 요청을 하지 않은 전화번호인 경우", content = @Content)
     public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody @Valid SignupRequest request) {
@@ -55,9 +55,9 @@ public class AuthController {
           accessToken은 Authorization 헤더에 담아 API 호출 시 사용합니다.
         - accessToken 유효기간은 1시간입니다.
     """)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "로그인 성공", content = @Content(schema =@Schema(implementation = LoginResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "로그인 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = LoginResponse.class)))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않는 경우", content = @Content)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "아이디가 존재하지 않는 경우", content = @Content)
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -65,7 +65,7 @@ public class AuthController {
 
     @GetMapping("/id/duplicate")
     @Operation(summary = "아이디 중복 확인", description = "중복된 아이디가 존재하는지 확인합니다")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "로그인 성공", content = @Content())
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "아이디 중복 확인 완료", content = @Content( mediaType = "application/json"))
     public ResponseEntity<ApiResponse<String>> checkLoginIdDuplicate(@RequestParam String id) {
         String response = authService.isDuplicatedId(id);
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -73,7 +73,7 @@ public class AuthController {
 
     @PostMapping("/token/reissue")
     @Operation(summary = "accessToken 재발급", description = "refreshToken을 헤더에 담아 전송하면 새로운 accessToken을 발급합니다.")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Access Token 재발급 성공", content = @Content())
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Access Token 재발급 성공", content = @Content( mediaType = "application/json"))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "토큰이 유효하지 않거나 일치하지 않는 경우", content = @Content)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content)
     public ResponseEntity<ApiResponse<String>> reissue(@Parameter(hidden = true) @RequestHeader("Authorization") String refreshToken) {

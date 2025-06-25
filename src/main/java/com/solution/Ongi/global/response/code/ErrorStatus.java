@@ -29,7 +29,11 @@ public enum ErrorStatus implements BaseCode {
     MEDICATION_NOT_FOUND("MEDICATION404", HttpStatus.NOT_FOUND, "약 정보가 존재하지 않습니다."),
 
     // Medication Schedule
-    MEDICATION_SCHEDULE_NOT_FOUND("MEDSCHEDULE404", HttpStatus.NOT_FOUND, "해당 복약 스케줄이 존재하지 않습니다.");
+    MEDICATION_SCHEDULE_NOT_FOUND("MEDSCHEDULE404", HttpStatus.NOT_FOUND, "해당 복약 스케줄이 존재하지 않습니다."),
+
+    // Auth
+    LOGIN_ID_NOT_FOUND("LOGIN404", HttpStatus.NOT_FOUND, "해당 ID가 존재하지 않습니다.");
+
 
     private final String code;
     private final HttpStatus httpStatus;
