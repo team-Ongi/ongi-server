@@ -32,8 +32,8 @@ public record UpcomingScheduleResponse(
         this(
                 medicationSchedule.getId(),
                 "MEDICATION",
-                medicationSchedule.getScheduleDate(),
-                medicationSchedule.getScheduleTime(),
+                medicationSchedule.getScheduledDate(),
+                medicationSchedule.getScheduledTime(),
                 medicationSchedule.isTaken(),
                 medicationSchedule.getMedication().getMedicationName(),
                 medicationSchedule

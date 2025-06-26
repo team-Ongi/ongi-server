@@ -36,12 +36,12 @@ public class MedicationController {
     @Operation(summary = "정시 복용 약 등록",
         description = """
         정해진 시각에 복용하는 약을 등록합니다. <br><br>
-        - `title` : 약 이름 (예: 감기약) <br>
+        - `medicationName` : 약 이름 (예: 감기약) <br>
         - `timeList` : 복용 시간 리스트 (형식: "HH:mm", 예: ["08:00", "21:00"]) <br>
         - 시:분 형식의 문자열로 전달해야 합니다. <br><br>
         ```
         {
-          "title": "감기약",
+          "medicationName": "감기약",
           "timeList": ["12:30", "20:00"]
         }
         ```
@@ -63,14 +63,14 @@ public class MedicationController {
     @Operation(summary = "식전/식후 복용 약 등록",
         description = """
         식전/식후 약을 등록합니다. <br><br>
-        - `title` : 약 이름 (예: 비타민) <br>
+        - `medicationName` : 약 이름 (예: 비타민) <br>
         - `intakeTiming` : 복용 타이밍 (식전: `BEFORE_MEAL`, 식후: `AFTER_MEAL`) <br>
         - `mealTypes` : 해당되는 끼니 리스트 (아침: `BREAKFAST`, 점심: `LUNCH`, 저녁: `DINNER`) <br>
         - `remindAfterMinutes` : 복용하지 않았을 경우 알림을 보낼 간격 (30 또는 60 분) <br><br>
          예시:
         ```
         {
-          "title": "비타민",
+          "medicationName": "비타민",
           "intakeTiming": "AFTER_MEAL",
           "mealTypes": ["LUNCH", "DINNER"],
           "remindAfterMinutes": 30

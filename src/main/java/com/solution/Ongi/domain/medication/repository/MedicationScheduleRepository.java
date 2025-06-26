@@ -15,8 +15,8 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     select ms from MedicationSchedule ms
     join fetch ms.medication m
     where m.user.id = :userId
-    and ms.scheduleDate between :startDate and :endDate
-    order by ms.scheduleDate asc, ms.scheduleTime asc
+    and ms.scheduledDate between :startDate and :endDate
+    order by ms.scheduledDate asc, ms.scheduledTime asc
 """)
     List<MedicationSchedule> findByUserAndDateRange(
         @Param("userId") Long userId,
@@ -28,8 +28,8 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     select ms from MedicationSchedule ms
     join fetch ms.medication m
     where m.user.id = :userId
-    and ms.scheduleDate = :date
-    order by ms.scheduleTime asc
+    and ms.scheduledDate = :date
+    order by ms.scheduledTime asc
 """)
     List<MedicationSchedule> findByUserAndDate(
         @Param("userId") Long userId,
@@ -40,9 +40,9 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     select ms from MedicationSchedule ms
     join fetch ms.medication m
     where m.user.id = :userId
-      and ms.scheduleDate = :date
+      and ms.scheduledDate = :date
       and ms.isTaken = false
-    order by ms.scheduleTime asc
+    order by ms.scheduledTime asc
 """)
     List<MedicationSchedule> findNotTakenByUserAndDate(
         @Param("userId") Long userId,
@@ -51,7 +51,7 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
 
     //TODO: match format
     Optional<MedicationSchedule>
-    findFirstByMedication_User_IdAndScheduleDateAndIsTakenFalseAndScheduleTimeAfterOrderByScheduleTimeAsc(
+    findFirstByMedication_User_IdAndScheduledDateAndIsTakenFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
             Long userId, LocalDate date, LocalTime time
     );
 }

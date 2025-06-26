@@ -16,9 +16,9 @@ public record MedicationScheduleResponse(
     public static MedicationScheduleResponse from(MedicationSchedule schedule) {
         return new MedicationScheduleResponse(
             schedule.getId(),
-            schedule.getScheduleDate(),
+            schedule.getScheduledDate(),
             schedule.getMedication().getMedicationName(),
-            schedule.getScheduleTime(),
+            schedule.getScheduledTime(),
             schedule.isTaken()
         );
     }

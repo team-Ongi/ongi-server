@@ -10,10 +10,13 @@ import java.util.List;
 public record CreateMealBasedMedicationRequest(
     @NotBlank
     String medicationName,
+
     @NotNull
     IntakeTiming intakeTiming,
+
     @NotEmpty
     List<MealType> mealTypeList,
+
     @NotNull
     Integer remindAfterMinutes
 ) {

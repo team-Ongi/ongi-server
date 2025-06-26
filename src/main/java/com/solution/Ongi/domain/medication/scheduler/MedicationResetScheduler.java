@@ -38,8 +38,8 @@ public class MedicationResetScheduler {
                 for (LocalTime time : medication.getMedicationTimes()) {
                     MedicationSchedule schedule = MedicationSchedule.builder()
                         .medication(medication)
-                        .scheduleDate(today)
-                        .scheduleTime(time)
+                        .scheduledDate(today)
+                        .scheduledTime(time)
                         .isTaken(false)
                         .build();
                     scheduleRepository.save(schedule);
@@ -65,8 +65,8 @@ public class MedicationResetScheduler {
 
                     MedicationSchedule schedule = MedicationSchedule.builder()
                         .medication(medication)
-                        .scheduleDate(today)
-                        .scheduleTime(scheduleTime)
+                        .scheduledDate(today)
+                        .scheduledTime(scheduleTime)
                         .isTaken(false)
                         .build();
 

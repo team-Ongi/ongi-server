@@ -10,9 +10,9 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     generate-ddl: true
-    show-sql: true
+#    show-sql: true
     properties:
       format_sql: true
   logging:
