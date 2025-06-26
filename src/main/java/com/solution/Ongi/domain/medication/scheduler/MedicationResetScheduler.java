@@ -34,17 +34,17 @@ public class MedicationResetScheduler {
         LocalDate today = LocalDate.now();
 
         for (Medication medication : medications) {
-            if (medication.getType().equals(MedicationType.FIXED_TIME)) {
+            if (medication.getMedicationType().equals(MedicationType.FIXED_TIME)) {
                 for (LocalTime time : medication.getMedicationTimes()) {
                     MedicationSchedule schedule = MedicationSchedule.builder()
                         .medication(medication)
-                        .checkDate(today)
-                        .medicationTime(time)
+                        .scheduleDate(today)
+                        .scheduleTime(time)
                         .isTaken(false)
                         .build();
                     scheduleRepository.save(schedule);
                 }
-            } else if (medication.getType().equals(MedicationType.MEAL_BASED)) {
+            } else if (medication.getMedicationType().equals(MedicationType.MEAL_BASED)) {
                 Long userId = medication.getUser().getId();
                 List<Meal> meals = mealRepository.findByUserId(userId);
 
@@ -65,8 +65,8 @@ public class MedicationResetScheduler {
 
                     MedicationSchedule schedule = MedicationSchedule.builder()
                         .medication(medication)
-                        .checkDate(today)
-                        .medicationTime(scheduleTime)
+                        .scheduleDate(today)
+                        .scheduleTime(scheduleTime)
                         .isTaken(false)
                         .build();
 

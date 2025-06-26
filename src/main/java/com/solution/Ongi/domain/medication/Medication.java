@@ -5,18 +5,8 @@ import com.solution.Ongi.domain.medication.enums.IntakeTiming;
 import com.solution.Ongi.domain.medication.enums.MedicationType;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.global.base.BaseTimeEntity;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -29,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Table(name = "medication")
 public class Medication extends BaseTimeEntity {
 
     @Id
@@ -36,11 +27,12 @@ public class Medication extends BaseTimeEntity {
     @Column(name = "medication_id")
     private Long id;
 
-    private String medicationTitle;
+    @Column(name = "medication_name")
+    private String medicationName;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private MedicationType type;
+    private MedicationType medicationType;
 
     // FIXED_TIME 용
     @ElementCollection
@@ -63,17 +55,17 @@ public class Medication extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void updateFixedTime(String title, List<LocalTime> timeList) {
-        this.medicationTitle = title;
+    public void updateFixedTime(String name, List<LocalTime> timeList) {
+        this.medicationName = name;
         this.medicationTimes = timeList;
-        this.type = MedicationType.FIXED_TIME;
+        this.medicationType = MedicationType.FIXED_TIME;
     }
 
-    public void updateMealBased(String title, IntakeTiming timing, List<MealType> mealTypes, Integer remindAfterMinutes) {
-        this.medicationTitle = title;
+    public void updateMealBased(String name, IntakeTiming timing, List<MealType> mealTypes, Integer remindAfterMinutes) {
+        this.medicationName = name;
         this.intakeTiming = timing;
         this.mealTypes = mealTypes;
         this.remindAfterMinutes = remindAfterMinutes;
-        this.type = MedicationType.MEAL_BASED;
+        this.medicationType = MedicationType.MEAL_BASED;
     }
 }

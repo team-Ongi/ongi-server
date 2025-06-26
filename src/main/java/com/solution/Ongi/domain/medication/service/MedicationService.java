@@ -4,7 +4,7 @@ import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.medication.dto.CreateFixedTimeMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.CreateMealBasedMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.CreateMedicationResponse;
-import com.solution.Ongi.domain.medication.dto.MedicationResponseDTO;
+import com.solution.Ongi.domain.medication.dto.MedicationResponse;
 import com.solution.Ongi.domain.medication.dto.UpdateFixedTimeMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.UpdateMealBasedMedicationRequest;
 import com.solution.Ongi.domain.medication.enums.MedicationType;
@@ -33,8 +33,8 @@ public class MedicationService {
         User user=userService.getUserByLoginIdOrThrow(loginId);
 
         Medication medication = Medication.builder()
-            .medicationTitle(request.title())
-            .type(MedicationType.FIXED_TIME)
+            .medicationName(request.medicationName())
+            .medicationType(MedicationType.FIXED_TIME)
             .medicationTimes(request.timeList().stream()
                 .map(time -> LocalTime.parse(time, timeFormatter))
                 .toList()
@@ -51,8 +51,8 @@ public class MedicationService {
         User user=userService.getUserByLoginIdOrThrow(loginId);
 
         Medication medication = Medication.builder()
-            .medicationTitle(request.title())
-            .type(MedicationType.MEAL_BASED)
+            .medicationName(request.medicationName())
+            .medicationType(MedicationType.MEAL_BASED)
             .intakeTiming(request.intakeTiming())
             .mealTypes(request.mealTypeList())
             .remindAfterMinutes(request.remindAfterMinutes())
@@ -71,14 +71,14 @@ public class MedicationService {
             .map(LocalTime::parse)
             .toList();
 
-        medication.updateFixedTime(request.title(), timeList);
+        medication.updateFixedTime(request.medicationName(), timeList);
     }
 
     public void updateMealBasedMedication(String loginId, Long medicationId, UpdateMealBasedMedicationRequest request) {
         Medication medication = getAuthorizedMedication(loginId, medicationId);
 
         medication.updateMealBased(
-            request.title(),
+            request.medicationName(),
             request.intakeTiming(),
             request.mealTypes(),
             request.remindAfterMinutes()
@@ -86,12 +86,12 @@ public class MedicationService {
     }
 
     // 유저의 Medication 전체 조회
-    public List<MedicationResponseDTO> getAllMedication(String loginId){
+    public List<MedicationResponse> getAllMedication(String loginId){
         User user = userService.getUserByLoginIdOrThrow(loginId);
         List<Medication> medications = medicationRepository.findAllByUserId(user.getId());
-        List<MedicationResponseDTO> result = medications.stream()
+        List<MedicationResponse> result = medications.stream()
             .map(medication ->
-                MedicationResponseDTO.from(
+                MedicationResponse.from(
                     medication,
                     medication.getMedicationTimes(),
                     medication.getMealTypes()

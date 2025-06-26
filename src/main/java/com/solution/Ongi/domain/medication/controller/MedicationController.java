@@ -3,7 +3,7 @@ package com.solution.Ongi.domain.medication.controller;
 import com.solution.Ongi.domain.medication.dto.CreateFixedTimeMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.CreateMealBasedMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.CreateMedicationResponse;
-import com.solution.Ongi.domain.medication.dto.MedicationResponseDTO;
+import com.solution.Ongi.domain.medication.dto.MedicationResponse;
 import com.solution.Ongi.domain.medication.dto.UpdateFixedTimeMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.UpdateMealBasedMedicationRequest;
 import com.solution.Ongi.domain.medication.service.MedicationService;
@@ -144,9 +144,9 @@ public class MedicationController {
     @Operation(summary = "사용자의 모든 약 정보 조회",
         description = "현재 로그인한 사용자의 전체 약 정보를 조회합니다. "
             + "약 종류에 따라 정시 복용 시간(timeList) 또는 식전/식후 약 복용 정보(intakeTiming, mealTypeList, remindAfterMinutes)를 포함합니다.")
-    public ResponseEntity<ApiResponse<List<MedicationResponseDTO>>> getMedications(Authentication authentication) {
-        List<MedicationResponseDTO> medicationResponseDTOS = medicationService.getAllMedication(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success(medicationResponseDTOS));
+    public ResponseEntity<ApiResponse<List<MedicationResponse>>> getMedications(Authentication authentication) {
+        List<MedicationResponse> medicationResponses = medicationService.getAllMedication(authentication.getName());
+        return ResponseEntity.ok(ApiResponse.success(medicationResponses));
     }
 
     // Medication 삭제

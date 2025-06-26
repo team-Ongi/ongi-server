@@ -6,7 +6,7 @@ import java.util.List;
 
 public record CreateFixedTimeMedicationRequest(
     @NotBlank
-    String title,
+    String medicationName,
     @NotEmpty
     List<String> timeList
 ) {
