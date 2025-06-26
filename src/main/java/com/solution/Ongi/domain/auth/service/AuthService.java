@@ -102,8 +102,8 @@ public class AuthService {
     }
 
     // 로그인 아이디 중복 체크
-    public boolean isDuplicatedId(String loginId) {
-        return userRepository.existsByLoginId(loginId);
+    public CheckLoginIdDuplicateResponse isDuplicatedId(String loginId) {
+        return new CheckLoginIdDuplicateResponse(userRepository.existsByLoginId(loginId));
     }
 
     // Access Token 재발급
