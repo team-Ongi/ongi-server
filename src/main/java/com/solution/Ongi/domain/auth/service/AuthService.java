@@ -169,8 +169,8 @@ public class AuthService {
     }
 
     // 인증번호 확인
-    public boolean verifyCode(String phoneNumber, String inputCode) {
-        // 저장된 핸드폰 번호인지 확인
+    public VerifyPhoneConfirmResponse verifyCode(String phoneNumber, String inputCode) {
+        // 인증요청을 한 전화번호인지 확인
         SmsVerification verification = smsVerificationRepository
                 .findTopByPhoneNumberOrderByCreatedAtDesc(phoneNumber)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.VERIFICATION_CODE_NOT_FOUND));
@@ -180,13 +180,13 @@ public class AuthService {
         if (seconds >= 300 && !verification.getIsVerified())
             throw new GeneralException(ErrorStatus.VERIFICATION_EXPIRED);
 
-        // 인증번호가 같다면 -> is_verified true로 변경
-        if (verification.getCode().equals(inputCode)){
-            verification.verify();
-            return true;
+        if (!(verification.getCode().equals(inputCode))){
+            throw new GeneralException(ErrorStatus.VERIFICATION_CODE_MISMATCH);
         }
 
-        return false;
+        // 인증번호가 같다면 -> is_verified true로 변경
+        verification.verify();
+        return new VerifyPhoneConfirmResponse(true);
     }
 
     // 랜덤 4자리 생성

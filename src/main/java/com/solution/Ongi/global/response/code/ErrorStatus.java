@@ -27,6 +27,8 @@ public enum ErrorStatus implements BaseCode {
     VERIFICATION_CODE_NOT_FOUND("SMS404", HttpStatus.NOT_FOUND, "해당 번호로 인증 요청이 없습니다."),
     VERIFICATION_NOT_COMPLETED("SMS400", HttpStatus.BAD_REQUEST, "인증이 완료되지 않았습니다."),
     VERIFICATION_EXPIRED("SMS400", HttpStatus.BAD_REQUEST, "인증번호 유효 시간이 만료되었습니다."),
+    VERIFICATION_CODE_MISMATCH("SMS400", HttpStatus.BAD_REQUEST, "인증번호가 일치하지 않습니다."),
+
 
 
     // Medication
