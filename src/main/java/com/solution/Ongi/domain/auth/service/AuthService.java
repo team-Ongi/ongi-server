@@ -125,6 +125,11 @@ public class AuthService {
         return jwtProvider.createToken(user.getLoginId(), mode);
     }
 
+    public FindLoginIdResponse findLoginId(String phoneNumber){
+        User user = userRepository.findBySeniorPhoneOrGuardianPhone(phoneNumber,phoneNumber).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        return new FindLoginIdResponse(user.getLoginId());
+    }
+
     // 비밀번호 변경
     public String changePassword(ChangePasswordRequest request) {
         // 유저 정보 불러오기

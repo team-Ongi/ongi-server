@@ -82,6 +82,15 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success(newAccessToken));
     }
 
+    @GetMapping("/find-id")
+    @Operation(summary = "아이디 조회", description = "전화번호를 통해 loginId를 조회합니다")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "아이디 조회 완료", content = @Content( mediaType = "application/json",schema =@Schema(implementation = FindLoginIdResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "아이디가 존재하지 않는 경우", content = @Content)
+    public ResponseEntity<ApiResponse<FindLoginIdResponse>> findLoginId(@RequestParam String phoneNumber) {
+        FindLoginIdResponse response = authService.findLoginId(phoneNumber);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     @PutMapping("/password")
     @Operation(summary = "비밀번호 변경", description = "비밀번호를 변경합니다")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "비밀번호 변경 완료", content = @Content( mediaType = "application/json"))

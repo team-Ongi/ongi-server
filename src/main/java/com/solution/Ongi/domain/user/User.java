@@ -37,12 +37,14 @@ public class User extends BaseTimeEntity {
 
     private String guardianName;
 
+    @Column(name = "guardian_phone")
     private String guardianPhone;
 
     private String seniorName;
 
     private Integer seniorAge;
 
+    @Column(name = "senior_phone")
     private String seniorPhone;
 
     private Integer ignoreCnt;
