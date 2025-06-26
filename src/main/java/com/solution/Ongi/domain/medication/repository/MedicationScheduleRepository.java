@@ -1,5 +1,6 @@
 package com.solution.Ongi.domain.medication.repository;
 
+import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -54,4 +55,5 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     findFirstByMedication_User_IdAndScheduledDateAndIsTakenFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
             Long userId, LocalDate date, LocalTime time
     );
+    void deleteByMedication(Medication medication);
 }

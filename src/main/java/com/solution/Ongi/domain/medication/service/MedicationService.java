@@ -161,7 +161,7 @@ public class MedicationService {
     // Medication 삭제
     public void deleteMedication(String loginId, Long medicationId){
         Medication medication = getAuthorizedMedication(loginId, medicationId);
-
+        medicationScheduleRepository.deleteByMedication(medication);
         medicationRepository.delete(medication);
     }
 
