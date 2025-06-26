@@ -1,7 +1,6 @@
 package com.solution.Ongi.domain.medication.service;
 
 import com.solution.Ongi.domain.meal.Meal;
-import com.solution.Ongi.domain.meal.enums.MealType;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
@@ -11,7 +10,6 @@ import com.solution.Ongi.domain.medication.dto.CreateMedicationResponse;
 import com.solution.Ongi.domain.medication.dto.MedicationResponse;
 import com.solution.Ongi.domain.medication.dto.UpdateFixedTimeMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.UpdateMealBasedMedicationRequest;
-import com.solution.Ongi.domain.medication.enums.IntakeTiming;
 import com.solution.Ongi.domain.medication.enums.MedicationType;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
@@ -27,9 +25,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.solution.Ongi.domain.medication.enums.IntakeTiming.AFTER_MEAL;
-import static com.solution.Ongi.domain.medication.enums.IntakeTiming.BEFORE_MEAL;
 
 @Service
 @RequiredArgsConstructor
@@ -108,7 +103,7 @@ public class MedicationService {
 
                     return MedicationSchedule.builder()
                             .medication(medication)
-                            .scheduledDate(LocalDate.now())
+                            .scheduledDate(today)
                             .scheduledTime(scheduledTime)
                             .isTaken(false)
                             .build();
@@ -122,13 +117,14 @@ public class MedicationService {
     }
 
     public void updateFixedTimeMedication(String loginId, Long medicationId, UpdateFixedTimeMedicationRequest request) {
+        // 약 정보 가져오기 && 약 이름 수정
         Medication medication = getAuthorizedMedication(loginId, medicationId);
+        medication.updateMedicationName(request.medicationName());
 
-        List<LocalTime> timeList = request.timeList().stream()
-            .map(LocalTime::parse)
-            .toList();
-
-        medication.updateFixedTime(request.medicationName(), timeList);
+        // 약 복용 스케줄 수정
+        MedicationSchedule medicationSchedule = medicationScheduleRepository.findById(request.medicationScheduleId()).orElseThrow(()->new GeneralException(ErrorStatus.MEDICATION_SCHEDULE_NOT_FOUND));
+        LocalTime scheduledTime = LocalTime.parse(request.time(), DateTimeFormatter.ofPattern("HH:mm"));
+        medicationSchedule.updateScheduleTime(scheduledTime);
     }
 
     public void updateMealBasedMedication(String loginId, Long medicationId, UpdateMealBasedMedicationRequest request) {

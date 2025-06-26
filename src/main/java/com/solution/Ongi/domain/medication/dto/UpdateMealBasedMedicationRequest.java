@@ -8,7 +8,8 @@ public record UpdateMealBasedMedicationRequest(
     String medicationName,
     IntakeTiming intakeTiming,
     List<MealType> mealTypes,
-    Integer remindAfterMinutes
+    Integer remindAfterMinutes,
+    Long medicationScheduleId
 ) {
 
 }

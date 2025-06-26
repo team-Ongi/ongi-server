@@ -89,17 +89,18 @@ public class MedicationController {
             .body(ApiResponse.success(response));
     }
 
+    // 정시 복용 약 수정
     @PutMapping("/fixed-time/{medicationId}")
     @Operation(summary = "정시 복용 약 수정",
         description = """
         정해진 시각에 복용하는 약 정보를 수정합니다. <br><br>
-        - `title` : 변경할 약 이름 <br>
-        - `timeList` : 변경할 복용 시간 리스트 (형식: "HH:mm", 예: ["08:00", "21:00"]) <br><br>
+        - `medicationName` : 변경할 약 이름 <br>
+        - `time` : 변경할 약의 복용 시간  (형식: "HH:mm", 예: "08:00" ) <br><br>
         예시:
         ```
         {
-          "title": "혈압약",
-          "timeList": ["07:00", "19:00"]
+          "medicationName": "혈압약",
+          "time": "07:00"
         }
         ```
         """)
@@ -112,20 +113,21 @@ public class MedicationController {
         return ResponseEntity.ok(ApiResponse.success("정시 복용 약이 수정되었습니다."));
     }
 
+    // 식전/식후 약 수정
     @PutMapping("/meal-based/{medicationId}")
     @Operation(summary = "식전/식후 약 수정",
         description = """
         식전/식후 복용 약 정보를 수정합니다. <br><br>
-        - `title` : 변경할 약 이름 <br>
+        - `medicationName` : 변경할 약 이름 <br>
         - `intakeTiming` : `BEFORE_MEAL` 또는 `AFTER_MEAL` <br>
-        - `mealTypes` : 수정할 끼니 정보 리스트 <br>
+        - `mealType` : 수정할 끼니 정보 <br>
         - `remindAfterMinutes` : 복용하지 않았을 경우 알림을 보낼 간격 (30 또는 60 분) <br><br>
         예시:
         ```
         {
-          "title": "비타민",
+          "medicationName": "비타민",
           "intakeTiming": "BEFORE_MEAL",
-          "mealTypes": ["BREAKFAST"],
+          "mealType": "BREAKFAST",
           "remindAfterMinutes": 60
         }
         ```

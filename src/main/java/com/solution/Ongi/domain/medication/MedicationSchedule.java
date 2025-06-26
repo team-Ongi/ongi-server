@@ -54,4 +54,8 @@ public class MedicationSchedule extends BaseTimeEntity {
         this.notTakenReason = notTakenReason;
     }
 
+    public void updateScheduleTime(LocalTime scheduledTime) {
+        this.scheduledTime = scheduledTime;
+    }
+
 }

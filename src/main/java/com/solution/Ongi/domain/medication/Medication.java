@@ -68,4 +68,8 @@ public class Medication extends BaseTimeEntity {
         this.remindAfterMinutes = remindAfterMinutes;
         this.medicationType = MedicationType.MEAL_BASED;
     }
+
+    public void updateMedicationName(String medicationName) {
+        this.medicationName = medicationName;
+    }
 }
