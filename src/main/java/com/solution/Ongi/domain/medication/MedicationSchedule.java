@@ -1,13 +1,8 @@
 package com.solution.Ongi.domain.medication;
 
 import com.solution.Ongi.global.base.BaseTimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.AccessLevel;
@@ -21,39 +16,46 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Entity
+@Table(name = "medication_schedule")
 public class MedicationSchedule extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "medication_schedule_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medication_id")
     private Medication medication;
 
+    @Column(name = "is_taken")
     private boolean isTaken;
 
-    private LocalDate checkDate;
+    @Column(name = "scheduled_date")
+    private LocalDate scheduledDate;
 
-    private LocalTime medicationTime;
+    @Column(name = "scheduled_time")
+    private LocalTime scheduledTime;
 
-    private String reason;
-
-    private Integer remindAfterMinutes;
+    @Column(name = "not_taken_reason")
+    private String notTakenReason;
 
     public void reset() {
         this.isTaken = false;
-        this.checkDate = LocalDate.now();
+        this.scheduledDate = LocalDate.now();
     }
 
     public void markAsTaken() {
         this.isTaken = true;
     }
 
-    public void markAsNotTaken(String reason, Integer remindAfterMinutes) {
+    public void markAsNotTaken(String notTakenReason, Integer remindAfterMinutes) {
         this.isTaken = false;
-        this.reason = reason;
-        this.remindAfterMinutes = remindAfterMinutes;
+        this.notTakenReason = notTakenReason;
+    }
+
+    public void updateScheduleTime(LocalTime scheduledTime) {
+        this.scheduledTime = scheduledTime;
     }
 
 }

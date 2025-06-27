@@ -47,7 +47,7 @@ public class ScheduleNotificationService {
                         user.getId(),today,currentTime
                 );
         Optional<MedicationSchedule> nextMed=medicationScheduleRepository
-                .findFirstByMedication_User_IdAndCheckDateAndIsTakenFalseAndMedicationTimeAfterOrderByMedicationTimeAsc(
+                .findFirstByMedication_User_IdAndScheduledDateAndIsTakenFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
                         user.getId(),today,currentTime
                 );
 
@@ -59,7 +59,7 @@ public class ScheduleNotificationService {
         if(nextMeal.isPresent()&&nextMed.isPresent()){
             MealSchedule meal=nextMeal.get();
             MedicationSchedule med=nextMed.get();
-            return meal.getMealScheduleTime().isBefore(med.getMedicationTime())
+            return meal.getMealScheduleTime().isBefore(med.getScheduledTime())
                     ? mapMeal(meal)
                     : mapMed(med);
         }

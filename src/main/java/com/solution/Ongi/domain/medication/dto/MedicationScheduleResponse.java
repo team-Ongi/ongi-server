@@ -8,7 +8,7 @@ import java.time.LocalTime;
 public record MedicationScheduleResponse(
     Long scheduleId,
     LocalDate checkDate,
-    String medicationTitle,
+    String medicationName,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     LocalTime medicationTime,
     Boolean isTaken
@@ -16,9 +16,9 @@ public record MedicationScheduleResponse(
     public static MedicationScheduleResponse from(MedicationSchedule schedule) {
         return new MedicationScheduleResponse(
             schedule.getId(),
-            schedule.getCheckDate(),
-            schedule.getMedication().getMedicationTitle(),
-            schedule.getMedicationTime(),
+            schedule.getScheduledDate(),
+            schedule.getMedication().getMedicationName(),
+            schedule.getScheduledTime(),
             schedule.isTaken()
         );
     }

@@ -1,5 +1,6 @@
 package com.solution.Ongi.domain.medication.repository;
 
+import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,8 +16,8 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     select ms from MedicationSchedule ms
     join fetch ms.medication m
     where m.user.id = :userId
-    and ms.checkDate between :startDate and :endDate
-    order by ms.checkDate asc, ms.medicationTime asc
+    and ms.scheduledDate between :startDate and :endDate
+    order by ms.scheduledDate asc, ms.scheduledTime asc
 """)
     List<MedicationSchedule> findByUserAndDateRange(
         @Param("userId") Long userId,
@@ -28,8 +29,8 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     select ms from MedicationSchedule ms
     join fetch ms.medication m
     where m.user.id = :userId
-    and ms.checkDate = :date
-    order by ms.medicationTime asc
+    and ms.scheduledDate = :date
+    order by ms.scheduledTime asc
 """)
     List<MedicationSchedule> findByUserAndDate(
         @Param("userId") Long userId,
@@ -40,9 +41,9 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     select ms from MedicationSchedule ms
     join fetch ms.medication m
     where m.user.id = :userId
-      and ms.checkDate = :date
+      and ms.scheduledDate = :date
       and ms.isTaken = false
-    order by ms.medicationTime asc
+    order by ms.scheduledTime asc
 """)
     List<MedicationSchedule> findNotTakenByUserAndDate(
         @Param("userId") Long userId,
@@ -51,7 +52,8 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
 
     //TODO: match format
     Optional<MedicationSchedule>
-    findFirstByMedication_User_IdAndCheckDateAndIsTakenFalseAndMedicationTimeAfterOrderByMedicationTimeAsc(
+    findFirstByMedication_User_IdAndScheduledDateAndIsTakenFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
             Long userId, LocalDate date, LocalTime time
     );
+    void deleteByMedication(Medication medication);
 }

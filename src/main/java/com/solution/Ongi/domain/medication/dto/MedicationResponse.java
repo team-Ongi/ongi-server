@@ -8,22 +8,22 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public record MedicationResponseDTO(
+public record MedicationResponse(
     Long id,
-    String title,
+    String medicationName,
     MedicationType type,
     List<String> timeList, // 정시복용
     IntakeTiming intakeTiming, // 식사 기반
     List<MealType> mealTypeList, //식사 기반
     Integer remindAfterMinutes // 식사 기반
 ) {
-    public static MedicationResponseDTO from(Medication medication, List<LocalTime> times, List<MealType> mealTypes) {
+    public static MedicationResponse from(Medication medication, List<LocalTime> times, List<MealType> mealTypes) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        return new MedicationResponseDTO(
+        return new MedicationResponse(
             medication.getId(),
-            medication.getMedicationTitle(),
-            medication.getType(),
+            medication.getMedicationName(),
+            medication.getMedicationType(),
             times.stream()
                 .map(time -> time.format(formatter))
                 .toList(),

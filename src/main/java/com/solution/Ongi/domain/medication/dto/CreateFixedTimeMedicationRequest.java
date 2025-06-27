@@ -2,13 +2,19 @@ package com.solution.Ongi.domain.medication.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 public record CreateFixedTimeMedicationRequest(
     @NotBlank
-    String title,
+    String medicationName,
+
     @NotEmpty
-    List<String> timeList
+    List<String> timeList,
+
+    @NotNull
+    Integer remindAfterMinutes
 ) {
 
 }
