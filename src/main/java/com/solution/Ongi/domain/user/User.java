@@ -37,12 +37,14 @@ public class User extends BaseTimeEntity {
 
     private String guardianName;
 
+    @Column(name = "guardian_phone")
     private String guardianPhone;
 
     private String seniorName;
 
     private Integer seniorAge;
 
+    @Column(name = "senior_phone")
     private String seniorPhone;
 
     private Integer ignoreCnt;
@@ -87,6 +89,10 @@ public class User extends BaseTimeEntity {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
 }
