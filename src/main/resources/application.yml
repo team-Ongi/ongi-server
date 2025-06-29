@@ -4,8 +4,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ongidb?serverTimezone=Asia/Seoul
-    username: ${USERNAME}
-    password: ${PASSWORD}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -20,10 +20,10 @@ spring:
       org.springframework.web: DEBUG
 
 jwt:
-  secret: ${SECRETKEY}
+  secret: ${JWT_SECRET_KEY}
 
 coolsms:
   api:
-    key: ${SMSKEY}
-    secret: ${SMSSECRET}
-    number: ${SMSNUMBER}
+    key: ${SMS_KEY}
+    secret: ${SMS_SECRET}
+    number: ${SMS_NUMBER}
