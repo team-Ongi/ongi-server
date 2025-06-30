@@ -101,7 +101,7 @@ public class ScheduleNotificationService {
         }
 
         //CurrentIgnoreCount +1
-        Long currentIgnore=userService.addCurrentIgnoreCount(loginId);
+        Long currentIgnore=userService.addUserCurrentIgnoreCount(loginId);
         Long maxIgnore=user.getIgnoreCnt().longValue();
 
         //if currentIgnore==maxIgnore send FCM push
