@@ -1,4 +1,4 @@
-package com.solution.Ongi.infra.firebase;
+package com.solution.Ongi.infra.subscription;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

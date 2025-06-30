@@ -1,4 +1,4 @@
-package com.solution.Ongi.infra.firebase;
+package com.solution.Ongi.infra.subscription;
 
 import com.solution.Ongi.domain.user.User;
 import jakarta.persistence.*;
