@@ -83,6 +83,8 @@ public class User extends BaseTimeEntity {
         this.currentIgnoreCnt++;
     }
 
+    public void updateIgnoreCnt(Integer ignoreCnt){ this.ignoreCnt=ignoreCnt;}
+
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
     }

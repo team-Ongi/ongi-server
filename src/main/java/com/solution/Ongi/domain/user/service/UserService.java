@@ -1,5 +1,6 @@
 package com.solution.Ongi.domain.user.service;
 
+import com.solution.Ongi.domain.smsverification.SmsVerificationRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.UserInfoResponse;
 import com.solution.Ongi.domain.user.enums.LoginMode;
@@ -42,12 +43,21 @@ public class UserService {
             .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
-    //user ignoreCount increase
-    public Long addCurrentIgnoreCount(String loginId){
+    //user currentIgnoreCnt +1
+    public Long addUserCurrentIgnoreCount(String loginId){
         User user=userRepository.findByLoginId(loginId)
                 .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
         user.addCurrentIgnoreCnt();
         return user.getCurrentIgnoreCnt().longValue();
+    }
+
+    //user ignoreCnt 설정
+    public Long setUserIgnoreCnt(String loginId,Integer ignoreCnt){
+        User user=userRepository.findByLoginId(loginId)
+                .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        user.updateIgnoreCnt(ignoreCnt);
+        return user.getIgnoreCnt().longValue();
     }
 
     // 회원 탈퇴
