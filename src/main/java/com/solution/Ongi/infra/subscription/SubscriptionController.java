@@ -1,9 +1,9 @@
-package com.solution.Ongi.infra.firebase;
+package com.solution.Ongi.infra.subscription;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.solution.Ongi.domain.push.PushNotificationService;
-import com.solution.Ongi.infra.firebase.dto.NotificationRequest;
-import com.solution.Ongi.infra.firebase.dto.SubscriptionRequest;
+import com.solution.Ongi.infra.subscription.dto.NotificationRequest;
+import com.solution.Ongi.infra.subscription.dto.SubscriptionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -2,7 +2,7 @@ package com.solution.Ongi.domain.schedule.service;
 
 
 import com.solution.Ongi.domain.push.PushNotificationService;
-import com.solution.Ongi.infra.firebase.SubscriptionService;
+import com.solution.Ongi.infra.subscription.SubscriptionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

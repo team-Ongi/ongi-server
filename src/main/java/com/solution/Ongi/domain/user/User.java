@@ -6,7 +6,7 @@ import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.user.enums.AlertInterval;
 import com.solution.Ongi.domain.user.enums.RelationType;
 import com.solution.Ongi.global.base.BaseTimeEntity;
-import com.solution.Ongi.infra.firebase.Subscription;
+import com.solution.Ongi.infra.subscription.Subscription;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

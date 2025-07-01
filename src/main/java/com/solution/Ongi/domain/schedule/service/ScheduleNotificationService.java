@@ -4,7 +4,6 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.solution.Ongi.domain.meal.MealSchedule;
 import com.solution.Ongi.domain.meal.repository.MealScheduleRepository;
 import com.solution.Ongi.domain.meal.service.MealScheduleService;
-import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
 import com.solution.Ongi.domain.medication.dto.UpdateMedicationStatusRequest;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
@@ -13,9 +12,8 @@ import com.solution.Ongi.domain.push.PushNotificationService;
 import com.solution.Ongi.domain.schedule.dto.UpcomingScheduleResponse;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.service.UserService;
-import com.solution.Ongi.infra.firebase.SubscriptionService;
+import com.solution.Ongi.infra.subscription.SubscriptionService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
