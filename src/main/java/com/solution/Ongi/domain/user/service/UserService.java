@@ -1,5 +1,6 @@
 package com.solution.Ongi.domain.user.service;
 
+import com.solution.Ongi.domain.smsverification.SmsVerificationRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.UserInfoResponse;
 import com.solution.Ongi.domain.user.enums.LoginMode;
@@ -57,5 +58,11 @@ public class UserService {
 
         user.updateIgnoreCnt(ignoreCnt);
         return user.getIgnoreCnt().longValue();
+    }
+
+    // 회원 탈퇴
+    public void deleteUser(String loginId){
+        User user = getUserByLoginIdOrThrow(loginId);
+        userRepository.delete(user);
     }
 }
