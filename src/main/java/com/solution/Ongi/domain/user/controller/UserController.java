@@ -1,6 +1,7 @@
 package com.solution.Ongi.domain.user.controller;
 
 import com.solution.Ongi.domain.user.dto.UserInfoResponse;
+import com.solution.Ongi.domain.user.dto.UserVoiceResponse;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,11 +71,25 @@ public class UserController {
             description = "보호자가 목소리를 녹음할 때 사용하는 API입니다"
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "음성 녹음 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "음성 녹음 실패", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<String>> recordVoice(@RequestParam("file") MultipartFile file){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.recordVoice(file, authentication.getPrincipal().toString());
         return ResponseEntity.ok(ApiResponse.success("음성 녹음 완료"));
+    }
+
+    @GetMapping(path = "/voice")
+    @Operation(
+            summary = "목소리 녹음 조회",
+            description = "보호자가 목소리를 녹음한 경우에는 보호자 목소리 녹음 파일 경로를 반환하고, 녹음하지 않은 경우에는 기본 아나운서 목소리 녹음 파일 경로를 반환합니다."
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "음성 녹음 파일 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserVoiceResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<UserVoiceResponse>> getUserVoice(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserVoiceResponse response = userService.getUserVoice(authentication.getPrincipal().toString());
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
 }

@@ -2,6 +2,7 @@ package com.solution.Ongi.domain.user.service;
 
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.UserInfoResponse;
+import com.solution.Ongi.domain.user.dto.UserVoiceResponse;
 import com.solution.Ongi.domain.user.enums.LoginMode;
 import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
@@ -94,6 +95,16 @@ public class UserService {
         catch(Exception e){
             throw new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
+    // 유저 녹음 파일 조회
+    public UserVoiceResponse getUserVoice(String loginId){
+        User user = getUserByLoginIdOrThrow(loginId);
+        String voiceFileUrl;
+        if(!user.getVoiceFileUrl().isEmpty())
+            voiceFileUrl=user.getVoiceFileUrl();
+        else
+            voiceFileUrl = "";
+        return new UserVoiceResponse(voiceFileUrl);
     }
 }
