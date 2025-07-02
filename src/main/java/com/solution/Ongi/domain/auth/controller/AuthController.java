@@ -72,15 +72,15 @@ public class AuthController {
 
     @PostMapping("/token/reissue")
     @Operation(summary = "accessToken 재발급", description = "refreshToken을 헤더에 담아 전송하면 새로운 accessToken을 발급합니다.")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Access Token 재발급 성공", content = @Content( mediaType = "application/json"))
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "토큰이 유효하지 않거나 일치하지 않는 경우", content = @Content)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content)
-    public ResponseEntity<ApiResponse<String>> reissueAccessToken(@Parameter(hidden = true) @RequestHeader("Authorization") String refreshToken) {
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Access Token 재발급 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReissueAccessTokenResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Refresh Token이 유효하지 않거나 일치하지 않는 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Refresh Token에서 파싱한 로그인아이디가 존재하지 않는 경우", content = @Content)
+    public ResponseEntity<ApiResponse<ReissueAccessTokenResponse>> reissueAccessToken(@Parameter(hidden = true) @RequestHeader("Authorization") String refreshToken) {
         if (refreshToken.startsWith("Bearer ")) {
             refreshToken = refreshToken.substring(7);
         }
-        String newAccessToken = authService.reissueAccessToken(refreshToken);
-        return ResponseEntity.ok(ApiResponse.success(newAccessToken));
+        ReissueAccessTokenResponse response = authService.reissueAccessToken(refreshToken);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/find-id")

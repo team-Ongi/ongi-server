@@ -114,7 +114,7 @@ public class AuthService {
     }
 
     // Access Token 재발급
-    public String reissueAccessToken(String refreshToken) {
+    public ReissueAccessTokenResponse reissueAccessToken(String refreshToken) {
         if (!jwtProvider.isValidToken(refreshToken)) {
             throw new GeneralException(ErrorStatus.INVALID_TOKEN);
         }
@@ -129,7 +129,7 @@ public class AuthService {
             throw new GeneralException(ErrorStatus.TOKEN_MISMATCH);
         }
 
-        return jwtProvider.createToken(user.getLoginId(), mode);
+        return new ReissueAccessTokenResponse(jwtProvider.createToken(user.getLoginId(), mode));
     }
 
     public FindLoginIdResponse findLoginId(String phoneNumber){
