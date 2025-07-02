@@ -92,4 +92,17 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @DeleteMapping(path = "/voice")
+    @Operation(
+            summary = "보호자 음성 삭제 ",
+            description = "보호자가 등록한 음성을 삭제합니다(DB 삭제 + S3 삭제)"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "보호자 음성 삭제 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<String>> deleteUserVoice(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userService.deleteUserVoice(authentication.getPrincipal().toString());
+        return ResponseEntity.ok(ApiResponse.success("보호자 음성 삭제 성공"));
+    }
+
 }

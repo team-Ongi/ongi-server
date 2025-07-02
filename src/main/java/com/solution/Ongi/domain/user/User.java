@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,9 +87,6 @@ public class User extends BaseTimeEntity {
 
     public void updateIgnoreCnt(Integer ignoreCnt){ this.ignoreCnt=ignoreCnt;}
 
-    public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
-    }
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
@@ -98,6 +94,10 @@ public class User extends BaseTimeEntity {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateVoiceFileUrl(String voiceFileUrl) {
+        this.voiceFileUrl = voiceFileUrl;
     }
 
 }

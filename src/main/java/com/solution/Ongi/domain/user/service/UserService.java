@@ -8,6 +8,7 @@ import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
+import com.solution.Ongi.infra.aws.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -28,6 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtProvider;
     private final WebClient fastApiWebClient;
+    private final S3Service s3Service;
 
 
     public UserInfoResponse getUserInfoWithMode(String token, String loginId) {
@@ -106,5 +108,30 @@ public class UserService {
         else
             voiceFileUrl = "";
         return new UserVoiceResponse(voiceFileUrl);
+    }
+
+    // 보호자 음성 삭제
+    public void deleteUserVoice(String loginId){
+        User user = getUserByLoginIdOrThrow(loginId);
+
+        // S3에 등록된 파일 삭제
+        String filePath = extractS3KeyFromUrl(user.getVoiceFileUrl());
+        s3Service.deleteFile(filePath);
+
+        // DB에 등록된 유저의 음성 목소리 파일 삭제
+        user.updateVoiceFileUrl("");
+        userRepository.save(user);
+    }
+
+    private String extractS3KeyFromUrl(String url) {
+        // S3 도메인 기준으로 split → 뒷부분이 key
+        String prefix = ".amazonaws.com/";
+        int index = url.indexOf(prefix);
+
+        if (index == -1) {
+            throw new IllegalArgumentException("유효한 S3 URL이 아닙니다: " + url);
+        }
+
+        return url.substring(index + prefix.length());
     }
 }
