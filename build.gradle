@@ -47,6 +47,9 @@ dependencies {
 	// Firebase
 	implementation 'com.google.firebase:firebase-admin:9.4.3'
 
+	// WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'

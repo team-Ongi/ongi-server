@@ -2,15 +2,18 @@ package com.solution.Ongi.domain.user.controller;
 
 import com.solution.Ongi.domain.user.dto.UserInfoResponse;
 import com.solution.Ongi.domain.user.service.UserService;
-import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,6 +62,19 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.deleteUser(authentication.getPrincipal().toString());
         return ResponseEntity.ok(ApiResponse.success("회원 탈퇴 완료"));
+    }
+
+    @PostMapping(path = "/voice/record", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(
+            summary = "보호자 목소리 녹음하기",
+            description = "보호자가 목소리를 녹음할 때 사용하는 API입니다"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "음성 녹음 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "음성 녹음 실패", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<String>> recordVoice(@RequestParam("file") MultipartFile file){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userService.recordVoice(file, authentication.getPrincipal().toString());
+        return ResponseEntity.ok(ApiResponse.success("음성 녹음 완료"));
     }
 
 }
