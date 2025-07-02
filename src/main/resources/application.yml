@@ -18,6 +18,8 @@ spring:
   logging:
     level:
       org.springframework.web: DEBUG
+      org.springframework.boot.context.config: DEBUG
+      org.springframework.core.env: DEBUG
 
 jwt:
   secret: ${JWT_SECRET_KEY}
