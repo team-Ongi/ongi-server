@@ -34,9 +34,9 @@ public class AuthService {
     // 회원가입
     public SignupResponse signup(SignupRequest request) {
 
-        // 로그인 아이디 유효 검사
+        // 회원가입 아이디 존재 여부 검사
         if (userRepository.existsByLoginId(request.loginId())) {
-            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+            throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
         }
 
         // 인증요청 한 전화번호인지 검사

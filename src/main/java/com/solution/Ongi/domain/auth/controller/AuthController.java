@@ -40,7 +40,8 @@ public class AuthController {
     """)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원가입 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = SignupResponse.class, type = "application/json")))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "인증이 완료되지 않은 경우", content = @Content)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우 or 인증 요청을 하지 않은 전화번호인 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "인증 요청을 하지 않은 전화번호인 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 아이디가 존재하는 경우", content = @Content)
     public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody @Valid SignupRequest request) {
         SignupResponse response = authService.signup(request);
         return ResponseEntity.ok(ApiResponse.success(response));
