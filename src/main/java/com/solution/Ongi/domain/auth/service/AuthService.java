@@ -176,7 +176,7 @@ public class AuthService {
     }
 
     // 인증번호 확인
-    public VerifyPhoneConfirmResponse verifyCode(String phoneNumber, String inputCode) {
+    public SmsVerifyConfirmResponse verifyCode(String phoneNumber, String inputCode) {
         // 인증요청을 한 전화번호인지 확인
         SmsVerification verification = smsVerificationRepository
                 .findTopByPhoneNumberOrderByCreatedAtDesc(phoneNumber)
@@ -193,7 +193,7 @@ public class AuthService {
 
         // 인증번호가 같다면 -> is_verified true로 변경
         verification.verify();
-        return new VerifyPhoneConfirmResponse(true);
+        return new SmsVerifyConfirmResponse(true);
     }
 
     // 랜덤 4자리 생성

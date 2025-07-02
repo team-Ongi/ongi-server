@@ -2,7 +2,7 @@ package com.solution.Ongi.domain.auth.controller;
 
 import com.solution.Ongi.domain.auth.dto.*;
 import com.solution.Ongi.domain.auth.service.AuthService;
-import com.solution.Ongi.domain.auth.dto.SmsVerifyRequest;
+import com.solution.Ongi.domain.auth.dto.SmsVerifyConfirmRequest;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -103,18 +103,18 @@ public class AuthController {
 
     @PostMapping("/verify-phone")
     @Operation(summary = "문자 인증번호 보내기", description = "해당 전화번호에 인증메시지를 보냅니다.")
-    public ResponseEntity<ApiResponse<String>> sendCode(@RequestParam String phoneNumber) {
-        String response = authService.sendVerificationCode(phoneNumber);
+    public ResponseEntity<ApiResponse<String>> sendCode(@RequestBody SmsVerifyRequest request) {
+        String response = authService.sendVerificationCode(request.phoneNumber());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @PostMapping("/verify-phone/confirm")
     @Operation(summary = "인증번호 확인", description = "해당 전화번호의 인증번호를 확인합니다.")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "인증번호 확인 완료", content = @Content(mediaType = "application/json", schema =@Schema(implementation = VerifyPhoneConfirmResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "인증번호 확인 완료", content = @Content(mediaType = "application/json", schema =@Schema(implementation = SmsVerifyConfirmResponse.class)))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "인증번호 시간이 만료되었거나 인증코드가 일치하지 않는 경우", content = @Content)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "해당 전화번호로 인증번호 발송 요청을 한 적이 없는 경우", content = @Content)
-    public ResponseEntity<ApiResponse<VerifyPhoneConfirmResponse>> verifyCode(@RequestBody SmsVerifyRequest request) {
-        VerifyPhoneConfirmResponse response = authService.verifyCode(request.phoneNumber(), request.code());
+    public ResponseEntity<ApiResponse<SmsVerifyConfirmResponse>> verifyCode(@RequestBody SmsVerifyConfirmRequest request) {
+        SmsVerifyConfirmResponse response = authService.verifyCode(request.phoneNumber(), request.code());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
