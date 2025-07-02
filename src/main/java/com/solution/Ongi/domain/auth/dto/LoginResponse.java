@@ -5,7 +5,8 @@ import com.solution.Ongi.domain.user.enums.LoginMode;
 public record LoginResponse(
     String accessToken,
     String refreshToken,
-    LoginMode mode
+    LoginMode mode,
+    String voiceFileUrl
 ) {
 
 }

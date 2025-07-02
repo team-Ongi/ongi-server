@@ -99,7 +99,13 @@ public class AuthService {
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
 
-        return new LoginResponse(accessToken, refreshToken, request.mode());
+        String voiceFileUrl;
+        if(!user.getVoiceFileUrl().isEmpty())
+            voiceFileUrl=user.getVoiceFileUrl();
+        else
+            voiceFileUrl = "";
+
+        return new LoginResponse(accessToken, refreshToken, request.mode(),voiceFileUrl);
     }
 
     // 로그인 아이디 중복 체크

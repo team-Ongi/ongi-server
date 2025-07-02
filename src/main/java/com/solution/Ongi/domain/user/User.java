@@ -67,6 +67,9 @@ public class User extends BaseTimeEntity {
 
     private String refreshToken;
 
+    @Column(name = "voice_file_url")
+    private String voiceFileUrl;
+
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Meal> meals=new ArrayList<>();
