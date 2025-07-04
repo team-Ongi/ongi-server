@@ -1,11 +1,13 @@
 spring:
   config:
     import: optional:application-local.yml
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DB_URL}:3306/${DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -15,6 +17,17 @@ spring:
 #    show-sql: true
     properties:
       format_sql: true
+
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY}
+        secret-key: ${AWS_SECRET_KEY}
+      region:
+        static: ap-northeast-2
+      s3:
+        bucket : ${S3_BUCKET_NAME}
+
   logging:
     level:
       org.springframework.web: DEBUG
@@ -40,3 +53,4 @@ firebase:
   auth-provider-x509-cert-url: https://www.googleapis.com/oauth2/v1/certs
   client-x509-cert-url: ${FIREBASE_CLIENT_X509_CERT_URL}
   universe-domain: googleapis.com
+

@@ -29,13 +29,14 @@ public enum ErrorStatus implements BaseCode {
     VERIFICATION_EXPIRED("SMS400", HttpStatus.BAD_REQUEST, "인증번호 유효 시간이 만료되었습니다."),
     VERIFICATION_CODE_MISMATCH("SMS400", HttpStatus.BAD_REQUEST, "인증번호가 일치하지 않습니다."),
 
-
-
     // Medication
     MEDICATION_NOT_FOUND("MEDICATION404", HttpStatus.NOT_FOUND, "약 정보가 존재하지 않습니다."),
 
     // Medication Schedule
-    MEDICATION_SCHEDULE_NOT_FOUND("MEDICATION_SCHEDULE404", HttpStatus.NOT_FOUND, "해당 복약 스케줄이 존재하지 않습니다.");
+    MEDICATION_SCHEDULE_NOT_FOUND("MEDICATION_SCHEDULE404", HttpStatus.NOT_FOUND, "해당 복약 스케줄이 존재하지 않습니다."),
+
+    // 서버 에러
+    INTERNAL_SERVER_ERROR("SERVER500", HttpStatus.INTERNAL_SERVER_ERROR, "서버에러");
 
     private final String code;
     private final HttpStatus httpStatus;
