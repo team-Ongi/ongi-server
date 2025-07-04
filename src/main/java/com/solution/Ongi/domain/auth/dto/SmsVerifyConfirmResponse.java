@@ -1,6 +1,6 @@
 package com.solution.Ongi.domain.auth.dto;
 
-public record VerifyPhoneConfirmResponse(
+public record SmsVerifyConfirmResponse(
         Boolean isVerified
 ) {
 }

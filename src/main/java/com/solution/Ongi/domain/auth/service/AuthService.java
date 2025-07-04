@@ -34,9 +34,9 @@ public class AuthService {
     // 회원가입
     public SignupResponse signup(SignupRequest request) {
 
-        // 로그인 아이디 유효 검사
+        // 회원가입 아이디 존재 여부 검사
         if (userRepository.existsByLoginId(request.loginId())) {
-            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+            throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
         }
 
         // 인증요청 한 전화번호인지 검사
@@ -99,7 +99,13 @@ public class AuthService {
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
 
-        return new LoginResponse(accessToken, refreshToken, request.mode());
+        String voiceFileUrl;
+        if(!user.getVoiceFileUrl().isEmpty())
+            voiceFileUrl=user.getVoiceFileUrl();
+        else
+            voiceFileUrl = "";
+
+        return new LoginResponse(accessToken, refreshToken, request.mode(),voiceFileUrl);
     }
 
     // 로그인 아이디 중복 체크
@@ -108,7 +114,7 @@ public class AuthService {
     }
 
     // Access Token 재발급
-    public String reissueAccessToken(String refreshToken) {
+    public ReissueAccessTokenResponse reissueAccessToken(String refreshToken) {
         if (!jwtProvider.isValidToken(refreshToken)) {
             throw new GeneralException(ErrorStatus.INVALID_TOKEN);
         }
@@ -123,7 +129,7 @@ public class AuthService {
             throw new GeneralException(ErrorStatus.TOKEN_MISMATCH);
         }
 
-        return jwtProvider.createToken(user.getLoginId(), mode);
+        return new ReissueAccessTokenResponse(jwtProvider.createToken(user.getLoginId(), mode));
     }
 
     public FindLoginIdResponse findLoginId(String phoneNumber){
@@ -170,7 +176,7 @@ public class AuthService {
     }
 
     // 인증번호 확인
-    public VerifyPhoneConfirmResponse verifyCode(String phoneNumber, String inputCode) {
+    public SmsVerifyConfirmResponse verifyCode(String phoneNumber, String inputCode) {
         // 인증요청을 한 전화번호인지 확인
         SmsVerification verification = smsVerificationRepository
                 .findTopByPhoneNumberOrderByCreatedAtDesc(phoneNumber)
@@ -187,7 +193,7 @@ public class AuthService {
 
         // 인증번호가 같다면 -> is_verified true로 변경
         verification.verify();
-        return new VerifyPhoneConfirmResponse(true);
+        return new SmsVerifyConfirmResponse(true);
     }
 
     // 랜덤 4자리 생성
