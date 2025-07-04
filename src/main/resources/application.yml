@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://ongi.cf888oaswsan.ap-northeast-2.rds.amazonaws.com:3306/ongi?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://${DB_URL}:3306/${DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
@@ -26,7 +26,7 @@ spring:
       region:
         static: ap-northeast-2
       s3:
-        bucket : ${S3_BUCKET}
+        bucket : ${S3_BUCKET_NAME}
 
   logging:
     level:
