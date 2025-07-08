@@ -35,6 +35,9 @@ public enum ErrorStatus implements BaseCode {
     // Medication Schedule
     MEDICATION_SCHEDULE_NOT_FOUND("MEDICATION_SCHEDULE404", HttpStatus.NOT_FOUND, "해당 복약 스케줄이 존재하지 않습니다."),
 
+    // Meal Schedule
+    MEAL_SCHEDULE_NOT_REGISTER("MEAL_SCHEDULE409",HttpStatus.CONFLICT, "식사 시간이 등록되어 있지 않아 약을 등록할 수 없습니다."),
+
     // 서버 에러
     INTERNAL_SERVER_ERROR("SERVER500", HttpStatus.INTERNAL_SERVER_ERROR, "서버에러");
 

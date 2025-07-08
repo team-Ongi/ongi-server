@@ -4,16 +4,12 @@ import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
-import com.solution.Ongi.domain.medication.dto.CreateFixedTimeMedicationRequest;
-import com.solution.Ongi.domain.medication.dto.CreateMealBasedMedicationRequest;
-import com.solution.Ongi.domain.medication.dto.CreateMedicationResponse;
-import com.solution.Ongi.domain.medication.dto.MedicationResponse;
-import com.solution.Ongi.domain.medication.dto.UpdateFixedTimeMedicationRequest;
-import com.solution.Ongi.domain.medication.dto.UpdateMealBasedMedicationRequest;
+import com.solution.Ongi.domain.medication.dto.*;
 import com.solution.Ongi.domain.medication.enums.MedicationType;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
+import com.solution.Ongi.domain.user.dto.UserMedicationResponse;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
@@ -93,7 +89,7 @@ public class MedicationService {
                 .map(mealType -> {
                     Meal meal = mealRepository
                             .findByUserAndMealType(user, mealType)
-                            .orElseThrow(() -> new IllegalArgumentException("식사 시간이 등록되지 않았습니다."));
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.MEAL_SCHEDULE_NOT_REGISTER));
 
                     int offset = 30;
                     LocalTime scheduledTime = switch (request.intakeTiming()) {
@@ -138,21 +134,6 @@ public class MedicationService {
         );
     }
 
-    // 유저의 Medication 전체 조회
-    public List<MedicationResponse> getAllMedication(String loginId){
-        User user = userService.getUserByLoginIdOrThrow(loginId);
-        List<Medication> medications = medicationRepository.findAllByUserId(user.getId());
-        List<MedicationResponse> result = medications.stream()
-            .map(medication ->
-                MedicationResponse.from(
-                    medication,
-                    medication.getMedicationTimes(),
-                    medication.getMealTypes()
-                )
-            )
-            .toList();
-        return result;
-    }
 
     // Medication 삭제
     public void deleteMedication(String loginId, Long medicationId){

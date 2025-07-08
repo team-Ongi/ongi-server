@@ -1,7 +1,11 @@
 package com.solution.Ongi.domain.user.service;
 
+import com.solution.Ongi.domain.medication.Medication;
+import com.solution.Ongi.domain.medication.dto.MedicationResponse;
+import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.UserInfoResponse;
+import com.solution.Ongi.domain.user.dto.UserMedicationResponse;
 import com.solution.Ongi.domain.user.dto.UserVoiceResponse;
 import com.solution.Ongi.domain.user.enums.LoginMode;
 import com.solution.Ongi.domain.user.repository.UserRepository;
@@ -19,6 +23,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -30,6 +35,7 @@ public class UserService {
     private final JwtTokenProvider jwtProvider;
     private final WebClient fastApiWebClient;
     private final S3Service s3Service;
+    private final MedicationRepository medicationRepository;
 
 
     public UserInfoResponse getUserInfoWithMode(String token, String loginId) {
@@ -121,6 +127,22 @@ public class UserService {
         // DB에 등록된 유저의 음성 목소리 파일 삭제
         user.updateVoiceFileUrl("");
         userRepository.save(user);
+    }
+
+    // 유저의 Medication 전체 조회
+    public UserMedicationResponse getAllMedication(String loginId){
+        User user = getUserByLoginIdOrThrow(loginId);
+        List<Medication> medications = medicationRepository.findAllByUserId(user.getId());
+        List<MedicationResponse> result = medications.stream()
+                .map(medication ->
+                        MedicationResponse.from(
+                                medication,
+                                medication.getMedicationTimes(),
+                                medication.getMealTypes()
+                        )
+                )
+                .toList();
+        return new UserMedicationResponse(result);
     }
 
     private String extractS3KeyFromUrl(String url) {

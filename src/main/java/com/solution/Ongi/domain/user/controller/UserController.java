@@ -1,6 +1,7 @@
 package com.solution.Ongi.domain.user.controller;
 
 import com.solution.Ongi.domain.user.dto.UserInfoResponse;
+import com.solution.Ongi.domain.user.dto.UserMedicationResponse;
 import com.solution.Ongi.domain.user.dto.UserVoiceResponse;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -103,6 +105,18 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.deleteUserVoice(authentication.getPrincipal().toString());
         return ResponseEntity.ok(ApiResponse.success("보호자 음성 삭제 성공"));
+    }
+
+    // 유저 Medication 조회
+    @GetMapping("/medications")
+    @Operation(summary = "사용자의 모든 약 정보 조회",
+            description = "현재 로그인한 사용자의 전체 약 정보를 조회합니다. "
+                    + "약 종류에 따라 정시 복용 시간(timeList) 또는 식전/식후 약 복용 정보(intakeTiming, mealTypeList, remindAfterMinutes)를 포함합니다.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용자의 모든 약 정보 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserMedicationResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<UserMedicationResponse>> getMedications(Authentication authentication) {
+        UserMedicationResponse medicationResponses = userService.getAllMedication(authentication.getName());
+        return ResponseEntity.ok(ApiResponse.success(medicationResponses));
     }
 
 }
