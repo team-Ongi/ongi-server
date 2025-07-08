@@ -1,15 +1,15 @@
 package com.solution.Ongi.domain.user.controller;
 
-import com.solution.Ongi.domain.user.dto.UserInfoResponse;
-import com.solution.Ongi.domain.user.dto.UserMedicationResponse;
-import com.solution.Ongi.domain.user.dto.UserVoiceResponse;
+import com.solution.Ongi.domain.user.dto.*;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -119,4 +120,43 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(medicationResponses));
     }
 
+    @GetMapping("/medication-schedules/today")
+    @Operation(summary = "오늘 복약 스케줄 조회")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용자의 오늘 복약 스케줄 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserMedicationScheduleResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<UserMedicationScheduleResponse>> getMedicationSchedulesToday(
+            Authentication authentication) {
+        LocalDate today = LocalDate.now();
+        UserMedicationScheduleResponse responses = userService.getUserMedicationSchedulesByDate(
+                authentication.getName(),today);
+        return ResponseEntity.ok(ApiResponse.success(responses));
+    }
+
+    @GetMapping("/medication-schedules/by-date")
+    @Operation(summary = "특정 날짜 복약 스케줄 조회")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용자의 날짜 범위 복약 스케줄 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserMedicationScheduleResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<UserMedicationScheduleResponse>> getMedicationSchedulesByDate(
+            Authentication authentication,
+            @Parameter(example = "2025-05-01")
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        UserMedicationScheduleResponse responses = userService.getUserMedicationSchedulesByDate(
+                authentication.getName(), date);
+        return ResponseEntity.ok(ApiResponse.success(responses));
+    }
+
+    @GetMapping("medication-schedules/by-range")
+    @Operation(summary = "날짜 범위 내 복약을 하지 않은 날짜 리스트 조회")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "날짜 범위 내 복약을 하지 않은 날짜 리스트 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserMedicationScheduleByRangeResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<UserMedicationScheduleByRangeResponse>> getMedicationSchedulesByRange(
+            Authentication authentication,
+            @Parameter(example = "2025-07-01")
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate
+    ) {
+        UserMedicationScheduleByRangeResponse response = userService.getUserMedicationSchedulesByDateRange(
+                authentication.getName(), startDate);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 }

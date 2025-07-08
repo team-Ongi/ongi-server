@@ -46,33 +46,4 @@ public class MedicationScheduleService {
             request.isTaken() ? "복용 완료로 처리되었습니다." : "복용하지 않음으로 처리되었습니다."
         );
     }
-
-    public List<MedicationScheduleResponse> getSchedulesByDate(String loginId, LocalDate date) {
-        User user = userService.getUserByLoginIdOrThrow(loginId);
-
-        List<MedicationSchedule> schedules = scheduleRepository.findByUserAndDate(user.getId(), date);
-
-        return schedules.stream()
-            .map(MedicationScheduleResponse::from)
-            .toList();
-    }
-
-    public List<MedicationScheduleResponse> getSchedulesByDateRange(String loginId, LocalDate startDate, LocalDate endDate) {
-        User user = userService.getUserByLoginIdOrThrow(loginId);
-
-        List<MedicationSchedule> schedules = scheduleRepository.findByUserAndDateRange(user.getId(), startDate, endDate);
-
-        return schedules.stream()
-            .map(MedicationScheduleResponse::from)
-            .toList();
-    }
-
-    public List<MedicationScheduleResponse> getNotTakenMedicationSchedules(String loginId, LocalDate date) {
-        User user = userService.getUserByLoginIdOrThrow(loginId);
-        List<MedicationSchedule> schedules = scheduleRepository.findNotTakenByUserAndDate(user.getId(), date);
-        return schedules.stream()
-            .map(MedicationScheduleResponse::from)
-            .toList();
-    }
-
 }

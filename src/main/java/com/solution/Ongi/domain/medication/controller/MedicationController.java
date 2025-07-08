@@ -108,7 +108,7 @@ public class MedicationController {
         }
         ```
         """)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "식전/식후 복용 약 등록 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "정시 복용 약 수정 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 약 정보가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<String>> updateFixedTimeMedication(
         Authentication authentication,
@@ -138,7 +138,7 @@ public class MedicationController {
         }
         ```
         """)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "식전/식후 복용 약 등록 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "식전/식후 복용 약 수정 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 약 정보가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<String>> updateMealBasedMedication(
         Authentication authentication,
@@ -152,7 +152,7 @@ public class MedicationController {
     // Medication 삭제
     @DeleteMapping("/{medicationId}")
     @Operation(summary = "복용 약 정보 삭제")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "식전/식후 복용 약 등록 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "식전/식후 복용 약 삭제 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "약을 삭제할 권한이 없음", content = @Content(mediaType = "application/json",schema =@Schema()))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 약 정보가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<String>> deleteMedication(
@@ -161,8 +161,6 @@ public class MedicationController {
         medicationService.deleteMedication(authentication.getName(), medicationId);
         return ResponseEntity.ok(ApiResponse.success("성공적으로 삭제되었습니다."));
     }
-
-
 
 }
 
