@@ -50,3 +50,7 @@ application-prod.yml
 
 # firebase #
 firebaseAccountKey.json
+
+# macOS
+.DS_Store
+**/.DS_Store
