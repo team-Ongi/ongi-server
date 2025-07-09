@@ -49,4 +49,21 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    //미복용 일정 날짜 추출
+    @Query("""
+    select distinct ms.scheduledDate
+    from MedicationSchedule ms
+    join ms.medication m
+    where m.user.id = :userId
+        and ms.scheduledDate between :start and :end
+        and ms.isTaken = false
+    order by ms.scheduledDate
+""")
+    List<LocalDate> findMissedDatesByUserAndDateRange(
+            @Param("userId") Long userId,
+            @Param("start") LocalDate start,
+            @Param("end") LocalDate end
+    );
+
 }
