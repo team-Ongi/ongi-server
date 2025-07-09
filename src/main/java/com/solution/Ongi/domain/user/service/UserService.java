@@ -1,10 +1,16 @@
 package com.solution.Ongi.domain.user.service;
 
+import com.solution.Ongi.domain.medication.Medication;
+import com.solution.Ongi.domain.medication.MedicationSchedule;
+import com.solution.Ongi.domain.medication.dto.MedicationResponse;
+import com.solution.Ongi.domain.medication.dto.MedicationScheduleResponse;
+import com.solution.Ongi.domain.medication.repository.MedicationRepository;
+import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
-import com.solution.Ongi.domain.user.dto.UserInfoResponse;
-import com.solution.Ongi.domain.user.dto.UserVoiceResponse;
+import com.solution.Ongi.domain.user.dto.*;
 import com.solution.Ongi.domain.user.enums.LoginMode;
 import com.solution.Ongi.domain.user.repository.UserRepository;
+import com.solution.Ongi.domain.user.repository.projection.NotTakenStatsProjection;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
@@ -15,10 +21,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -30,6 +38,8 @@ public class UserService {
     private final JwtTokenProvider jwtProvider;
     private final WebClient fastApiWebClient;
     private final S3Service s3Service;
+    private final MedicationRepository medicationRepository;
+    private final MedicationScheduleRepository medicationScheduleRepository;
 
 
     public UserInfoResponse getUserInfoWithMode(String token, String loginId) {
@@ -123,6 +133,22 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // 유저의 Medication 전체 조회
+    public UserMedicationResponse getAllMedication(String loginId){
+        User user = getUserByLoginIdOrThrow(loginId);
+        List<Medication> medications = medicationRepository.findAllByUserId(user.getId());
+        List<MedicationResponse> result = medications.stream()
+                .map(medication ->
+                        MedicationResponse.from(
+                                medication,
+                                medication.getMedicationTimes(),
+                                medication.getMealTypes()
+                        )
+                )
+                .toList();
+        return new UserMedicationResponse(result);
+    }
+
     private String extractS3KeyFromUrl(String url) {
         // S3 도메인 기준으로 split → 뒷부분이 key
         String prefix = ".amazonaws.com/";
@@ -133,5 +159,29 @@ public class UserService {
         }
 
         return url.substring(index + prefix.length());
+    }
+
+    // 유저의 오늘 하루 복약 스케줄 조회
+    public UserMedicationScheduleResponse getUserMedicationSchedulesByDate(String loginId, LocalDate date) {
+        User user = getUserByLoginIdOrThrow(loginId);
+        List<MedicationSchedule> schedules = medicationScheduleRepository.findByUserAndDate(user.getId(), date);
+
+        return new UserMedicationScheduleResponse(schedules.stream()
+                .map(MedicationScheduleResponse::from)
+                .toList());
+    }
+
+    // 유저의 각 달 복약 스케줄 조회
+    public UserMedicationScheduleByRangeResponse getUserMedicationSchedulesByDateRange(String loginId, LocalDate startDate) {
+        User user = getUserByLoginIdOrThrow(loginId);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        List<NotTakenStatsProjection> notTakenStatsByDateRange = medicationScheduleRepository.getNotTakenStatsByDateRange(user.getId(), startDate,endDate);
+        List<String> notTakenMedicationDates = new ArrayList<>();
+
+        for(NotTakenStatsProjection data : notTakenStatsByDateRange){
+            if(data.getNotTakenCount() >0 )
+                notTakenMedicationDates.add(data.getDate().toString());
+        }
+        return new UserMedicationScheduleByRangeResponse(notTakenMedicationDates);
     }
 }

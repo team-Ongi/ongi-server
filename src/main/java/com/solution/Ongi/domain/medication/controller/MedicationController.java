@@ -3,20 +3,19 @@ package com.solution.Ongi.domain.medication.controller;
 import com.solution.Ongi.domain.medication.dto.CreateFixedTimeMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.CreateMealBasedMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.CreateMedicationResponse;
-import com.solution.Ongi.domain.medication.dto.MedicationResponse;
 import com.solution.Ongi.domain.medication.dto.UpdateFixedTimeMedicationRequest;
 import com.solution.Ongi.domain.medication.dto.UpdateMealBasedMedicationRequest;
 import com.solution.Ongi.domain.medication.service.MedicationService;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,6 +45,8 @@ public class MedicationController {
         }
         ```
         """)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "정시 복용 약 등록 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = CreateMedicationResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<CreateMedicationResponse>> createFixedTimeMedication(
         Authentication authentication,
         @RequestBody @Valid CreateFixedTimeMedicationRequest request) {
@@ -77,6 +78,9 @@ public class MedicationController {
         }
         ```
         """)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "식전/식후 복용 약 등록 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = CreateMedicationResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "식사시간이 등록되어 있지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<CreateMedicationResponse>> createMealBasedMedication(
         Authentication authentication,
         @RequestBody @Valid CreateMealBasedMedicationRequest request) {
@@ -104,6 +108,8 @@ public class MedicationController {
         }
         ```
         """)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "정시 복용 약 수정 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 약 정보가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<String>> updateFixedTimeMedication(
         Authentication authentication,
         @PathVariable Long medicationId,
@@ -132,6 +138,8 @@ public class MedicationController {
         }
         ```
         """)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "식전/식후 복용 약 수정 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 약 정보가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<String>> updateMealBasedMedication(
         Authentication authentication,
         @PathVariable Long medicationId,
@@ -141,19 +149,12 @@ public class MedicationController {
         return ResponseEntity.ok(ApiResponse.success("식사 기반 약이 수정되었습니다."));
     }
 
-    // 모든 Medication 조회
-    @GetMapping
-    @Operation(summary = "사용자의 모든 약 정보 조회",
-        description = "현재 로그인한 사용자의 전체 약 정보를 조회합니다. "
-            + "약 종류에 따라 정시 복용 시간(timeList) 또는 식전/식후 약 복용 정보(intakeTiming, mealTypeList, remindAfterMinutes)를 포함합니다.")
-    public ResponseEntity<ApiResponse<List<MedicationResponse>>> getMedications(Authentication authentication) {
-        List<MedicationResponse> medicationResponses = medicationService.getAllMedication(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success(medicationResponses));
-    }
-
     // Medication 삭제
     @DeleteMapping("/{medicationId}")
     @Operation(summary = "복용 약 정보 삭제")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "식전/식후 복용 약 삭제 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "약을 삭제할 권한이 없음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 약 정보가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<String>> deleteMedication(
         Authentication authentication,
         @PathVariable Long medicationId) {
