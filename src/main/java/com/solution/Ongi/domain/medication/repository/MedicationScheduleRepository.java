@@ -42,7 +42,7 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
         WHERE m.user_id = :userId
           AND ms.scheduled_date BETWEEN :startDate AND :endDate
         GROUP BY ms.scheduled_date
-        ORDER BY ms.scheduled_date            
+        ORDER BY ms.scheduled_date
     """, nativeQuery = true)
     List<NotTakenStatsProjection> getNotTakenStatsByDateRange(
             @Param("userId") Long userId,
