@@ -17,4 +17,7 @@ public interface MealScheduleRepository extends JpaRepository<MealSchedule,Long>
         findFirstByMeal_User_IdAndMealScheduleDateAndStatusFalseAndMealScheduleTimeAfterOrderByMealScheduleTimeAsc(
             Long userId, LocalDate date, LocalTime time
         );
+    List<LocalDate>
+    findDistinctMealScheduleDateByMeal_User_IdAndMealScheduleDateBetweenAndStatusFalse(
+            Long userId, LocalDate startDate, LocalDate endDate);
 }
