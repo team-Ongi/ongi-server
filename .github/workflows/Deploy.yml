@@ -50,7 +50,7 @@ jobs:
               -e SMS_KEY="${{ secrets.SMS_KEY }}" \
               -e SMS_NUMBER="${{ secrets.SMS_NUMBER }}" \
               -e SMS_SECRET="${{ secrets.SMS_SECRET }}" \
-              -e AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
-              -e AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
+              -e AWS_ACCESS_KEY="${{ secrets.AWS_IAM_ACCESS_KEY_ID }}" \
+              -e AWS_SECRET_KEY="${{ secrets.AWS_IAM_SECRET_ACCESS_KEY }}" \
               -e S3_BUCKET="${{ secrets.S3_BUCKET }}" \
               $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY
