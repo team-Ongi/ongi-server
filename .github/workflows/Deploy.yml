@@ -27,9 +27,11 @@ jobs:
             ECR_REPOSITORY=${{ secrets.ECR_REPOSITORY }}
             IMAGE_TAG=${{ github.sha }}
             AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
-
-            sudo docker stop ongi-server || true
-            sudo docker rm ongi-server || true
+  
+            if sudo docker ps -a --format '{{.Names}}' | grep -qw ongi-server; then
+              sudo docker stop ongi-server 2>/dev/null || true
+              sudo docker rm ongi-server ongi-server 2>/dev/null || true
+            fi
 
             aws ecr get-login-password --region $REGION \
               | docker login --username AWS --password-stdin \
