@@ -29,4 +29,5 @@ public class MealSchedule extends BaseTimeEntity {
     @JoinColumn(name = "meal_id")
     private Meal meal;
 
+
 }
