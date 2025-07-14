@@ -6,6 +6,8 @@ import com.solution.Ongi.domain.smsverification.SmsVerification;
 import com.solution.Ongi.domain.smsverification.SmsVerificationRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.repository.UserRepository;
+import com.solution.Ongi.domain.user.repository.UsersMealVoiceRepository;
+import com.solution.Ongi.domain.user.repository.UsersMedicationVoiceRepository;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -30,6 +33,8 @@ public class AuthService {
     private final SmsUtil smsUtil;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtProvider;
+    private final UsersMedicationVoiceRepository usersMedicationVoiceRepository;
+    private final UsersMealVoiceRepository usersMealVoiceRepository;
 
     // 회원가입
     public SignupResponse signup(SignupRequest request) {
@@ -99,13 +104,11 @@ public class AuthService {
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
 
-        String voiceFileUrl;
-        if(!user.getVoiceFileUrl().isEmpty())
-            voiceFileUrl=user.getVoiceFileUrl();
-        else
-            voiceFileUrl = "";
+        // 유저의 녹음 파일 리스트 반환
+        List<String> usersMealVoiceList = usersMealVoiceRepository.findVoiceFileUrlByUserId(user.getId());
+        List<String> usersMedicationVoiceList = usersMedicationVoiceRepository.findVoiceFileUrlByUserId(user.getId());
 
-        return new LoginResponse(accessToken, refreshToken, request.mode(),voiceFileUrl);
+        return new LoginResponse(accessToken, refreshToken, request.mode(),usersMealVoiceList, usersMedicationVoiceList);
     }
 
     // 로그인 아이디 중복 체크
