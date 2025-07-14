@@ -10,6 +10,8 @@ import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.*;
 import com.solution.Ongi.domain.user.enums.LoginMode;
 import com.solution.Ongi.domain.user.repository.UserRepository;
+import com.solution.Ongi.domain.user.repository.UsersMealVoiceRepository;
+import com.solution.Ongi.domain.user.repository.UsersMedicationVoiceRepository;
 import com.solution.Ongi.domain.user.repository.projection.NotTakenStatsProjection;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
@@ -40,6 +42,8 @@ public class UserService {
     private final S3Service s3Service;
     private final MedicationRepository medicationRepository;
     private final MedicationScheduleRepository medicationScheduleRepository;
+    private final UsersMedicationVoiceRepository usersMedicationVoiceRepository;
+    private final UsersMealVoiceRepository usersMealVoiceRepository;
 
 
     public UserInfoResponse getUserInfoWithMode(String token, String loginId) {
@@ -112,12 +116,10 @@ public class UserService {
     // 유저 녹음 파일 조회
     public UserVoiceResponse getUserVoice(String loginId){
         User user = getUserByLoginIdOrThrow(loginId);
-        String voiceFileUrl;
-        if(!user.getVoiceFileUrl().isEmpty())
-            voiceFileUrl=user.getVoiceFileUrl();
-        else
-            voiceFileUrl = "";
-        return new UserVoiceResponse(voiceFileUrl);
+
+        List<String> usersMealVoiceList = usersMealVoiceRepository.findVoiceFileUrlByUserId(user.getId());
+        List<String> usersMedicationVoiceList = usersMedicationVoiceRepository.findVoiceFileUrlByUserId(user.getId());
+        return new UserVoiceResponse(usersMealVoiceList,usersMedicationVoiceList);
     }
 
     // 보호자 음성 삭제
