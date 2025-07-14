@@ -18,6 +18,7 @@ public interface UsersMealVoiceRepository extends JpaRepository<UsersMealVoice, 
     """)
     List<String> findVoiceFileUrlByUserId(@Param("userId") Long userId);
 
+    List<UsersMealVoice> findAllByUserId(Long userId);
 
 
 }

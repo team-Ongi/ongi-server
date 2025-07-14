@@ -66,8 +66,8 @@ public class User extends BaseTimeEntity {
 
     private String refreshToken;
 
-    @Column(name = "voice_file_url")
-    private String voiceFileUrl;
+    @Column(name = "voice_file_key")
+    private String voiceFileKey;
 
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
@@ -96,8 +96,8 @@ public class User extends BaseTimeEntity {
         this.password = password;
     }
 
-    public void updateVoiceFileUrl(String voiceFileUrl) {
-        this.voiceFileUrl = voiceFileUrl;
+    public void updateVoiceFileKey(String voiceFileKey) {
+        this.voiceFileKey = voiceFileKey;
     }
 
 }

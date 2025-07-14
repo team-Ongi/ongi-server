@@ -7,6 +7,8 @@ import com.solution.Ongi.domain.medication.dto.MedicationScheduleResponse;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
+import com.solution.Ongi.domain.user.UsersMealVoice;
+import com.solution.Ongi.domain.user.UsersMedicationVoice;
 import com.solution.Ongi.domain.user.dto.*;
 import com.solution.Ongi.domain.user.enums.LoginMode;
 import com.solution.Ongi.domain.user.repository.UserRepository;
@@ -100,7 +102,7 @@ public class UserService {
             builder.part("file", new InputStreamResource(file.getInputStream())).filename(Objects.requireNonNull(file.getOriginalFilename()));
             builder.part("user_id", String.valueOf(user.getId()));
 
-            String response = fastApiWebClient.post()
+            fastApiWebClient.post()
                     .uri("/voice/upload")
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .bodyValue(builder.build())
@@ -126,12 +128,25 @@ public class UserService {
     public void deleteUserVoice(String loginId){
         User user = getUserByLoginIdOrThrow(loginId);
 
-        // S3에 등록된 파일 삭제
-        String filePath = extractS3KeyFromUrl(user.getVoiceFileUrl());
-        s3Service.deleteFile(filePath);
+        // S3에 등록된 파일 삭제 && DB에 등록된 음성 파일 경로 삭제
+        List<UsersMealVoice> usersMealVoiceList = usersMealVoiceRepository.findAllByUserId(user.getId());
+        for(UsersMealVoice usersMealVoice:usersMealVoiceList) {
+            String filePath = extractS3KeyFromUrl(usersMealVoice.getVoiceFileUrl());
+            s3Service.deleteFile(filePath);
+            usersMealVoice.updateVoiceFileUrl(null);
+            usersMealVoiceRepository.save(usersMealVoice);
+        }
 
-        // DB에 등록된 유저의 음성 목소리 파일 삭제
-        user.updateVoiceFileUrl("");
+        List<UsersMedicationVoice> usersMedicationVoiceList = usersMedicationVoiceRepository.findAllByUserId(user.getId());
+        for(UsersMedicationVoice usersMedicationVoice:usersMedicationVoiceList) {
+            String filePath = extractS3KeyFromUrl(usersMedicationVoice.getVoiceFileUrl());
+            s3Service.deleteFile(filePath);
+            usersMedicationVoice.updateVoiceFileUrl(null);
+            usersMedicationVoiceRepository.save(usersMedicationVoice);
+        }
+
+        // DB에 등록된 유저의 음성 목소리 파일 키 삭제
+        user.updateVoiceFileKey(null);
         userRepository.save(user);
     }
 
@@ -157,7 +172,7 @@ public class UserService {
         int index = url.indexOf(prefix);
 
         if (index == -1) {
-            throw new IllegalArgumentException("유효한 S3 URL이 아닙니다: " + url);
+            throw new IllegalArgumentException("유효한 S3 경로가 아닙니다: " + url);
         }
 
         return url.substring(index + prefix.length());
@@ -186,4 +201,5 @@ public class UserService {
         }
         return new UserMedicationScheduleByRangeResponse(notTakenMedicationDates);
     }
+
 }

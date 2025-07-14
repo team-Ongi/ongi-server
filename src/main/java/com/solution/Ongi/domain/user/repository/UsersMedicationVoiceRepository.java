@@ -16,4 +16,6 @@ public interface UsersMedicationVoiceRepository extends JpaRepository<UsersMedic
     WHERE ums.userId = :userId
     """)
     List<String> findVoiceFileUrlByUserId(@Param("userId") Long userId);
+
+    List<UsersMedicationVoice> findAllByUserId(Long userId);
 }

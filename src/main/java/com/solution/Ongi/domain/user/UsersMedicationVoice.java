@@ -19,11 +19,15 @@ import java.time.LocalDateTime;
 @Builder
 public class UsersMedicationVoice {
     @Id
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "voice_file_url")
     private String voiceFileUrl;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public void updateVoiceFileUrl(String voiceFileUrl) {
+        this.voiceFileUrl = voiceFileUrl;
+    }
 }
