@@ -17,9 +17,10 @@ public enum ErrorStatus implements BaseCode {
     INVALID_PASSWORD(401, HttpStatus.UNAUTHORIZED, "비밀번호가 유효하지 않습니다"),
 
     // Auth
-    UNAUTHORIZED_ACCESS(403, HttpStatus.FORBIDDEN, "해당 리소스에 접근할 권한이 없습니다."),
+    BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "요청값이 잘못되었습니다."),
     INVALID_TOKEN(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     TOKEN_MISMATCH(401, HttpStatus.UNAUTHORIZED, "일치하지 않는 토큰입니다"),
+    UNAUTHORIZED_ACCESS(403, HttpStatus.FORBIDDEN, "해당 리소스에 접근할 권한이 없습니다."),
     LOGIN_ID_NOT_FOUND(404, HttpStatus.NOT_FOUND, "해당 ID가 존재하지 않습니다."),
     SAME_AS_OLD_PASSWORD(409, HttpStatus.CONFLICT, "새 비밀번호는 이전과 같을 수 없습니다."),
 

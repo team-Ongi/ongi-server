@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -63,6 +64,17 @@ public class AuthController {
         LoginResponse response = authService.login(request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(response, SuccessStatus.SUCCESS_200));
     }
+
+    @PostMapping("/agreements")
+    @Operation(summary = "로그인 후 서비스 이용 동의 요청")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "서비스 이용 동의 성공", content = @Content(mediaType = "application/json", schema = @Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "모두 동의를 하지 않은 경우", content = @Content(mediaType = "application/json", schema = @Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "아이디가 존재하지 않는 경우", content = @Content)
+    public ResponseEntity<ApiResponse<String>> submitAgreement(@RequestBody @Valid SubmitAgreementsRequest request, Authentication authentication){
+        authService.submitAgreement(authentication.getName(),request);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("성공", SuccessStatus.SUCCESS_200));
+    }
+
 
     @GetMapping("/id/duplicate")
     @Operation(summary = "아이디 중복 확인", description = "중복된 아이디가 존재하는지 확인합니다")

@@ -9,7 +9,8 @@ public record LoginResponse(
     String refreshToken,
     LoginMode mode,
     List<String> mealVoiceList,
-    List<String> medicationVoiceList
+    List<String> medicationVoiceList,
+    Boolean isServiceAgreed
 ) {
 
 }

@@ -108,7 +108,18 @@ public class AuthService {
         List<String> usersMealVoiceList = usersMealVoiceRepository.findVoiceFileUrlByUserId(user.getId());
         List<String> usersMedicationVoiceList = usersMedicationVoiceRepository.findVoiceFileUrlByUserId(user.getId());
 
-        return new LoginResponse(accessToken, refreshToken, request.mode(),usersMealVoiceList, usersMedicationVoiceList);
+        return new LoginResponse(accessToken, refreshToken, request.mode(),usersMealVoiceList, usersMedicationVoiceList,user.getIsServiceAgreed());
+    }
+
+    // 로그인 후 정보 제공 동의 체크
+    public void submitAgreement(String loginId, SubmitAgreementsRequest request){
+        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        if(!request.agreeToAll())
+            throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        if(!request.agreeToBackground() || !request.agreeToVoice() || !request.agreeToPersonal())
+            throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        user.updateIsServiceAgreed(true);
+        userRepository.save(user);
     }
 
     // 로그인 아이디 중복 체크

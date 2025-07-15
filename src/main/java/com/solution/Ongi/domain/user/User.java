@@ -69,6 +69,9 @@ public class User extends BaseTimeEntity {
     @Column(name = "voice_file_key")
     private String voiceFileKey;
 
+    @Column(name = "is_service_agreed")
+    private Boolean isServiceAgreed;
+
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Meal> meals=new ArrayList<>();
@@ -98,6 +101,10 @@ public class User extends BaseTimeEntity {
 
     public void updateVoiceFileKey(String voiceFileKey) {
         this.voiceFileKey = voiceFileKey;
+    }
+
+    public void updateIsServiceAgreed(Boolean isServiceAgreed) {
+        this.isServiceAgreed = isServiceAgreed;
     }
 
 }
