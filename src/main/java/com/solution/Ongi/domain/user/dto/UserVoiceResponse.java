@@ -1,6 +1,9 @@
 package com.solution.Ongi.domain.user.dto;
 
+import java.util.List;
+
 public record UserVoiceResponse(
-        String voiceFileUrl
+        List<String> mealVoiceList,
+        List<String> medicationVoiceList
 ) {
 }

@@ -7,9 +7,13 @@ import com.solution.Ongi.domain.medication.dto.MedicationScheduleResponse;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
+import com.solution.Ongi.domain.user.UsersMealVoice;
+import com.solution.Ongi.domain.user.UsersMedicationVoice;
 import com.solution.Ongi.domain.user.dto.*;
 import com.solution.Ongi.domain.user.enums.LoginMode;
 import com.solution.Ongi.domain.user.repository.UserRepository;
+import com.solution.Ongi.domain.user.repository.UsersMealVoiceRepository;
+import com.solution.Ongi.domain.user.repository.UsersMedicationVoiceRepository;
 import com.solution.Ongi.domain.user.repository.projection.NotTakenStatsProjection;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
@@ -40,6 +44,8 @@ public class UserService {
     private final S3Service s3Service;
     private final MedicationRepository medicationRepository;
     private final MedicationScheduleRepository medicationScheduleRepository;
+    private final UsersMedicationVoiceRepository usersMedicationVoiceRepository;
+    private final UsersMealVoiceRepository usersMealVoiceRepository;
 
 
     public UserInfoResponse getUserInfoWithMode(String token, String loginId) {
@@ -96,7 +102,7 @@ public class UserService {
             builder.part("file", new InputStreamResource(file.getInputStream())).filename(Objects.requireNonNull(file.getOriginalFilename()));
             builder.part("user_id", String.valueOf(user.getId()));
 
-            String response = fastApiWebClient.post()
+            fastApiWebClient.post()
                     .uri("/voice/upload")
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .bodyValue(builder.build())
@@ -112,24 +118,33 @@ public class UserService {
     // 유저 녹음 파일 조회
     public UserVoiceResponse getUserVoice(String loginId){
         User user = getUserByLoginIdOrThrow(loginId);
-        String voiceFileUrl;
-        if(!user.getVoiceFileUrl().isEmpty())
-            voiceFileUrl=user.getVoiceFileUrl();
-        else
-            voiceFileUrl = "";
-        return new UserVoiceResponse(voiceFileUrl);
+
+        List<String> usersMealVoiceList = usersMealVoiceRepository.findVoiceFileUrlByUserId(user.getId());
+        List<String> usersMedicationVoiceList = usersMedicationVoiceRepository.findVoiceFileUrlByUserId(user.getId());
+        return new UserVoiceResponse(usersMealVoiceList,usersMedicationVoiceList);
     }
 
     // 보호자 음성 삭제
     public void deleteUserVoice(String loginId){
         User user = getUserByLoginIdOrThrow(loginId);
 
-        // S3에 등록된 파일 삭제
-        String filePath = extractS3KeyFromUrl(user.getVoiceFileUrl());
-        s3Service.deleteFile(filePath);
+        // S3에 등록된 파일 삭제 && DB에 등록된 음성 파일 경로 삭제
+        List<UsersMealVoice> usersMealVoiceList = usersMealVoiceRepository.findAllByUserId(user.getId());
+        for(UsersMealVoice usersMealVoice:usersMealVoiceList) {
+            String filePath = extractS3KeyFromUrl(usersMealVoice.getVoiceFileUrl());
+            s3Service.deleteFile(filePath);
+        }
+        usersMealVoiceRepository.deleteAllByUserId(user.getId());
 
-        // DB에 등록된 유저의 음성 목소리 파일 삭제
-        user.updateVoiceFileUrl("");
+        List<UsersMedicationVoice> usersMedicationVoiceList = usersMedicationVoiceRepository.findAllByUserId(user.getId());
+        for(UsersMedicationVoice usersMedicationVoice:usersMedicationVoiceList) {
+            String filePath = extractS3KeyFromUrl(usersMedicationVoice.getVoiceFileUrl());
+            s3Service.deleteFile(filePath);
+        }
+        usersMedicationVoiceRepository.deleteAllByUserId(user.getId());
+
+        // DB에 등록된 유저의 음성 목소리 파일 키 삭제
+        user.updateVoiceFileKey(null);
         userRepository.save(user);
     }
 
@@ -155,7 +170,7 @@ public class UserService {
         int index = url.indexOf(prefix);
 
         if (index == -1) {
-            throw new IllegalArgumentException("유효한 S3 URL이 아닙니다: " + url);
+            throw new IllegalArgumentException("유효한 S3 경로가 아닙니다: " + url);
         }
 
         return url.substring(index + prefix.length());
@@ -184,4 +199,5 @@ public class UserService {
         }
         return new UserMedicationScheduleByRangeResponse(notTakenMedicationDates);
     }
+
 }
