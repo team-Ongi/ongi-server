@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ApiResponse<T> {
     private boolean success;
-    private String code;
+    private Integer code;
     private String message;
     private T data;
 
