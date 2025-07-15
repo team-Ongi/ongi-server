@@ -72,7 +72,7 @@ public class AuthService {
                 .seniorPhone(request.seniorPhone())
                 .relation(request.relation())
                 .alertMax(request.alertMax())
-//                .ignoreCnt(request.ignoreCnt())
+                .ignoreCnt(request.ignoreCnt())
                 .ignoreCnt(0)
                 .agreement(agreement)
                 .currentIgnoreCnt(0)
