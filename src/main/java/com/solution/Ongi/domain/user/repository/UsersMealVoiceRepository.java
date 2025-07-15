@@ -20,5 +20,6 @@ public interface UsersMealVoiceRepository extends JpaRepository<UsersMealVoice, 
 
     List<UsersMealVoice> findAllByUserId(Long userId);
 
+    void deleteAllByUserId(Long userId);
 
 }

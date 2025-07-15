@@ -18,4 +18,5 @@ public interface UsersMedicationVoiceRepository extends JpaRepository<UsersMedic
     List<String> findVoiceFileUrlByUserId(@Param("userId") Long userId);
 
     List<UsersMedicationVoice> findAllByUserId(Long userId);
+    void deleteAllByUserId(Long userId);
 }

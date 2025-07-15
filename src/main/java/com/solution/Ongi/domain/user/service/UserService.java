@@ -133,17 +133,15 @@ public class UserService {
         for(UsersMealVoice usersMealVoice:usersMealVoiceList) {
             String filePath = extractS3KeyFromUrl(usersMealVoice.getVoiceFileUrl());
             s3Service.deleteFile(filePath);
-            usersMealVoice.updateVoiceFileUrl(null);
-            usersMealVoiceRepository.save(usersMealVoice);
         }
+        usersMealVoiceRepository.deleteAllByUserId(user.getId());
 
         List<UsersMedicationVoice> usersMedicationVoiceList = usersMedicationVoiceRepository.findAllByUserId(user.getId());
         for(UsersMedicationVoice usersMedicationVoice:usersMedicationVoiceList) {
             String filePath = extractS3KeyFromUrl(usersMedicationVoice.getVoiceFileUrl());
             s3Service.deleteFile(filePath);
-            usersMedicationVoice.updateVoiceFileUrl(null);
-            usersMedicationVoiceRepository.save(usersMedicationVoice);
         }
+        usersMedicationVoiceRepository.deleteAllByUserId(user.getId());
 
         // DB에 등록된 유저의 음성 목소리 파일 키 삭제
         user.updateVoiceFileKey(null);
