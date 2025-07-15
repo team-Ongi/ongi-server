@@ -61,7 +61,7 @@ public class MealScheduleController {
     @GetMapping("/by-term")
     public ResponseEntity<ApiResponse<List<MealScheduleResponse>>> getMealSchedulesByDate(
             Authentication authentication,
-            @ModelAttribute MealScheduleDateTermRequest termRequest) {
+            @RequestBody MealScheduleDateTermRequest termRequest) {
 
         List<MealScheduleResponse> responseList = mealScheduleService
                 .getMealSchedulesByDate(authentication.getName(), termRequest.startDate(), termRequest.endDate());

@@ -1,17 +1,14 @@
 package com.solution.Ongi.domain.schedule.controller;
 
+import com.solution.Ongi.domain.schedule.dto.CalendarDayStatusRequest;
 import com.solution.Ongi.domain.schedule.dto.CalendarDayStatusResponse;
 import com.solution.Ongi.domain.schedule.service.CalendarService;
 import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -31,12 +28,8 @@ public class CalendarController {
     )
     public ResponseEntity<ApiResponse<List<CalendarDayStatusResponse>>> getMonthlyMissed(
             Authentication authentication,
-            @Parameter(description = "조회할 년도")
-            @RequestParam int year,
-            @Parameter(description = "조회할 월 (1~12)")
-            @RequestParam int month
-    ){
-        YearMonth ym=YearMonth.of(year,month);
+            @RequestBody CalendarDayStatusRequest request){
+        YearMonth ym=YearMonth.of(request.year(),request.month());
         LocalDate startDate=ym.atDay(1);
         LocalDate endDate=ym.atEndOfMonth();
 

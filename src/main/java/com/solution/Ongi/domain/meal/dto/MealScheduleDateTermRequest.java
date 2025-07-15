@@ -1,16 +1,15 @@
 package com.solution.Ongi.domain.meal.dto;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
 
 public record MealScheduleDateTermRequest(
-    @RequestParam("startDate")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate startDate,
 
-    @RequestParam("endDate")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate endDate
+
 ) {}

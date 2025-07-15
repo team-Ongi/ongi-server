@@ -39,7 +39,6 @@ public class MealScheduleService {
 
     //매일 자정 meal schedule 생성
     @Scheduled(cron="0 0 0 * * *")
-//    @Scheduled(cron="0 0/1 * * * ?")
     public void createDailyMealSchedule(){
         mealRepository.findAll()
                 .forEach(this::createMealSchedule);
@@ -70,7 +69,6 @@ public class MealScheduleService {
     //특정 날짜 meal schedule 조회
     public List<MealScheduleResponse> getMealSchedulesByExactDate(String loginId, LocalDate date){
         User user=userService.getUserByLoginIdOrThrow(loginId);
-    //    return mealScheduleRepository.findByMeal_User_IdAndMealScheduleDate(user.getId(),date);
         return mealScheduleRepository
                 .findByMeal_User_IdAndMealScheduleDate(user.getId(),date)
                 .stream()
