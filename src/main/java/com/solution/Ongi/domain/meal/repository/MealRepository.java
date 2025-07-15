@@ -2,6 +2,7 @@ package com.solution.Ongi.domain.meal.repository;
 
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.enums.MealType;
+import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,6 @@ import java.util.Optional;
 public interface MealRepository extends JpaRepository<Meal,Long> {
     List<Meal> findByUserId(Long userId);
     Optional<Meal> findByUserAndMealType(User user, MealType mealType);
+
+    List<Meal> findAllByUserId(Long userId);
 }

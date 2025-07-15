@@ -4,6 +4,7 @@ import com.solution.Ongi.domain.meal.MealSchedule;
 import com.solution.Ongi.domain.meal.dto.*;
 import com.solution.Ongi.domain.meal.service.MealScheduleService;
 import com.solution.Ongi.global.response.ApiResponse;
+import com.solution.Ongi.global.response.code.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class MealScheduleController {
         List<MealScheduleResponse> responseList = mealScheduleService
                 .getMealSchedulesByExactDate(authentication.getName(),LocalDate.now());
 
-        return ResponseEntity.ok(ApiResponse.success(responseList));
+        return ResponseEntity.ok(ApiResponse.success(responseList, SuccessStatus.SUCCESS_200));
     }
 
     @Operation(summary = "특정 날짜 식사 일정 조회",description = """
@@ -50,7 +51,7 @@ public class MealScheduleController {
         List<MealScheduleResponse> responseList = mealScheduleService
                 .getMealSchedulesByExactDate(authentication.getName(),date);
 
-        return ResponseEntity.ok(ApiResponse.success(responseList));
+        return ResponseEntity.ok(ApiResponse.success(responseList,SuccessStatus.SUCCESS_200));
     }
 
     @Operation(summary = "기간 내의 식사 일정 조회",description = """
@@ -66,7 +67,7 @@ public class MealScheduleController {
         List<MealScheduleResponse> responseList = mealScheduleService
                 .getMealSchedulesByDate(authentication.getName(), termRequest.startDate(), termRequest.endDate());
 
-        return ResponseEntity.ok(ApiResponse.success(responseList));
+        return ResponseEntity.ok(ApiResponse.success(responseList,SuccessStatus.SUCCESS_200));
     }
 
     @Operation(summary = "복수 식사 스케줄 업데이트",description = """
@@ -97,7 +98,7 @@ public class MealScheduleController {
                 })
                 .toList();
 
-        return ResponseEntity.ok(ApiResponse.success(responseList));
+        return ResponseEntity.ok(ApiResponse.success(responseList,SuccessStatus.SUCCESS_200));
     }
 
     @Operation(summary = "단일 식사 스케줄 상태 업데이트",description = """
@@ -110,7 +111,7 @@ public class MealScheduleController {
             @RequestBody UpdateMealScheduleStatusRequest request) {
 
         mealScheduleService.updateMealScheduleStatus(scheduleId, request.isStatus());
-        return ResponseEntity.ok(ApiResponse.success("식사 스케줄 상태가 업데이트되었습니다."));
+        return ResponseEntity.ok(ApiResponse.success("식사 스케줄 상태가 업데이트되었습니다.",SuccessStatus.SUCCESS_200));
     }
 
 }

@@ -1,5 +1,8 @@
 package com.solution.Ongi.domain.user.service;
 
+import com.solution.Ongi.domain.meal.Meal;
+import com.solution.Ongi.domain.meal.dto.MealResponse;
+import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
 import com.solution.Ongi.domain.medication.dto.MedicationResponse;
@@ -46,6 +49,7 @@ public class UserService {
     private final MedicationScheduleRepository medicationScheduleRepository;
     private final UsersMedicationVoiceRepository usersMedicationVoiceRepository;
     private final UsersMealVoiceRepository usersMealVoiceRepository;
+    private final MealRepository mealRepository;
 
 
     public UserInfoResponse getUserInfoWithMode(String token, String loginId) {
@@ -162,6 +166,16 @@ public class UserService {
                 )
                 .toList();
         return new UserMedicationResponse(result);
+    }
+
+    //유저의 Meal 전체 조회
+    public UserMealResponse getAllMeals(String loginId){
+        User user=getUserByLoginIdOrThrow(loginId);
+        List<Meal> meals = mealRepository.findAllByUserId(user.getId());
+        List<MealResponse> responseList=meals.stream()
+                .map(MealResponse::from)
+                .toList();
+        return new UserMealResponse(responseList);
     }
 
     private String extractS3KeyFromUrl(String url) {

@@ -4,6 +4,7 @@ import com.solution.Ongi.domain.schedule.dto.CalendarDayStatusRequest;
 import com.solution.Ongi.domain.schedule.dto.CalendarDayStatusResponse;
 import com.solution.Ongi.domain.schedule.service.CalendarService;
 import com.solution.Ongi.global.response.ApiResponse;
+import com.solution.Ongi.global.response.code.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,6 @@ public class CalendarController {
         List<CalendarDayStatusResponse> result=
                 calendarService.getMissedStatus(authentication.getName(),startDate,endDate);
 
-        return ResponseEntity.ok(ApiResponse.success(result));
+        return ResponseEntity.ok(ApiResponse.success(result, SuccessStatus.SUCCESS_200));
     }
 }

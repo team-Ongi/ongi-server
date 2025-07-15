@@ -1,6 +1,9 @@
 package com.solution.Ongi.global.util;
 
+import com.solution.Ongi.global.response.code.ErrorStatus;
+import com.solution.Ongi.global.response.exception.GeneralException;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class SmsUtil {
 
     @Value("${coolsms.api.key}")
@@ -33,8 +37,12 @@ public class SmsUtil {
         message.setTo(to);
         message.setText("[ONGI] 아래의 인증번호를 입력해주세요\n" + verificationCode);
 
-        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-        return response;
+        try {
+            return this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        } catch (Exception e) {
+            // 외부 서비스에서 정의한 커스텀 예외
+            log.error("메시지 전송 실패 - 사유: {}", e.getMessage());
+            throw new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
 }

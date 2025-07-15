@@ -3,6 +3,7 @@ package com.solution.Ongi.domain.schedule.controller;
 import com.solution.Ongi.domain.schedule.dto.UpcomingScheduleResponse;
 import com.solution.Ongi.domain.schedule.service.ScheduleNotificationService;
 import com.solution.Ongi.global.response.ApiResponse;
+import com.solution.Ongi.global.response.code.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ScheduleNotificationController {
             Authentication authentication
     ){
         UpcomingScheduleResponse next=notificationService.getNext(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success(next));
+        return ResponseEntity.ok(ApiResponse.success(next, SuccessStatus.SUCCESS_200));
     }
 
     @Operation(summary = "현재 표시된 스케줄 'true' 처리 후, 다음 스케줄 조회합니다")
@@ -34,7 +35,7 @@ public class ScheduleNotificationController {
             Authentication authentication
     ){
         UpcomingScheduleResponse next=notificationService.confirmAndGetNext(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success(next));
+        return ResponseEntity.ok(ApiResponse.success(next,SuccessStatus.SUCCESS_200));
     }
 
     @Operation(summary = "현재 표시된 스케줄 'false' 처리 후, 다음 스케줄 조회합니다",
@@ -45,6 +46,6 @@ public class ScheduleNotificationController {
             Authentication authentication
     ){
         UpcomingScheduleResponse next=notificationService.denyAndGetNext(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success(next));
+        return ResponseEntity.ok(ApiResponse.success(next,SuccessStatus.SUCCESS_200));
     }
 }

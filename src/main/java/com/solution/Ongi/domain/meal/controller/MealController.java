@@ -3,17 +3,16 @@ package com.solution.Ongi.domain.meal.controller;
 import com.solution.Ongi.domain.meal.dto.CreateMealRequest;
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.dto.CreateMealResponse;
-import com.solution.Ongi.domain.meal.dto.MealResponse;
 import com.solution.Ongi.domain.meal.service.MealService;
-import com.solution.Ongi.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/meals")
@@ -22,11 +21,11 @@ public class MealController {
 
     private final MealService mealService;
 
-//    @PostMapping("/post/{userId}/meals")
     @PostMapping("/new-meal")
     @Operation(summary = "식사 정보 등록")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "식사 정보 등록 완료", content = @Content(schema = @Schema(implementation = CreateMealResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저(ID)가 존재하지 않는 경우", content = @Content)
     public ResponseEntity<CreateMealResponse> createMeal(
-//            @PathVariable("userId") Long userId,
             Authentication authentication,
             @RequestBody CreateMealRequest request) {
 
@@ -40,24 +39,14 @@ public class MealController {
                 .body(new CreateMealResponse(meal.getId(),"식사가 등록되었습니다."));
     }
 
-    @GetMapping("/all")
-    @Operation(summary = "사용자의 모든 식사 정보 조회")
-    public ResponseEntity<ApiResponse<List<MealResponse>>> getAllMeals(
-//            @PathVariable Long userId
-            Authentication authentication){
-        List<Meal> meals=mealService.getAllMeals(authentication.getName());
-        List<MealResponse> responseList=meals.stream()
-                .map(MealResponse::from)
-                .toList();
-
-        return ResponseEntity.ok(ApiResponse.success(responseList));
-    }
-
     //Meal 삭제 엔드포인트
-    @DeleteMapping("/delete/{mealId}")
+    @DeleteMapping("/{mealId}")
     @Operation(summary = "식사 정보 삭제")
-    public ResponseEntity<Void> deleteMeal(@PathVariable Long mealId) {
-        mealService.deleteMeal(mealId);
-        return ResponseEntity.noContent().build();//204 no
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "식사 정보 삭제 성공", content = @Content(mediaType = "application/json", schema = @Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "식사 정보를 삭제할 권한이 없음", content = @Content(mediaType = "application/json", schema = @Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 약 정보가 존재하지 않음", content = @Content(mediaType = "application/json", schema = @Schema()))
+    public ResponseEntity<Void> deleteMeal(Authentication authentication,@PathVariable Long mealId) {
+        mealService.deleteMeal(authentication.getName(),mealId);
+        return ResponseEntity.noContent().build();
     }
 }

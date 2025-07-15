@@ -2,6 +2,7 @@ package com.solution.Ongi.domain.user.controller;
 
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
+import com.solution.Ongi.global.response.code.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,6 @@ public class UserScheduleController {
             @RequestParam Integer ignoreCnt
     ){
         Long updateCnt= userService.setUserIgnoreCnt(authentication.getName(),ignoreCnt);
-        return ResponseEntity.ok(ApiResponse.success(updateCnt));
+        return ResponseEntity.ok(ApiResponse.success(updateCnt, SuccessStatus.SUCCESS_200));
     }
 }

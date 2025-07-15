@@ -3,10 +3,13 @@ package com.solution.Ongi.domain.meal.service;
 import com.solution.Ongi.domain.meal.dto.CreateMealRequest;
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
+import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.meal.enums.MealType;
 import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.domain.user.service.UserService;
+import com.solution.Ongi.global.response.code.ErrorStatus;
+import com.solution.Ongi.global.response.exception.GeneralException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,16 +43,22 @@ public class MealService {
         return mealRepository.save(meal);
     }
 
-    //유저의 Meal 전체 조회
-    public List<Meal> getAllMeals(String loginId){
-        User user=userService.getUserByLoginIdOrThrow(loginId);
-        return mealRepository.findByUserId(user.getId());
+    //Meal 삭제
+    public void deleteMeal(String loginId, Long mealId){
+        Meal meal= getAuthorizedMeal(loginId, mealId);
+        mealRepository.delete(meal);
     }
 
-    //Meal 삭제
-    public void deleteMeal(Long mealId){
+    private Meal getAuthorizedMeal(String loginId, Long mealId) {
+        User user = userService.getUserByLoginIdOrThrow(loginId);
+
         Meal meal=mealRepository.findById(mealId)
-                .orElseThrow(()->new RuntimeException("식사가 존재하지 않습니다."));
-        mealRepository.delete(meal);
+                .orElseThrow(()->new GeneralException(ErrorStatus.MEAL_NOT_FOUND));
+
+        if (!meal.getUser().getId().equals(user.getId())){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED_ACCESS);
+        }
+
+        return meal;
     }
 }

@@ -1,8 +1,13 @@
 package com.solution.Ongi.domain.user.controller;
 
+import com.solution.Ongi.domain.meal.Meal;
+import com.solution.Ongi.domain.meal.dto.CreateMealResponse;
+import com.solution.Ongi.domain.meal.dto.MealResponse;
+import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.*;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
+import com.solution.Ongi.global.response.code.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +49,7 @@ public class UserController {
         String loginId = authentication.getName();
 
         UserInfoResponse response = userService.getUserInfoWithMode(token, loginId);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(response, SuccessStatus.SUCCESS_200));
     }
 
     @PostMapping("/guardian-agreement")
@@ -57,7 +64,7 @@ public class UserController {
     )
     public ResponseEntity<ApiResponse<String>> agreeGuardianTerms(Authentication authentication) {
         userService.markGuardianAgreement(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success("약관에 동의하였습니다."));
+        return ResponseEntity.ok(ApiResponse.success("약관에 동의하였습니다.", SuccessStatus.SUCCESS_200));
     }
 
     @DeleteMapping("")
@@ -65,7 +72,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> deleteGuardianTerms() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.deleteUser(authentication.getPrincipal().toString());
-        return ResponseEntity.ok(ApiResponse.success("회원 탈퇴 완료"));
+        return ResponseEntity.ok(ApiResponse.success("회원 탈퇴 완료", SuccessStatus.SUCCESS_200));
     }
 
     @PostMapping(path = "/voice/record", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -79,7 +86,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> recordVoice(@RequestParam("file") MultipartFile file){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.recordVoice(file, authentication.getPrincipal().toString());
-        return ResponseEntity.ok(ApiResponse.success("음성 녹음 완료"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("음성 녹음 완료", SuccessStatus.SUCCESS_201));
     }
 
     @GetMapping(path = "/voice")
@@ -92,7 +99,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserVoiceResponse>> getUserVoice(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserVoiceResponse response = userService.getUserVoice(authentication.getPrincipal().toString());
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(response, SuccessStatus.SUCCESS_200));
     }
 
     @DeleteMapping(path = "/voice")
@@ -100,12 +107,12 @@ public class UserController {
             summary = "보호자 음성 삭제 ",
             description = "보호자가 등록한 음성을 삭제합니다(DB 삭제 + S3 삭제)"
     )
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "보호자 음성 삭제 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "보호자 음성 삭제 성공", content = @Content(mediaType = "application/json",schema =@Schema()))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<String>> deleteUserVoice(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.deleteUserVoice(authentication.getPrincipal().toString());
-        return ResponseEntity.ok(ApiResponse.success("보호자 음성 삭제 성공"));
+        return ResponseEntity.ok(ApiResponse.success("보호자 음성 삭제 성공", SuccessStatus.SUCCESS_200));
     }
 
     // 유저 Medication 조회
@@ -116,8 +123,19 @@ public class UserController {
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용자의 모든 약 정보 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserMedicationResponse.class)))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
     public ResponseEntity<ApiResponse<UserMedicationResponse>> getMedications(Authentication authentication) {
-        UserMedicationResponse medicationResponses = userService.getAllMedication(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success(medicationResponses));
+        UserMedicationResponse response = userService.getAllMedication(authentication.getName());
+        return ResponseEntity.ok(ApiResponse.success(response,SuccessStatus.SUCCESS_200));
+    }
+
+    @GetMapping("/meals")
+    @Operation(summary = "사용자의 모든 식사 정보 조회")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "식사 정보 조회 완료", content = @Content(schema = @Schema(implementation = UserMealResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<UserMealResponse>> getAllMeals(
+            Authentication authentication){
+
+        UserMealResponse response =userService.getAllMeals(authentication.getName());
+        return ResponseEntity.ok(ApiResponse.success(response, SuccessStatus.SUCCESS_200));
     }
 
     @GetMapping("/medication-schedules/today")
@@ -129,7 +147,7 @@ public class UserController {
         LocalDate today = LocalDate.now();
         UserMedicationScheduleResponse responses = userService.getUserMedicationSchedulesByDate(
                 authentication.getName(),today);
-        return ResponseEntity.ok(ApiResponse.success(responses));
+        return ResponseEntity.ok(ApiResponse.success(responses,SuccessStatus.SUCCESS_200));
     }
 
     @GetMapping("/medication-schedules/by-date")
@@ -143,7 +161,7 @@ public class UserController {
     ) {
         UserMedicationScheduleResponse responses = userService.getUserMedicationSchedulesByDate(
                 authentication.getName(), date);
-        return ResponseEntity.ok(ApiResponse.success(responses));
+        return ResponseEntity.ok(ApiResponse.success(responses,SuccessStatus.SUCCESS_200));
     }
 
     @GetMapping("medication-schedules/by-range")
@@ -157,6 +175,6 @@ public class UserController {
     ) {
         UserMedicationScheduleByRangeResponse response = userService.getUserMedicationSchedulesByDateRange(
                 authentication.getName(), startDate);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(response,SuccessStatus.SUCCESS_200));
     }
 }
