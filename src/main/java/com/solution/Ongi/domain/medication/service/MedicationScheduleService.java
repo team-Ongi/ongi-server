@@ -42,7 +42,7 @@ public class MedicationScheduleService {
 
         return new UpdateMedicationStatusResponse(
             schedule.getId(),
-            schedule.isTaken(),
+            schedule.isStatus(),
             request.isTaken() ? "복용 완료로 처리되었습니다." : "복용하지 않음으로 처리되었습니다."
         );
     }

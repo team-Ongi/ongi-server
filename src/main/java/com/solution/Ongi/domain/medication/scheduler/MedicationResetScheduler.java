@@ -40,7 +40,7 @@ public class MedicationResetScheduler {
                         .medication(medication)
                         .scheduledDate(today)
                         .scheduledTime(time)
-                        .isTaken(false)
+                        .status(false)
                         .build();
                     scheduleRepository.save(schedule);
                 }
@@ -67,7 +67,7 @@ public class MedicationResetScheduler {
                         .medication(medication)
                         .scheduledDate(today)
                         .scheduledTime(scheduleTime)
-                        .isTaken(false)
+                        .status(false)
                         .build();
 
                     scheduleRepository.save(schedule);

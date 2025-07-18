@@ -27,7 +27,7 @@ public class CalendarService {
 
         List<LocalDate> mealDates=
                 mealScheduleRepository
-                        .findDistinctMealScheduleDateByMeal_User_IdAndMealScheduleDateBetweenAndStatusFalse(userId,start,end);
+                        .findDistinctMealScheduleDateByMeal_User_IdAndScheduledDateBetweenAndStatusFalse(userId,start,end);
 
         //TODO: medication 추가
         List<LocalDate> medicationDates=

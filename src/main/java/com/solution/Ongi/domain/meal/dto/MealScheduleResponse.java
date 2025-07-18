@@ -15,8 +15,8 @@ public record MealScheduleResponse(
     public static MealScheduleResponse from(MealSchedule mealSchedule) {
         return new MealScheduleResponse(
                 mealSchedule.getId(),
-                mealSchedule.getMealScheduleDate(),
-                mealSchedule.getMealScheduleTime(),
+                mealSchedule.getScheduledDate(),
+                mealSchedule.getScheduledTime(),
                 mealSchedule.isStatus(),
                 mealSchedule.getMeal().getId()
         );

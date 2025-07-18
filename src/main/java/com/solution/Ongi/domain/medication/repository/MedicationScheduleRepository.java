@@ -28,7 +28,7 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
 
     //TODO: match format
     Optional<MedicationSchedule>
-    findFirstByMedication_User_IdAndScheduledDateAndIsTakenFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
+    findFirstByMedication_User_IdAndScheduledDateAndStatusFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
             Long userId, LocalDate date, LocalTime time
     );
     void deleteByMedication(Medication medication);
@@ -57,7 +57,7 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     join ms.medication m
     where m.user.id = :userId
         and ms.scheduledDate between :start and :end
-        and ms.isTaken = false
+        and ms.status = false
     order by ms.scheduledDate
 """)
     List<LocalDate> findMissedDatesByUserAndDateRange(

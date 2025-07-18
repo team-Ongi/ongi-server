@@ -19,7 +19,7 @@ public record MedicationScheduleResponse(
             schedule.getScheduledDate(),
             schedule.getMedication().getMedicationName(),
             schedule.getScheduledTime(),
-            schedule.isTaken()
+            schedule.isStatus()
         );
     }
 }

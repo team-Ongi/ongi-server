@@ -59,7 +59,7 @@ public class MedicationService {
                         .medication(medication)
                         .scheduledDate(today)
                         .scheduledTime(time)
-                        .isTaken(false)
+                        .status(false)
                         .build()
                 ).toList();
         medicationScheduleRepository.saveAll(schedules);
@@ -101,7 +101,7 @@ public class MedicationService {
                             .medication(medication)
                             .scheduledDate(today)
                             .scheduledTime(scheduledTime)
-                            .isTaken(false)
+                            .status(false)
                             .build();
                 })
                 .toList();

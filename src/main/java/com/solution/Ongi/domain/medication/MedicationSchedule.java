@@ -28,8 +28,8 @@ public class MedicationSchedule extends BaseTimeEntity {
     @JoinColumn(name = "medication_id")
     private Medication medication;
 
-    @Column(name = "is_taken")
-    private boolean isTaken;
+    @Column(name = "status")
+    private boolean status;
 
     @Column(name = "scheduled_date")
     private LocalDate scheduledDate;
@@ -41,16 +41,16 @@ public class MedicationSchedule extends BaseTimeEntity {
     private String notTakenReason;
 
     public void reset() {
-        this.isTaken = false;
+        this.status = false;
         this.scheduledDate = LocalDate.now();
     }
 
     public void markAsTaken() {
-        this.isTaken = true;
+        this.status = true;
     }
 
     public void markAsNotTaken(String notTakenReason, Integer remindAfterMinutes) {
-        this.isTaken = false;
+        this.status = false;
         this.notTakenReason = notTakenReason;
     }
 

@@ -118,7 +118,7 @@ public class UserScheduleService {
     private List<MealScheduleResponse> getMealSchedulesByExactDate(String loginId, LocalDate date){
         User user=userService.getUserByLoginIdOrThrow(loginId);
         return mealScheduleRepository
-                .findByMeal_User_IdAndMealScheduleDate(user.getId(),date)
+                .findByMeal_User_IdAndScheduledDate(user.getId(),date)
                 .stream()
                 .map(MealScheduleResponse::from)
                 .toList();

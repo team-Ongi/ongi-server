@@ -41,11 +41,11 @@ public class ScheduleNotificationService {
         LocalTime currentTime=LocalTime.now();
 
         Optional<MealSchedule> nextMeal=mealScheduleRepository
-                .findFirstByMeal_User_IdAndMealScheduleDateAndStatusFalseAndMealScheduleTimeAfterOrderByMealScheduleTimeAsc(
+                .findFirstByMeal_User_IdAndScheduledDateAndStatusFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
                         user.getId(),today,currentTime
                 );
         Optional<MedicationSchedule> nextMed=medicationScheduleRepository
-                .findFirstByMedication_User_IdAndScheduledDateAndIsTakenFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
+                .findFirstByMedication_User_IdAndScheduledDateAndStatusFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
                         user.getId(),today,currentTime
                 );
 
@@ -57,7 +57,7 @@ public class ScheduleNotificationService {
         if(nextMeal.isPresent()&&nextMed.isPresent()){
             MealSchedule meal=nextMeal.get();
             MedicationSchedule med=nextMed.get();
-            return meal.getMealScheduleTime().isBefore(med.getScheduledTime())
+            return meal.getScheduledTime().isBefore(med.getScheduledTime())
                     ? mapMeal(meal)
                     : mapMed(med);
         }

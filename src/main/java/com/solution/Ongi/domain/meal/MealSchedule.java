@@ -12,6 +12,7 @@ import java.time.LocalTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "meal_schedule")
 public class MealSchedule extends BaseTimeEntity {
 
     @Id
@@ -19,10 +20,14 @@ public class MealSchedule extends BaseTimeEntity {
     @Column(name = "meal_schedule_id")
     private Long id;
 
-    private LocalTime mealScheduleTime;
-    private LocalDate mealScheduleDate;
+    @Column(name = "scheduled_date")
+    private LocalDate scheduledDate;
+
+    @Column(name = "scheduled_time")
+    private LocalTime scheduledTime;
 
     @Setter
+    @Column(name = "status")
     private boolean status;    //default=false
 
     @ManyToOne(fetch = FetchType.LAZY)

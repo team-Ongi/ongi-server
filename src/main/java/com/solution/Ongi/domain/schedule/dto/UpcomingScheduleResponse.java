@@ -18,8 +18,8 @@ public record UpcomingScheduleResponse(
         this(
                 mealSchedule.getId(),
                 "MEAL",
-                mealSchedule.getMealScheduleDate(),
-                mealSchedule.getMealScheduleTime(),
+                mealSchedule.getScheduledDate(),
+                mealSchedule.getScheduledTime(),
                 mealSchedule.isStatus(),
                 mealSchedule.getMeal().getMealType().name(),
                 mealSchedule.getMeal()
@@ -34,7 +34,7 @@ public record UpcomingScheduleResponse(
                 "MEDICATION",
                 medicationSchedule.getScheduledDate(),
                 medicationSchedule.getScheduledTime(),
-                medicationSchedule.isTaken(),
+                medicationSchedule.isStatus(),
                 medicationSchedule.getMedication().getMedicationName(),
                 medicationSchedule
                         .getMedication()

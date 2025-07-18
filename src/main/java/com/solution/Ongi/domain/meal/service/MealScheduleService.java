@@ -3,8 +3,6 @@ package com.solution.Ongi.domain.meal.service;
 
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.MealSchedule;
-import com.solution.Ongi.domain.meal.dto.MealScheduleResponse;
-import com.solution.Ongi.domain.meal.dto.UpdateMealScheduleStatusesRequest;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.meal.repository.MealScheduleRepository;
 import com.solution.Ongi.domain.user.User;
@@ -29,8 +27,8 @@ public class MealScheduleService {
     public MealSchedule createMealSchedule(Meal meal){
         MealSchedule schedule= MealSchedule.builder()
                 .meal(meal)
-                .mealScheduleTime(meal.getMealTime())
-                .mealScheduleDate(LocalDate.now())
+                .scheduledTime(meal.getMealTime())
+                .scheduledDate(LocalDate.now())
                 .status(false)
                 .build();
 
@@ -53,36 +51,9 @@ public class MealScheduleService {
         mealScheduleRepository.save(mealSchedule);
     }
 
-    //사용자 meal schedules 상태 업데이트
-    public void updateMealSchedules(Long userId, List<UpdateMealScheduleStatusesRequest> requests){
-        for(UpdateMealScheduleStatusesRequest rq:requests){
-            updateMealScheduleStatus(rq.getScheduleId(),rq.isStatus());
-        }
-    }
-
     //날짜에 대응하는 MealSchedule 조회
     public List<MealSchedule> getMealSchedulesByUserId(String loginId){
         User user=userService.getUserByLoginIdOrThrow(loginId);
-        return mealScheduleRepository.findByMeal_User_IdAndMealScheduleDate(user.getId(),LocalDate.now());
-    }
-
-    //특정 날짜 meal schedule 조회
-    public List<MealScheduleResponse> getMealSchedulesByExactDate(String loginId, LocalDate date){
-        User user=userService.getUserByLoginIdOrThrow(loginId);
-        return mealScheduleRepository
-                .findByMeal_User_IdAndMealScheduleDate(user.getId(),date)
-                .stream()
-                .map(MealScheduleResponse::from)
-                .toList();
-    }
-
-    //생성 시점이 특정 기한 내에 속하는 meal schedule 조회
-    public List<MealScheduleResponse> getMealSchedulesByDate(String loginId, LocalDate startDate, LocalDate endDate){
-        User user=userService.getUserByLoginIdOrThrow(loginId);
-        return mealScheduleRepository
-                .findByMeal_User_IdAndMealScheduleDateBetween(user.getId(), startDate, endDate)
-                .stream()
-                .map(MealScheduleResponse::from)
-                .toList();
+        return mealScheduleRepository.findByMeal_User_IdAndScheduledDate(user.getId(),LocalDate.now());
     }
 }
