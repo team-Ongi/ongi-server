@@ -1,6 +1,8 @@
 package com.solution.Ongi.domain.user.controller;
 
+import com.solution.Ongi.domain.user.dto.UserMedicationScheduleResponse;
 import com.solution.Ongi.domain.user.dto.UserSchedulesResponse;
+import com.solution.Ongi.domain.user.dto.UserTodayScheduleResponse;
 import com.solution.Ongi.domain.user.service.UserScheduleService;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,4 +52,17 @@ public class UserScheduleController {
         UserSchedulesResponse response = userScheduleService.getAllSchedules(authentication.getName());
         return ResponseEntity.ok(ApiResponse.success(response,SuccessStatus.SUCCESS_200));
     }
+
+    @GetMapping("/today")
+    @Operation(summary = "오늘 복약 && 식사 스케줄 조회")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용자의 오늘 복약 && 식사 스케줄 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserTodayScheduleResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+    public ResponseEntity<ApiResponse<UserTodayScheduleResponse>> getMedicationSchedulesToday(
+            Authentication authentication) {
+        LocalDate today = LocalDate.now();
+        UserTodayScheduleResponse responses = userScheduleService.getTodaySchedule(
+                authentication.getName(),today);
+        return ResponseEntity.ok(ApiResponse.success(responses,SuccessStatus.SUCCESS_200));
+    }
+
 }

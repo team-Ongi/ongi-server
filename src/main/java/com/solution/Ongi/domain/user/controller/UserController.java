@@ -110,31 +110,20 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("보호자 음성 삭제 성공", SuccessStatus.SUCCESS_200));
     }
 
-    @GetMapping("/medication-schedules/today")
-    @Operation(summary = "오늘 복약 스케줄 조회")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용자의 오늘 복약 스케줄 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserMedicationScheduleResponse.class)))
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
-    public ResponseEntity<ApiResponse<UserMedicationScheduleResponse>> getMedicationSchedulesToday(
-            Authentication authentication) {
-        LocalDate today = LocalDate.now();
-        UserMedicationScheduleResponse responses = userService.getUserMedicationSchedulesByDate(
-                authentication.getName(),today);
-        return ResponseEntity.ok(ApiResponse.success(responses,SuccessStatus.SUCCESS_200));
-    }
 
-    @GetMapping("/medication-schedules/by-date")
-    @Operation(summary = "특정 날짜 복약 스케줄 조회")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용자의 날짜 범위 복약 스케줄 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserMedicationScheduleResponse.class)))
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
-    public ResponseEntity<ApiResponse<UserMedicationScheduleResponse>> getMedicationSchedulesByDate(
-            Authentication authentication,
-            @Parameter(example = "2025-05-01")
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
-    ) {
-        UserMedicationScheduleResponse responses = userService.getUserMedicationSchedulesByDate(
-                authentication.getName(), date);
-        return ResponseEntity.ok(ApiResponse.success(responses,SuccessStatus.SUCCESS_200));
-    }
+//    @GetMapping("/medication-schedules/by-date")
+//    @Operation(summary = "특정 날짜 복약 스케줄 조회")
+//    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용자의 날짜 범위 복약 스케줄 조회 성공", content = @Content(mediaType = "application/json",schema =@Schema(implementation = UserMedicationScheduleResponse.class)))
+//    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않음", content = @Content(mediaType = "application/json",schema =@Schema()))
+//    public ResponseEntity<ApiResponse<UserMedicationScheduleResponse>> getMedicationSchedulesByDate(
+//            Authentication authentication,
+//            @Parameter(example = "2025-05-01")
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+//    ) {
+//        UserMedicationScheduleResponse responses = userService.getUserMedicationSchedulesByDate(
+//                authentication.getName(), date);
+//        return ResponseEntity.ok(ApiResponse.success(responses,SuccessStatus.SUCCESS_200));
+//    }
 
     @GetMapping("medication-schedules/by-range")
     @Operation(summary = "날짜 범위 내 복약을 하지 않은 날짜 리스트 조회")

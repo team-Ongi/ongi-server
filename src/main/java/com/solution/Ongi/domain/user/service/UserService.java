@@ -1,12 +1,6 @@
 package com.solution.Ongi.domain.user.service;
 
-import com.solution.Ongi.domain.meal.Meal;
-import com.solution.Ongi.domain.meal.dto.MealResponse;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
-import com.solution.Ongi.domain.medication.Medication;
-import com.solution.Ongi.domain.medication.MedicationSchedule;
-import com.solution.Ongi.domain.medication.dto.MedicationResponse;
-import com.solution.Ongi.domain.medication.dto.MedicationScheduleResponse;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
@@ -45,11 +39,9 @@ public class UserService {
     private final JwtTokenProvider jwtProvider;
     private final WebClient fastApiWebClient;
     private final S3Service s3Service;
-    private final MedicationRepository medicationRepository;
     private final MedicationScheduleRepository medicationScheduleRepository;
     private final UsersMedicationVoiceRepository usersMedicationVoiceRepository;
     private final UsersMealVoiceRepository usersMealVoiceRepository;
-    private final MealRepository mealRepository;
 
 
     public UserInfoResponse getUserInfoWithMode(String token, String loginId) {
@@ -152,32 +144,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // 유저의 Medication 전체 조회
-    public UserMedicationResponse getAllMedication(String loginId){
-        User user = getUserByLoginIdOrThrow(loginId);
-        List<Medication> medications = medicationRepository.findAllByUserId(user.getId());
-        List<MedicationResponse> result = medications.stream()
-                .map(medication ->
-                        MedicationResponse.from(
-                                medication,
-                                medication.getMedicationTimes(),
-                                medication.getMealTypes()
-                        )
-                )
-                .toList();
-        return new UserMedicationResponse(result);
-    }
-
-    //유저의 Meal 전체 조회
-    public UserMealResponse getAllMeals(String loginId){
-        User user=getUserByLoginIdOrThrow(loginId);
-        List<Meal> meals = mealRepository.findAllByUserId(user.getId());
-        List<MealResponse> responseList=meals.stream()
-                .map(MealResponse::from)
-                .toList();
-        return new UserMealResponse(responseList);
-    }
-
     private String extractS3KeyFromUrl(String url) {
         // S3 도메인 기준으로 split → 뒷부분이 key
         String prefix = ".amazonaws.com/";
@@ -188,16 +154,6 @@ public class UserService {
         }
 
         return url.substring(index + prefix.length());
-    }
-
-    // 유저의 오늘 하루 복약 스케줄 조회
-    public UserMedicationScheduleResponse getUserMedicationSchedulesByDate(String loginId, LocalDate date) {
-        User user = getUserByLoginIdOrThrow(loginId);
-        List<MedicationSchedule> schedules = medicationScheduleRepository.findByUserAndDate(user.getId(), date);
-
-        return new UserMedicationScheduleResponse(schedules.stream()
-                .map(MedicationScheduleResponse::from)
-                .toList());
     }
 
     // 유저의 각 달 복약 스케줄 조회
