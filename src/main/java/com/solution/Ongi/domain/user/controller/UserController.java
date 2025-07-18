@@ -28,7 +28,7 @@ public class UserController {
     
     private final UserService userService;
 
-    @GetMapping("/info")
+    @GetMapping("/me")
     @Operation(
         summary = "유저 정보 조회",
         description = """

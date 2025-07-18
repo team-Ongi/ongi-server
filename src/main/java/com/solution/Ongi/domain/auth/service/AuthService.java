@@ -108,7 +108,7 @@ public class AuthService {
         List<String> usersMealVoiceList = usersMealVoiceRepository.findVoiceFileUrlByUserId(user.getId());
         List<String> usersMedicationVoiceList = usersMedicationVoiceRepository.findVoiceFileUrlByUserId(user.getId());
 
-        return new LoginResponse(accessToken, refreshToken, request.mode(),usersMealVoiceList, usersMedicationVoiceList,user.getIsServiceAgreed());
+        return new LoginResponse(accessToken, refreshToken, request.mode(),usersMealVoiceList, usersMedicationVoiceList,user.getIsServiceAgreed(),user.getGuardianName(),user.getSeniorName());
     }
 
     // 로그인 후 정보 제공 동의 체크

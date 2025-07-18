@@ -10,7 +10,9 @@ public record LoginResponse(
     LoginMode mode,
     List<String> mealVoiceList,
     List<String> medicationVoiceList,
-    Boolean isServiceAgreed
+    Boolean isServiceAgreed,
+    String guardianName,
+    String seniorName
 ) {
 
 }
