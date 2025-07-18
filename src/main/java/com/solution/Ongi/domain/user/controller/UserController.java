@@ -1,9 +1,5 @@
 package com.solution.Ongi.domain.user.controller;
 
-import com.solution.Ongi.domain.meal.Meal;
-import com.solution.Ongi.domain.meal.dto.CreateMealResponse;
-import com.solution.Ongi.domain.meal.dto.MealResponse;
-import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.dto.*;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.ApiResponse;
@@ -24,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +28,7 @@ public class UserController {
     
     private final UserService userService;
 
-    @GetMapping("/me")
+    @GetMapping("/info")
     @Operation(
         summary = "유저 정보 조회",
         description = """

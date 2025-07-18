@@ -6,6 +6,8 @@ import com.solution.Ongi.domain.user.enums.LoginMode;
 public record UserInfoResponse(
     Long id,
     String loginId,
+    String guardianName,
+    String seniorName,
     Boolean isSenior,
     Boolean personalInfoAgreement
 ) {
@@ -13,6 +15,8 @@ public record UserInfoResponse(
         return new UserInfoResponse(
             user.getId(),
             user.getLoginId(),
+            user.getGuardianName(),
+            user.getSeniorName(),
             mode == LoginMode.SENIOR,
             mode == LoginMode.SENIOR ? user.getAgreement().getPersonalInfoAgreement() : null
         );
