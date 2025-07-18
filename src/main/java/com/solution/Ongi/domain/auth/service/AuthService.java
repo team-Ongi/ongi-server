@@ -54,12 +54,15 @@ public class AuthService {
             throw new GeneralException(ErrorStatus.VERIFICATION_NOT_COMPLETED);
         }
 
-        // Agreement 객체 생성
+        // 보호자 Agreement 객체 생성
         Agreement agreement = Agreement.builder()
                 .pushAgreement(request.pushAgreement())
                 .voiceAgreement(request.voiceAgreement())
                 .backgroundAgreement(request.backgroundAgreement())
                 .build();
+
+        // 노인 Agreement 객체 생성
+        Agreement seniorAgreement= Agreement.builder().build();
 
         // 유저 객체 생성
         User user = User.builder()
@@ -75,6 +78,7 @@ public class AuthService {
                 .ignoreCnt(request.ignoreCnt())
                 .ignoreCnt(0)
                 .agreement(agreement)
+                .seniorAgreement(seniorAgreement)
                 .currentIgnoreCnt(0)
                 .build();
         userRepository.save(user);
@@ -120,6 +124,17 @@ public class AuthService {
             throw new GeneralException(ErrorStatus.BAD_REQUEST);
         user.updateIsServiceAgreed(true);
         userRepository.save(user);
+    }
+
+    // 로그인 후 노인 정보 제공 동의 체크
+    public void submitSeniorAgreement(String loginId, SubmitAgreementsRequest request){
+        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        if (!request.agreeToAll()) throw new GeneralException(ErrorStatus.BAD_REQUEST);
+
+        Agreement seniorAgreement=user.getSeniorAgreement();
+        user.updateIsSeniorServiceAgreed(true);
+        userRepository.save(user);
+
     }
 
     // 로그인 아이디 중복 체크

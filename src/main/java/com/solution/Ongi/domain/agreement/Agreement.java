@@ -37,6 +37,4 @@ public class Agreement extends BaseTimeEntity {
         this.personalInfoAgreement = true;
     }
 
-
-
 }

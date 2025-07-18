@@ -20,6 +20,7 @@ public class ScheduleNotificationController {
 
     private final ScheduleNotificationService notificationService;
 
+
     @Operation(summary = "다음 임박 스케줄을 조회합니다")
     @GetMapping
     public ResponseEntity<ApiResponse<UpcomingScheduleResponse>> getNext(

@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.cache.SpringCacheBasedUserCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,10 @@ public class User extends BaseTimeEntity {
     @JoinColumn(name = "agreement_id")
     private Agreement agreement;
 
+    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
+    @JoinColumn(name="senior_agreement_id")
+    private Agreement seniorAgreement;
+
     private String refreshToken;
 
     @Column(name = "voice_file_key")
@@ -71,6 +76,9 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "is_service_agreed")
     private Boolean isServiceAgreed;
+
+    @Column(name= "is_senior_service_agreed")
+    private Boolean isSeniorServiceAgreed;
 
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
@@ -106,5 +114,7 @@ public class User extends BaseTimeEntity {
     public void updateIsServiceAgreed(Boolean isServiceAgreed) {
         this.isServiceAgreed = isServiceAgreed;
     }
+
+    public void updateIsSeniorServiceAgreed(Boolean isSeniorServiceAgreed){this.isSeniorServiceAgreed=isSeniorServiceAgreed;}
 
 }
