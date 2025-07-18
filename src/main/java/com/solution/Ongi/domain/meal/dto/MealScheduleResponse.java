@@ -10,7 +10,8 @@ public record MealScheduleResponse(
         LocalDate mealScheduleDate,
         LocalTime mealScheduleTime,
         boolean status,
-        Long mealId
+        Long mealId,
+        String mealScheduleName
 ) {
     public static MealScheduleResponse from(MealSchedule mealSchedule) {
         return new MealScheduleResponse(
@@ -18,7 +19,8 @@ public record MealScheduleResponse(
                 mealSchedule.getScheduledDate(),
                 mealSchedule.getScheduledTime(),
                 mealSchedule.isStatus(),
-                mealSchedule.getMeal().getId()
+                mealSchedule.getMeal().getId(),
+                mealSchedule.getMeal().getMealType().name()
         );
     }
 }
