@@ -6,6 +6,8 @@ import com.solution.Ongi.domain.meal.service.MealScheduleService;
 import com.solution.Ongi.global.response.ApiResponse;
 import com.solution.Ongi.global.response.code.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,9 @@ public class MealScheduleController {
             반환 항목 : 스케줄 ID, 날짜, 시간, 상태, 연관된 Meal ID
         """
     )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "금일 식사 일정 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MealScheduleResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저(ID)가 존재하지 않는 경우", content = @Content)
     @GetMapping("/today")
     public ResponseEntity<ApiResponse<List<MealScheduleResponse>>>getMealSchedules(
             Authentication authentication){
@@ -44,6 +49,9 @@ public class MealScheduleController {
             반환 항목 : 스케줄 ID, 날짜, 시간, 상태, 연관된 Meal ID
         """
     )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "특정 날짜 식사 일정 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MealScheduleResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "날짜 포맷이 올바르지 않은 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저(ID)가 존재하지 않는 경우", content = @Content)
     @GetMapping("/by-date")
     public ResponseEntity<ApiResponse<List<MealScheduleResponse>>>getMealSchedulesByExactDate(
             Authentication authentication,
@@ -59,6 +67,9 @@ public class MealScheduleController {
             반환 항복 : 스케줄 ID, 날짜, 시간, 상태, 연관된 Meal ID
         """
     )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "특정 날짜 식사 일정 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MealScheduleResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "날짜 포맷이 올바르지 않은 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저(ID)가 존재하지 않는 경우", content = @Content)
     @GetMapping("/by-term")
     public ResponseEntity<ApiResponse<List<MealScheduleResponse>>> getMealSchedulesByDate(
             Authentication authentication,
@@ -74,6 +85,10 @@ public class MealScheduleController {
                     금일 식사상태들을 true/false로 업데이트 합니다.
                     """
     )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "복수 식사 스케줄 상태 업데이트 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateMealScheduleStatusesResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청값이 잘못됨.", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "스케줄 ID가 존재하지 않는 경우", content = @Content)
     @PatchMapping("/today/status")
     public ResponseEntity<ApiResponse<List<UpdateMealScheduleStatusesResponse>>> updateMultipleMealScheduleStatuses(
             Authentication authentication,
@@ -105,6 +120,10 @@ public class MealScheduleController {
             스케줄 ID로 특정 식사 스케줄의 상태를 true/false로 업데이트합니다.
             """
     )
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "단일 식사 스케줄 상태 업데이트 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청값이 잘못되었습니다.", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 경우", content = @Content)
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "스케줄 ID가 존재하지 않는 경우", content = @Content)
     @PatchMapping("/{scheduleId}/status")
     public ResponseEntity<ApiResponse<String>> updateSingleMealScheduleStatus(
             @PathVariable Long scheduleId,
