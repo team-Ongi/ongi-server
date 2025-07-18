@@ -2,7 +2,7 @@ package com.solution.Ongi.domain.user.repository.projection;
 
 import java.time.LocalDate;
 
-public interface NotTakenStatsProjection {
+public interface NotTakenMealStatusProjection {
     LocalDate getDate();
-    Integer getNotTakenCount();
+    Boolean getStatus();
 }

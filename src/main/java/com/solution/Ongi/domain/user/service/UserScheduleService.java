@@ -12,12 +12,16 @@ import com.solution.Ongi.domain.medication.dto.MedicationScheduleResponse;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
+import com.solution.Ongi.domain.user.dto.UserScheduleRangeResponse;
 import com.solution.Ongi.domain.user.dto.UserSchedulesResponse;
 import com.solution.Ongi.domain.user.dto.UserTodayScheduleResponse;
+import com.solution.Ongi.domain.user.repository.projection.NotTakenMealStatusProjection;
+import com.solution.Ongi.domain.user.repository.projection.NotTakenMedicationStatusProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,6 +60,49 @@ public class UserScheduleService {
         List<MedicationScheduleResponse> userMedicationScheduleList = getUserMedicationSchedulesExactDate(loginId,today);
         List<MealScheduleResponse> userMealScheduleList = getMealSchedulesByExactDate(loginId,today);
         return new UserTodayScheduleResponse(userMedicationScheduleList, userMealScheduleList);
+    }
+
+    // 유저의 특정 날짜 스케줄 조회
+    public UserScheduleRangeResponse getUserSchedulesByDateRange(String loginId, LocalDate startDate){
+        User user = userService.getUserByLoginIdOrThrow(loginId);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        List<String> notTakenMedicationDates = getUserMedicationSchedulesByDateRange(user, startDate,endDate);
+        List<String> notTakenMealDates = getUserMealSchedulesByDateRange(user,startDate,endDate);
+        return new UserScheduleRangeResponse(notTakenMedicationDates,notTakenMealDates);
+    }
+
+    //생성 시점이 특정 기한 내에 속하는 meal schedule 조회
+    private List<MealScheduleResponse> getMealSchedulesByDate(String loginId, LocalDate startDate, LocalDate endDate){
+        User user=userService.getUserByLoginIdOrThrow(loginId);
+        return mealScheduleRepository
+                .findByMeal_User_IdAndMealScheduleDateBetween(user.getId(), startDate, endDate)
+                .stream()
+                .map(MealScheduleResponse::from)
+                .toList();
+    }
+
+    // 유저가 해당 달에서 약을 먹지 않은 날짜 리스트 조회
+    private List<String> getUserMedicationSchedulesByDateRange(User user, LocalDate startDate, LocalDate endDate) {
+        List<NotTakenMedicationStatusProjection> notTakenStatsByDateRange = medicationScheduleRepository.getNotTakenStatsByDateRange(user.getId(), startDate,endDate);
+        List<String> notTakenMedicationDates = new ArrayList<>();
+
+        for(NotTakenMedicationStatusProjection data : notTakenStatsByDateRange){
+            if(data.getNotTakenCount() >0 )
+                notTakenMedicationDates.add(data.getDate().toString());
+        }
+        return notTakenMedicationDates;
+    }
+
+    // 유저가 해당 달에서 식사를 하지 않은 날짜 리스트 조회
+    private List<String> getUserMealSchedulesByDateRange(User user, LocalDate startDate, LocalDate endDate) {
+        List<NotTakenMealStatusProjection> notTakenStatsByDateRange = mealScheduleRepository.getNotTakenStatusByDateRange(user.getId(), startDate,endDate);
+        List<String> notTakenMedicationDates = new ArrayList<>();
+
+        for(NotTakenMealStatusProjection data : notTakenStatsByDateRange){
+            if(!data.getStatus())
+                notTakenMedicationDates.add(data.getDate().toString());
+        }
+        return notTakenMedicationDates;
     }
 
     // 특정 날짜 medication schedule 조회

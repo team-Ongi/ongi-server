@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.solution.Ongi.domain.user.repository.projection.NotTakenStatsProjection;
+import com.solution.Ongi.domain.user.repository.projection.NotTakenMedicationStatusProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -44,7 +44,7 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
         GROUP BY ms.scheduled_date
         ORDER BY ms.scheduled_date
     """, nativeQuery = true)
-    List<NotTakenStatsProjection> getNotTakenStatsByDateRange(
+    List<NotTakenMedicationStatusProjection> getNotTakenStatsByDateRange(
             @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate

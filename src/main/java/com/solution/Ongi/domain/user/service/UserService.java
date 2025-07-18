@@ -1,7 +1,5 @@
 package com.solution.Ongi.domain.user.service;
 
-import com.solution.Ongi.domain.meal.repository.MealRepository;
-import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.UsersMealVoice;
@@ -11,7 +9,6 @@ import com.solution.Ongi.domain.user.enums.LoginMode;
 import com.solution.Ongi.domain.user.repository.UserRepository;
 import com.solution.Ongi.domain.user.repository.UsersMealVoiceRepository;
 import com.solution.Ongi.domain.user.repository.UsersMedicationVoiceRepository;
-import com.solution.Ongi.domain.user.repository.projection.NotTakenStatsProjection;
 import com.solution.Ongi.global.jwt.JwtTokenProvider;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
@@ -25,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +34,6 @@ public class UserService {
     private final JwtTokenProvider jwtProvider;
     private final WebClient fastApiWebClient;
     private final S3Service s3Service;
-    private final MedicationScheduleRepository medicationScheduleRepository;
     private final UsersMedicationVoiceRepository usersMedicationVoiceRepository;
     private final UsersMealVoiceRepository usersMealVoiceRepository;
 
@@ -154,20 +148,6 @@ public class UserService {
         }
 
         return url.substring(index + prefix.length());
-    }
-
-    // 유저의 각 달 복약 스케줄 조회
-    public UserMedicationScheduleByRangeResponse getUserMedicationSchedulesByDateRange(String loginId, LocalDate startDate) {
-        User user = getUserByLoginIdOrThrow(loginId);
-        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
-        List<NotTakenStatsProjection> notTakenStatsByDateRange = medicationScheduleRepository.getNotTakenStatsByDateRange(user.getId(), startDate,endDate);
-        List<String> notTakenMedicationDates = new ArrayList<>();
-
-        for(NotTakenStatsProjection data : notTakenStatsByDateRange){
-            if(data.getNotTakenCount() >0 )
-                notTakenMedicationDates.add(data.getDate().toString());
-        }
-        return new UserMedicationScheduleByRangeResponse(notTakenMedicationDates);
     }
 
 }
