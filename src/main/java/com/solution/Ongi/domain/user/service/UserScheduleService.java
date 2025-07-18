@@ -12,6 +12,7 @@ import com.solution.Ongi.domain.medication.dto.MedicationScheduleResponse;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
+import com.solution.Ongi.domain.user.dto.UserScheduleOnDateResponse;
 import com.solution.Ongi.domain.user.dto.UserScheduleRangeResponse;
 import com.solution.Ongi.domain.user.dto.UserSchedulesResponse;
 import com.solution.Ongi.domain.user.dto.UserTodayScheduleResponse;
@@ -62,8 +63,8 @@ public class UserScheduleService {
         return new UserTodayScheduleResponse(userMedicationScheduleList, userMealScheduleList);
     }
 
-    // 유저의 특정 날짜 스케줄 조회
-    public UserScheduleRangeResponse getUserSchedulesByDateRange(String loginId, LocalDate startDate){
+    // 유저의 특정 기간(각 달) 스케줄 조회
+    public UserScheduleRangeResponse getUserSchedulesByRange(String loginId, LocalDate startDate){
         User user = userService.getUserByLoginIdOrThrow(loginId);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
         List<String> notTakenMedicationDates = getUserMedicationSchedulesByDateRange(user, startDate,endDate);
@@ -71,14 +72,12 @@ public class UserScheduleService {
         return new UserScheduleRangeResponse(notTakenMedicationDates,notTakenMealDates);
     }
 
-    //생성 시점이 특정 기한 내에 속하는 meal schedule 조회
-    private List<MealScheduleResponse> getMealSchedulesByDate(String loginId, LocalDate startDate, LocalDate endDate){
-        User user=userService.getUserByLoginIdOrThrow(loginId);
-        return mealScheduleRepository
-                .findByMeal_User_IdAndMealScheduleDateBetween(user.getId(), startDate, endDate)
-                .stream()
-                .map(MealScheduleResponse::from)
-                .toList();
+    // 유저의 특정 날짜 스케줄 조회
+    public UserScheduleOnDateResponse getUserSchedulesByDate(String loginId, LocalDate startDate){
+        User user = userService.getUserByLoginIdOrThrow(loginId);
+        List<MedicationScheduleResponse> userMedicationScheduleList = getUserMedicationSchedulesExactDate(user.getLoginId(), startDate);
+        List<MealScheduleResponse> userMealScheduleList = getMealSchedulesByExactDate(user.getLoginId(), startDate);
+        return new UserScheduleOnDateResponse(userMedicationScheduleList,userMealScheduleList);
     }
 
     // 유저가 해당 달에서 약을 먹지 않은 날짜 리스트 조회
