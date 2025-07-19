@@ -33,8 +33,8 @@ public class MealService {
         User user=userService.getUserByLoginIdOrThrow(loginId);
 
         Meal meal=Meal.builder()
-                .mealType(MealType.valueOf(createMealRequest.getMeal_type().toUpperCase()))
-                .mealTime(LocalTime.parse(createMealRequest.getMeal_time(), timeFormatter))
+                .mealType(MealType.valueOf(createMealRequest.meal_type().toUpperCase()))
+                .mealTime(LocalTime.parse(createMealRequest.meal_time(),timeFormatter))
                 .user(user)
                 .build();
 

@@ -40,8 +40,8 @@ public class MealScheduleController {
         List<MealSchedule> todaySchedules= mealScheduleService.getMealSchedulesByUserId(authentication.getName());
         Map<Long,Boolean>requestedStatusMap=requests.stream()
                 .collect(Collectors.toMap(
-                        UpdateMealScheduleStatusesRequest::getScheduleId,
-                        UpdateMealScheduleStatusesRequest::isStatus
+                        UpdateMealScheduleStatusesRequest::scheduleId,
+                        UpdateMealScheduleStatusesRequest::status
                 ));
 
         List<UpdateMealScheduleStatusesResponse> responseList = todaySchedules.stream()

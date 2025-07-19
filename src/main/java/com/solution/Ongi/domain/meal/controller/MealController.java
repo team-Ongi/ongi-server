@@ -44,7 +44,7 @@ public class MealController {
     @Operation(summary = "식사 정보 삭제")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "식사 정보 삭제 성공", content = @Content(mediaType = "application/json", schema = @Schema()))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "식사 정보를 삭제할 권한이 없음", content = @Content(mediaType = "application/json", schema = @Schema()))
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 약 정보가 존재하지 않음", content = @Content(mediaType = "application/json", schema = @Schema()))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "로그인 아이디가 존재하지 않거나 식사 정보가 존재하지 않음", content = @Content(mediaType = "application/json", schema = @Schema()))
     public ResponseEntity<Void> deleteMeal(Authentication authentication,@PathVariable Long mealId) {
         mealService.deleteMeal(authentication.getName(),mealId);
         return ResponseEntity.noContent().build();
