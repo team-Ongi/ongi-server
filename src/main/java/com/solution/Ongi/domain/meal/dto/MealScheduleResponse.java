@@ -11,7 +11,8 @@ public record MealScheduleResponse(
         LocalTime mealScheduleTime,
         boolean status,
         Long mealId,
-        String mealScheduleName
+        String mealScheduleName,
+        String notTakenReason
 ) {
     public static MealScheduleResponse from(MealSchedule mealSchedule) {
         return new MealScheduleResponse(
@@ -20,7 +21,8 @@ public record MealScheduleResponse(
                 mealSchedule.getScheduledTime(),
                 mealSchedule.isStatus(),
                 mealSchedule.getMeal().getId(),
-                mealSchedule.getMeal().getMealType().name()
+                mealSchedule.getMeal().getMealType().name(),
+                mealSchedule.getNotTakenReason()
         );
     }
 }
