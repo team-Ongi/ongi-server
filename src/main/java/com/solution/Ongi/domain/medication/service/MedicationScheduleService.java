@@ -37,7 +37,7 @@ public class MedicationScheduleService {
         if (request.isTaken()) {
             schedule.markAsTaken();
         } else {
-            schedule.markAsNotTaken(request.reason(), request.remindAfterMinutes());
+            schedule.markAsNotTaken(request.notTakenReason(), request.remindAfterMinutes());
         }
 
         return new UpdateMedicationStatusResponse(
