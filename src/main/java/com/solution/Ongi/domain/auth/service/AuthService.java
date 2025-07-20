@@ -104,11 +104,15 @@ public class AuthService {
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
 
+        String alert_max = user.getAlertMax().name();
+        String[] parts = alert_max.split("_");
+        String minute = parts[1];
+
         // 유저의 녹음 파일 리스트 반환
         List<String> usersMealVoiceList = usersMealVoiceRepository.findVoiceFileUrlByUserId(user.getId());
         List<String> usersMedicationVoiceList = usersMedicationVoiceRepository.findVoiceFileUrlByUserId(user.getId());
 
-        return new LoginResponse(accessToken, refreshToken, request.mode(),usersMealVoiceList, usersMedicationVoiceList,user.getIsServiceAgreed(),user.getGuardianName(),user.getSeniorName());
+        return new LoginResponse(accessToken, refreshToken, request.mode(),usersMealVoiceList, usersMedicationVoiceList,user.getIsServiceAgreed(),user.getGuardianName(),user.getSeniorName(),minute);
     }
 
     // 로그인 후 정보 제공 동의 체크

@@ -12,7 +12,8 @@ public record LoginResponse(
     List<String> medicationVoiceList,
     Boolean isServiceAgreed,
     String guardianName,
-    String seniorName
+    String seniorName,
+    String alertMax
 ) {
 
 }
