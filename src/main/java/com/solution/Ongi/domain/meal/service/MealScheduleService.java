@@ -3,10 +3,14 @@ package com.solution.Ongi.domain.meal.service;
 
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.MealSchedule;
+import com.solution.Ongi.domain.meal.dto.UpdateMealScheduleStatusRequest;
+import com.solution.Ongi.domain.meal.dto.UpdateMealScheduleStatusResponse;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.meal.repository.MealScheduleRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.service.UserService;
+import com.solution.Ongi.global.response.code.ErrorStatus;
+import com.solution.Ongi.global.response.exception.GeneralException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,12 +47,25 @@ public class MealScheduleService {
     }
 
     //단일 schedule 상태 업데이트
-    public void updateMealScheduleStatus(Long scheduleId,boolean newStatus){
+    public UpdateMealScheduleStatusResponse updateMealScheduleStatus(String loginId, Long scheduleId, UpdateMealScheduleStatusRequest request){
+        User user=userService.getUserByLoginIdOrThrow(loginId);
         MealSchedule mealSchedule= mealScheduleRepository.findById(scheduleId)
                 .orElseThrow(()->new RuntimeException("스케줄 ID " + scheduleId + "를 찾을 수 없습니다."));
 
-        mealSchedule.setStatus(newStatus);
-        mealScheduleRepository.save(mealSchedule);
+        if(!mealSchedule.getMeal().getUser().getLoginId().equals(loginId)){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED_ACCESS);
+        }
+        if(request.status()){
+            mealSchedule.markAsTaken();
+        }else{
+            mealSchedule.markAsNotTaken(request.reason());
+        }
+
+        return new UpdateMealScheduleStatusResponse(
+                mealSchedule.getId(),
+                mealSchedule.getStatus(),
+                request.status()?"식사 완료로 업데이트":"식사 누락으로 업데이트"
+        );
     }
 
     //날짜에 대응하는 MealSchedule 조회

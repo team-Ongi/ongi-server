@@ -1,5 +1,6 @@
 package com.solution.Ongi.domain.meal.controller;
 
+import com.google.rpc.context.AttributeContext;
 import com.solution.Ongi.domain.meal.MealSchedule;
 import com.solution.Ongi.domain.meal.dto.*;
 import com.solution.Ongi.domain.meal.service.MealScheduleService;
@@ -24,56 +25,62 @@ public class MealScheduleController {
 
     private final MealScheduleService mealScheduleService;
 
-    @Operation(summary = "복수 식사 스케줄 업데이트",description = """
-                    금일 식사상태들을 true/false로 업데이트 합니다.
-                    """
-    )
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "복수 식사 스케줄 상태 업데이트 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateMealScheduleStatusesResponse.class)))
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청값이 잘못됨.", content = @Content)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 경우", content = @Content)
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "스케줄 ID가 존재하지 않는 경우", content = @Content)
-    @PatchMapping("/today/status")
-    public ResponseEntity<ApiResponse<List<UpdateMealScheduleStatusesResponse>>> updateMultipleMealScheduleStatuses(
-            Authentication authentication,
-            @RequestBody List<UpdateMealScheduleStatusesRequest> requests){
-
-        List<MealSchedule> todaySchedules= mealScheduleService.getMealSchedulesByUserId(authentication.getName());
-        Map<Long,Boolean>requestedStatusMap=requests.stream()
-                .collect(Collectors.toMap(
-                        UpdateMealScheduleStatusesRequest::scheduleId,
-                        UpdateMealScheduleStatusesRequest::status
-                ));
-
-        List<UpdateMealScheduleStatusesResponse> responseList = todaySchedules.stream()
-                .filter(ms -> requestedStatusMap.containsKey(ms.getId()))
-                .map(ms -> {
-                    boolean newStatus = requestedStatusMap.get(ms.getId());
-                    mealScheduleService.updateMealScheduleStatus(ms.getId(), newStatus);
-                    return new UpdateMealScheduleStatusesResponse(
-                            ms.getId(),
-                            "스케줄 상태가 업데이트되었습니다."
-                    );
-                })
-                .toList();
-
-        return ResponseEntity.ok(ApiResponse.success(responseList,SuccessStatus.SUCCESS_200));
-    }
+//    @Operation(summary = "복수 식사 스케줄 업데이트",description = """
+//                    금일 식사상태들을 true/false로 업데이트 합니다.
+//                    """
+//    )
+//    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "복수 식사 스케줄 상태 업데이트 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateMealScheduleStatusesResponse.class)))
+//    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청값이 잘못됨.", content = @Content)
+//    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 경우", content = @Content)
+//    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "스케줄 ID가 존재하지 않는 경우", content = @Content)
+//    @PatchMapping("/today/status")
+//    public ResponseEntity<ApiResponse<List<UpdateMealScheduleStatusesResponse>>> updateMultipleMealScheduleStatuses(
+//            Authentication authentication,
+//            @RequestBody List<UpdateMealScheduleStatusesRequest> requests){
+//
+//        List<MealSchedule> todaySchedules= mealScheduleService.getMealSchedulesByUserId(authentication.getName());
+//        Map<Long,Boolean>requestedStatusMap=requests.stream()
+//                .collect(Collectors.toMap(
+//                        UpdateMealScheduleStatusesRequest::scheduleId,
+//                        UpdateMealScheduleStatusesRequest::status
+//                ));
+//
+//        List<UpdateMealScheduleStatusesResponse> responseList = todaySchedules.stream()
+//                .filter(ms -> requestedStatusMap.containsKey(ms.getId()))
+//                .map(ms -> {
+//                    boolean newStatus = requestedStatusMap.get(ms.getId());
+//                    mealScheduleService.updateMealScheduleStatus(authentication.getName(),ms.getId(), newStatus);
+//                    return new UpdateMealScheduleStatusesResponse(
+//                            ms.getId(),
+//                            "스케줄 상태가 업데이트되었습니다."
+//                    );
+//                })
+//                .toList();
+//
+//        return ResponseEntity.ok(ApiResponse.success(responseList,SuccessStatus.SUCCESS_200));
+//    }
 
     @Operation(summary = "단일 식사 스케줄 상태 업데이트",description = """
             스케줄 ID로 특정 식사 스케줄의 상태를 true/false로 업데이트합니다.
+            식사 상태 false 일 시에만 reason 입력받습니다.
             """
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "단일 식사 스케줄 상태 업데이트 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청값이 잘못되었습니다.", content = @Content)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 경우", content = @Content)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "스케줄 ID가 존재하지 않는 경우", content = @Content)
-    @PatchMapping("/{scheduleId}/status")
-    public ResponseEntity<ApiResponse<String>> updateSingleMealScheduleStatus(
+    @PutMapping("/{scheduleId}/status")
+    public ResponseEntity<ApiResponse<UpdateMealScheduleStatusResponse>> updateSingleMealScheduleStatus(
+            Authentication authentication,
             @PathVariable Long scheduleId,
             @RequestBody UpdateMealScheduleStatusRequest request) {
 
-        mealScheduleService.updateMealScheduleStatus(scheduleId, request.isStatus());
-        return ResponseEntity.ok(ApiResponse.success("식사 스케줄 상태가 업데이트되었습니다.",SuccessStatus.SUCCESS_200));
+        UpdateMealScheduleStatusResponse response=mealScheduleService.updateMealScheduleStatus(
+                authentication.getName(), scheduleId,request
+        );
+        return ResponseEntity.ok(ApiResponse.success(response,SuccessStatus.SUCCESS_200));
     }
+
+
 
 }

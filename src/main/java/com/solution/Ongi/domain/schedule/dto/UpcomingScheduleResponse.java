@@ -20,7 +20,7 @@ public record UpcomingScheduleResponse(
                 "MEAL",
                 mealSchedule.getScheduledDate(),
                 mealSchedule.getScheduledTime(),
-                mealSchedule.isStatus(),
+                mealSchedule.getStatus(),
                 mealSchedule.getMeal().getMealType().name(),
                 mealSchedule.getMeal()
                         .getUser()

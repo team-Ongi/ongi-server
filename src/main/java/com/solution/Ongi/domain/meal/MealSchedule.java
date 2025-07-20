@@ -37,4 +37,15 @@ public class MealSchedule extends BaseTimeEntity {
     @JoinColumn(name = "meal_id")
     private Meal meal;
 
+    public void markAsTaken(){ this.status=true; }
+
+    public void markAsNotTaken(String notTakenReason){
+        this.status=false;
+        this.notTakenReason=notTakenReason;
+    }
+
+    public boolean getStatus(){
+        return this.status;
+    }
+
 }

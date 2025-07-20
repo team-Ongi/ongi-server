@@ -19,7 +19,7 @@ public record MealScheduleResponse(
                 mealSchedule.getId(),
                 mealSchedule.getScheduledDate(),
                 mealSchedule.getScheduledTime(),
-                mealSchedule.isStatus(),
+                mealSchedule.getStatus(),
                 mealSchedule.getMeal().getId(),
                 mealSchedule.getMeal().getMealType().name(),
                 mealSchedule.getNotTakenReason()
