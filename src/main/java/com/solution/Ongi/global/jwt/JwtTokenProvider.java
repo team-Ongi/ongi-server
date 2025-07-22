@@ -15,7 +15,7 @@ public class JwtTokenProvider {
     private String secretKey;
 
     private Key key;
-    private final long expiration = 1000 * 60 * 60; // 1시간
+    private final long expiration = 1000 * 60 * 60*24; // 24시간
     private final long refreshTokenExpiration = 30 * 24 * 60 * 60 * 1000L; // 30일
 
     @PostConstruct
