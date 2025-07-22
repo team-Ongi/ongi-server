@@ -35,6 +35,8 @@ jobs:
               sudo docker rm ongi-server ongi-server 2>/dev/null || true
             fi
 
+            sudo docker system prune -a -f --volumes
+
             aws ecr get-login-password --region $REGION \
               | sudo docker login --username AWS --password-stdin \
                 $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
