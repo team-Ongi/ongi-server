@@ -9,7 +9,6 @@ import com.solution.Ongi.domain.medication.enums.MedicationType;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
-import com.solution.Ongi.domain.user.dto.UserMedicationResponse;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;

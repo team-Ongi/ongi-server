@@ -1,6 +1,5 @@
 package com.solution.Ongi.domain.user.service;
 
-import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.UsersMealVoice;
 import com.solution.Ongi.domain.user.UsersMedicationVoice;
@@ -53,7 +52,6 @@ public class UserService {
         return userRepository.findById(userId)
             .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
-
 
     public User getUserByLoginIdOrThrow(String loginId){
         return userRepository.findByLoginId(loginId)
@@ -115,20 +113,21 @@ public class UserService {
     }
 
     // 보호자 음성 삭제
+    @Transactional
     public void deleteUserVoice(String loginId){
         User user = getUserByLoginIdOrThrow(loginId);
 
         // S3에 등록된 파일 삭제 && DB에 등록된 음성 파일 경로 삭제
         List<UsersMealVoice> usersMealVoiceList = usersMealVoiceRepository.findAllByUserId(user.getId());
         for(UsersMealVoice usersMealVoice:usersMealVoiceList) {
-            String filePath = extractS3KeyFromUrl(usersMealVoice.getVoiceFileUrl());
+            String filePath = s3Service.extractS3KeyFromUrl(usersMealVoice.getVoiceFileUrl());
             s3Service.deleteFile(filePath);
         }
         usersMealVoiceRepository.deleteAllByUserId(user.getId());
 
         List<UsersMedicationVoice> usersMedicationVoiceList = usersMedicationVoiceRepository.findAllByUserId(user.getId());
         for(UsersMedicationVoice usersMedicationVoice:usersMedicationVoiceList) {
-            String filePath = extractS3KeyFromUrl(usersMedicationVoice.getVoiceFileUrl());
+            String filePath =s3Service. extractS3KeyFromUrl(usersMedicationVoice.getVoiceFileUrl());
             s3Service.deleteFile(filePath);
         }
         usersMedicationVoiceRepository.deleteAllByUserId(user.getId());
@@ -137,17 +136,4 @@ public class UserService {
         user.updateVoiceFileKey(null);
         userRepository.save(user);
     }
-
-    private String extractS3KeyFromUrl(String url) {
-        // S3 도메인 기준으로 split → 뒷부분이 key
-        String prefix = ".amazonaws.com/";
-        int index = url.indexOf(prefix);
-
-        if (index == -1) {
-            throw new IllegalArgumentException("유효한 S3 경로가 아닙니다: " + url);
-        }
-
-        return url.substring(index + prefix.length());
-    }
-
 }

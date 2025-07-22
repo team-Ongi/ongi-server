@@ -81,4 +81,16 @@ public class S3Service {
             log.warn("삭제할 파일이 존재하지 않습니다: {}", filePath);
         }
     }
+
+    public String extractS3KeyFromUrl(String url) {
+        // S3 도메인 기준으로 split → 뒷부분이 key
+        String prefix = ".amazonaws.com/";
+        int index = url.indexOf(prefix);
+
+        if (index == -1) {
+            throw new IllegalArgumentException("유효한 S3 경로가 아닙니다: " + url);
+        }
+
+        return url.substring(index + prefix.length());
+    }
 }
