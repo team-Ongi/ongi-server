@@ -74,7 +74,7 @@ public class UserScheduleController {
             @Parameter(example = "2025-05-01")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        UserScheduleRangeResponse responses = userScheduleService.getUserSchedulesByRange(
+        UserScheduleRangeResponse responses = userScheduleService.getSchedulesByRange(
                 authentication.getName(), date);
         return ResponseEntity.ok(ApiResponse.success(responses, SuccessStatus.SUCCESS_200));
     }
@@ -88,7 +88,7 @@ public class UserScheduleController {
             @Parameter(example = "2025-07-01")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        UserScheduleOnDateResponse responses = userScheduleService.getUserSchedulesByDate(
+        UserScheduleOnDateResponse responses = userScheduleService.getSchedulesByDate(
                 authentication.getName(), date);
         return ResponseEntity.ok(ApiResponse.success(responses,SuccessStatus.SUCCESS_200));
     }
