@@ -2,6 +2,7 @@ package com.solution.Ongi.domain.meal.service;
 
 import com.solution.Ongi.domain.meal.dto.CreateMealRequest;
 import com.solution.Ongi.domain.meal.Meal;
+import com.solution.Ongi.domain.meal.dto.UpdateMealRequest;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
 import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.user.User;
@@ -12,6 +13,7 @@ import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -60,5 +62,11 @@ public class MealService {
         }
 
         return meal;
+    }
+
+    public void updateMeal(String loginId, Long mealId, UpdateMealRequest request){
+        Meal meal=getAuthorizedMeal(loginId,mealId);
+        meal.updateMealType(MealType.valueOf(request.meal_type().toUpperCase()));
+        meal.updateMealTime(LocalTime.parse(request.meal_time(),DateTimeFormatter.ofPattern("HH:mm")));
     }
 }

@@ -38,4 +38,12 @@ public class Meal{
     @Builder.Default
     @OneToMany(mappedBy = "meal",cascade = CascadeType.ALL)
     private List<MealSchedule> mealSchedules=new ArrayList<>();
+
+    public void updateMealType(MealType mealType){
+        this.mealType=mealType;
+    }
+
+    public void updateMealTime(LocalTime mealTime){
+        this.mealTime=mealTime;
+    }
 }
