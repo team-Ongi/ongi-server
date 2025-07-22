@@ -9,7 +9,8 @@ public record UserInfoResponse(
     String guardianName,
     String seniorName,
     Boolean isSenior,
-    Boolean personalInfoAgreement
+    Boolean isGuardianServiceAgreed,
+    Boolean isSeniorServiceAgreed
 ) {
     public static UserInfoResponse from(User user, LoginMode mode) {
         return new UserInfoResponse(
@@ -18,7 +19,8 @@ public record UserInfoResponse(
             user.getGuardianName(),
             user.getSeniorName(),
             mode == LoginMode.SENIOR,
-            mode == LoginMode.SENIOR ? user.getAgreement().getPersonalInfoAgreement() : null
+            user.getAgreement().getPersonalInfoAgreement(),
+            user.getIsServiceAgreed()
         );
     }
 
