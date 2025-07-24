@@ -59,6 +59,7 @@ public class AuthService {
                 .pushAgreement(request.pushAgreement())
                 .voiceAgreement(request.voiceAgreement())
                 .backgroundAgreement(request.backgroundAgreement())
+                .personalInfoAgreement(true)
                 .build();
 
         // 유저 객체 생성
