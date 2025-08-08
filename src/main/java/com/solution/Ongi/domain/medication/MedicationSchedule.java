@@ -40,6 +40,9 @@ public class MedicationSchedule extends BaseTimeEntity {
     @Column(name = "not_taken_reason")
     private String notTakenReason;
 
+    @Column(name= "remind_later")
+    private Boolean remindLater;
+
     public void reset() {
         this.status = false;
         this.scheduledDate = LocalDate.now();
