@@ -1,17 +1,13 @@
 package com.solution.Ongi.domain.medication.service;
 
 import com.solution.Ongi.domain.medication.MedicationSchedule;
-import com.solution.Ongi.domain.medication.dto.MedicationScheduleResponse;
 import com.solution.Ongi.domain.medication.dto.UpdateMedicationStatusRequest;
 import com.solution.Ongi.domain.medication.dto.UpdateMedicationStatusResponse;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
-import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +33,7 @@ public class MedicationScheduleService {
         if (request.isTaken()) {
             schedule.markAsTaken();
         } else {
-            schedule.markAsNotTaken(request.notTakenReason(), request.remindAfterMinutes());
+            schedule.markAsNotTaken(request.notTakenReason());
         }
 
         return new UpdateMedicationStatusResponse(
