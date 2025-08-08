@@ -20,9 +20,9 @@ public record UpdateMealBasedMedicationRequest(
     List<MealType> mealTypes,
 
     @NotNull
-    Integer remindAfterMinutes,
+    Integer remindAfterMinutes
 
-    @NotNull
-    Long medicationScheduleId
+//    @NotNull
+//    Long medicationScheduleId
 ) {
 }
