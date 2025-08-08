@@ -8,9 +8,9 @@ public record UpdateFixedTimeMedicationRequest(
     String medicationName,
 
     @NotBlank
-    String time,
+    String time
 
-    @NotNull
-    Long medicationScheduleId
+//    @NotNull
+//    Long medicationScheduleId
 ) {
 }

@@ -117,9 +117,9 @@ public class MedicationService {
         medication.updateMedicationName(request.medicationName());
 
         // 약 복용 스케줄 수정
-        MedicationSchedule medicationSchedule = medicationScheduleRepository.findById(request.medicationScheduleId()).orElseThrow(()->new GeneralException(ErrorStatus.MEDICATION_SCHEDULE_NOT_FOUND));
-        LocalTime scheduledTime = LocalTime.parse(request.time(), DateTimeFormatter.ofPattern("HH:mm"));
-        medicationSchedule.updateScheduleTime(scheduledTime);
+//        MedicationSchedule medicationSchedule = medicationScheduleRepository.findById(request.medicationScheduleId()).orElseThrow(()->new GeneralException(ErrorStatus.MEDICATION_SCHEDULE_NOT_FOUND));
+//        LocalTime scheduledTime = LocalTime.parse(request.time(), DateTimeFormatter.ofPattern("HH:mm"));
+//        medicationSchedule.updateScheduleTime(scheduledTime);
     }
 
     public void updateMealBasedMedication(String loginId, Long medicationId, UpdateMealBasedMedicationRequest request) {
