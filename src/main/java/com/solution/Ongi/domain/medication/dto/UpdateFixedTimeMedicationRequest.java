@@ -1,16 +1,13 @@
 package com.solution.Ongi.domain.medication.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+
+
+import java.util.List;
 
 public record UpdateFixedTimeMedicationRequest(
-    @NotBlank
+
     String medicationName,
+    List<String> timeList
 
-    @NotBlank
-    String time
-
-//    @NotNull
-//    Long medicationScheduleId
 ) {
 }

@@ -66,4 +66,6 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
             @Param("end") LocalDate end
     );
 
+    void deleteAllByMedication(Medication medication);
+
 }
