@@ -36,6 +36,9 @@ public class ScheduleNotificationService {
     private final PushNotificationService pushNotificationService;
     private final SubscriptionService subscriptionService;
 
+    // 임박한 스케줄 조회
+    // 직전 스케줄 status 가 false 일 시 currentIgnoreCnt +1
+    // currentIgnoreCnt==maxIgnoreCnt 일 시 fcm 알림
     @Transactional(readOnly = true)
     public UpcomingScheduleResponse getNext(String loginId){
         User user=userService.getUserByLoginIdOrThrow(loginId);
@@ -96,7 +99,6 @@ public class ScheduleNotificationService {
     }
 
     // '다음에' 처리후 다음 스케줄 조회
-    //if currentIgnoreCnt == ignoreCnt => get FCM push
     @Transactional
     public UpcomingScheduleResponse denyAndGetNext(String loginId, DenyRequest request){
 

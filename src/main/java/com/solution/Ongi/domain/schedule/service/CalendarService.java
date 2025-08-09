@@ -36,7 +36,7 @@ public class CalendarService {
         Set<LocalDate> medDays  = new HashSet<>();
 
         for (MissedSchedule m : missedList) {
-            LocalDate date = m.getScheduledDate()
+            LocalDate date = m.getScheduledDate();
             if (m.getScheduleType() == ScheduleType.MEAL) {
                 mealDays.add(date);
             } else if (m.getScheduleType() == ScheduleType.MEDICATION) {
