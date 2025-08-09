@@ -1,5 +1,6 @@
 package com.solution.Ongi.domain.schedule.service;
 
+import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.MealSchedule;
 import com.solution.Ongi.domain.meal.repository.MealScheduleRepository;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
@@ -52,20 +53,40 @@ public class MissedScheduleService {
             MealSchedule meal = optPrevMeal.get();
             MedicationSchedule med = optPrevMed.get();
 
-            boolean mealIsLaterOrEqual = !meal.getScheduledTime().isBefore(med.getScheduledTime()); // 동시각이면 MEAL 우선
+            boolean chooseMeal = !meal.getScheduledTime().isBefore(med.getScheduledTime()); // 동시각이면 MEAL 우선
+            if (chooseMeal) {
+                if (!meal.getStatus()) {
+                    recordIfMissedSchedule(user, MissedCandidateDto.fromMeal(meal));
+                    userService.addUserCurrentIgnoreCount(user.getLoginId());
+                }
+            } else {
+                if (!med.isStatus()) {
+                    recordIfMissedSchedule(user, MissedCandidateDto.fromMedication(med));
+                    userService.addUserCurrentIgnoreCount(user.getLoginId());
+                }
+            }
+            return;
+        }
 
-            MissedCandidateDto candidate =
-                    mealIsLaterOrEqual ? MissedCandidateDto.fromMeal(meal)
-                            : MissedCandidateDto.fromMedication(med);
+            // 하나만 존재하는 경우
+            // missedSchedule 에 기록하고 currentIgnoreCnt+1
+        if (optPrevMeal.isPresent()){
+            if(!optPrevMeal.get().getStatus()){
+                recordIfMissedSchedule(user,MissedCandidateDto.fromMeal(optPrevMeal.get()));
+                userService.addUserCurrentIgnoreCount(user.getLoginId());
+            }
+            return;
+        }
 
-            recordIfMissedSchedule(user, candidate);
-
+        if(!optPrevMed.get().isStatus()){
+            recordIfMissedSchedule(user, MissedCandidateDto.fromMedication(optPrevMed.get()));
+            userService.addUserCurrentIgnoreCount(user.getLoginId());
         }
 
     }
 
+    // 선택된 하나의 meal/med 의 status가 false일 때 missedSchedule에 기록
     private void recordIfMissedSchedule(User user, MissedCandidateDto c) {
-        // 선택된 하나의 meal/med 의 status가 false일 때만 기록
 
         if (c.status()) return;
 

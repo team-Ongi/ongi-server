@@ -32,18 +32,22 @@ public class ScheduleNotificationService {
     private final UserService userService;
     private final MealScheduleService mealScheduleService;
     private final MedicationScheduleService medicationScheduleService;
+    private final MissedScheduleService missedScheduleService;
 
     private final PushNotificationService pushNotificationService;
     private final SubscriptionService subscriptionService;
 
     // 임박한 스케줄 조회
-    // 직전 스케줄 status 가 false 일 시 currentIgnoreCnt +1
+    // 직전 스케줄 status 가 false 일 시 missedSchedule 로 체크 (currentIgnoreCnt+1 로직 포함)
     // currentIgnoreCnt==maxIgnoreCnt 일 시 fcm 알림
     @Transactional(readOnly = true)
     public UpcomingScheduleResponse getNext(String loginId){
         User user=userService.getUserByLoginIdOrThrow(loginId);
         LocalDate today=LocalDate.now();
         LocalTime currentTime=LocalTime.now();
+
+        // 직전 스케줄 status false 일 시 missedSchedule로 체크
+        missedScheduleService.detectAndRecordMostRecentMissed(loginId);
 
         // 현재 시간 기준 임박한 meal, med 조회
         Optional<MealSchedule> nextMeal=mealScheduleRepository
