@@ -65,7 +65,7 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
             @Param("start") LocalDate start,
             @Param("end") LocalDate end
     );
-    Optional<MedicationSchedule> findFirstByMedication_User_IdAndScheduledDateAndStatusFalseAndScheduledTimeLessThanEqualOrderByScheduledTimeDesc(
+    Optional<MedicationSchedule> findFirstByMedication_User_IdAndScheduledDateAndScheduledTimeLessThanEqualOrderByScheduledTimeDesc(
             Long userId, LocalDate date, LocalTime time);
 
 }

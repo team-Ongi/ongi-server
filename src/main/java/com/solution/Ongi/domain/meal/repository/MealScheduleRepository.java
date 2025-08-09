@@ -18,11 +18,8 @@ public interface MealScheduleRepository extends JpaRepository<MealSchedule,Long>
     Optional<MealSchedule> findFirstByMeal_User_IdAndScheduledDateAndStatusFalseAndScheduledTimeAfterOrderByScheduledTimeAsc(
             Long userId, LocalDate date, LocalTime time
         );
-    Optional<MealSchedule> findFirstByMeal_User_IdAndScheduledDateAndStatusFalseAndScheduledTimeLessThanEqualOrderByScheduledTimeDesc(
+    Optional<MealSchedule> findFirstByMeal_User_IdAndScheduledDateAndScheduledTimeLessThanEqualOrderByScheduledTimeDesc(
             Long userId, LocalDate date, LocalTime time);
-    List<LocalDate>
-    findDistinctMealScheduleDateByMeal_User_IdAndScheduledDateBetweenAndStatusFalse(
-            Long userId, LocalDate startDate, LocalDate endDate);
 
     @Query(value = """
         select
