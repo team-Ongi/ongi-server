@@ -1,13 +1,11 @@
 package com.solution.Ongi.domain.schedule.service;
 
-import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.MealSchedule;
 import com.solution.Ongi.domain.meal.repository.MealScheduleRepository;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.schedule.MissedSchedule;
 import com.solution.Ongi.domain.schedule.dto.MissedCandidateDto;
-import com.solution.Ongi.domain.schedule.enums.ScheduleType;
 import com.solution.Ongi.domain.schedule.repository.MissedScheduleRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.service.UserService;
@@ -16,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
@@ -91,8 +88,11 @@ public class MissedScheduleService {
         if (c.status()) return;
 
         // 이미 존재 시 스킵 (중복 방지)
-        if (missedScheduleRepository.existsByScheduleTypeAndScheduledId(c.type(), c.scheduleId()))
-            return;
+        boolean exists = missedScheduleRepository
+                .existsByUser_IdAndScheduleTypeAndScheduledDateAndScheduledTime(
+                        user.getId(), c.type(), c.scheduledDate(), c.scheduledTime()
+                );
+        if (exists) return;
 
         MissedSchedule missed = MissedSchedule.builder()
                 .user(user)
