@@ -112,14 +112,25 @@ public class MedicationService {
     }
 
     public void updateFixedTimeMedication(String loginId, Long medicationId, UpdateFixedTimeMedicationRequest request) {
-        // 약 정보 가져오기 && 약 이름 수정
-        Medication medication = getAuthorizedMedication(loginId, medicationId);
-        medication.updateMedicationName(request.medicationName());
+        // 유저 정보 가져오기
+        userService.getUserByLoginIdOrThrow(loginId);
 
-        // 약 복용 스케줄 수정
-//        MedicationSchedule medicationSchedule = medicationScheduleRepository.findById(request.medicationScheduleId()).orElseThrow(()->new GeneralException(ErrorStatus.MEDICATION_SCHEDULE_NOT_FOUND));
-//        LocalTime scheduledTime = LocalTime.parse(request.time(), DateTimeFormatter.ofPattern("HH:mm"));
-//        medicationSchedule.updateScheduleTime(scheduledTime);
+        // 기존 정보 삭제
+        Medication medication = medicationRepository.findById(medicationId).orElseThrow(() -> new GeneralException(ErrorStatus.MEDICATION_NOT_FOUND));
+        medicationScheduleRepository.deleteAllByMedication(medication);
+
+        // 약 스케줄 등록
+        LocalDate today = LocalDate.now();
+        List<MedicationSchedule> schedules = request.timeList().stream()
+                .map(timeStr -> LocalTime.parse(timeStr, DateTimeFormatter.ofPattern("HH:mm")))
+                .map(time -> MedicationSchedule.builder()
+                        .medication(medication)
+                        .scheduledDate(today)
+                        .scheduledTime(time)
+                        .status(false)
+                        .build()
+                ).toList();
+        medicationScheduleRepository.saveAll(schedules);
     }
 
     public void updateMealBasedMedication(String loginId, Long medicationId, UpdateMealBasedMedicationRequest request) {

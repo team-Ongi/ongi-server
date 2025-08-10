@@ -68,4 +68,6 @@ public interface MedicationScheduleRepository extends JpaRepository<MedicationSc
     Optional<MedicationSchedule> findFirstByMedication_User_IdAndScheduledDateAndScheduledTimeLessThanEqualOrderByScheduledTimeDesc(
             Long userId, LocalDate date, LocalTime time);
 
+    void deleteAllByMedication(Medication medication);
+
 }
