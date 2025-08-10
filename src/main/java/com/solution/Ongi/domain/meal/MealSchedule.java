@@ -29,6 +29,9 @@ public class MealSchedule extends BaseTimeEntity {
     @Column(name = "not_taken_reason")
     private String notTakenReason;
 
+    @Column(name= "remind_later")
+    private Boolean remindLater;
+
     @Setter
     @Column(name = "status")
     private boolean status;    //default=false
