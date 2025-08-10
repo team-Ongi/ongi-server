@@ -75,6 +75,15 @@ public class UserService {
         return user.getIgnoreCnt().longValue();
     }
 
+    //user currentIgnoreCnt 초기화
+    public Long setUserCurrentIgnoreCnt(String loginId,Integer currentIgnoreCnt){
+        User user=userRepository.findByLoginId(loginId)
+                .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        user.updateCurrentIgnoreCnt(currentIgnoreCnt);
+        return user.getCurrentIgnoreCnt().longValue();
+    }
+
     // 회원 탈퇴
     public void deleteUser(String loginId){
         User user = getUserByLoginIdOrThrow(loginId);
@@ -136,4 +145,5 @@ public class UserService {
         user.updateVoiceFileKey(null);
         userRepository.save(user);
     }
+
 }

@@ -1,7 +1,7 @@
 package com.solution.Ongi.infra.subscription;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.solution.Ongi.domain.push.PushNotificationService;
+import com.solution.Ongi.domain.push.service.PushNotificationService;
 import com.solution.Ongi.infra.subscription.dto.NotificationRequest;
 import com.solution.Ongi.infra.subscription.dto.SubscriptionRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +20,7 @@ public class SubscriptionController {
     private final PushNotificationService pushNotificationService;
     private final SubscriptionService subscriptionService;
 
-    @Operation(summary = "구독 토큰을 조회합니다."
+    @Operation(summary = "구독 토큰을 조회"
     )
     @PostMapping("/send")
     public ResponseEntity<String> send(
@@ -30,7 +30,7 @@ public class SubscriptionController {
         return ResponseEntity.ok(messageId);
     }
 
-    @Operation(summary = "프론트엔드에서 전달된 registrationToken과 유저를 매핑 저장합니다.")
+    @Operation(summary = "프론트엔드에서 전달된 registrationToken과 유저를 매핑 저장")
     @PostMapping("/subscribe")
     public ResponseEntity<Void> subscribe(
             @RequestBody SubscriptionRequest request

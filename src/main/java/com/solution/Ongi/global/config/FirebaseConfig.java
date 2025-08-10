@@ -1,4 +1,4 @@
-package com.solution.Ongi.infra.firebase;
+package com.solution.Ongi.global.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.annotation.PostConstruct;
 
+import com.solution.Ongi.infra.firebase.FirebaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
