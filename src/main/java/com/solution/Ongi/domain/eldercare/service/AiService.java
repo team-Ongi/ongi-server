@@ -1,8 +1,8 @@
 package com.solution.Ongi.domain.eldercare.service;
 
 import com.solution.Ongi.domain.eldercare.dto.GenerateEldercareFeedbackRequest;
+import com.solution.Ongi.domain.eldercare.dto.GenerateFeedbackRequest;
 import com.solution.Ongi.domain.eldercare.dto.GenerateFeedbackResponse;
-import com.solution.Ongi.domain.eldercare.dto.PostEldercareFeedbackRequest;
 import com.solution.Ongi.domain.eldercare.dto.PostEldercareFeedbackResponse;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.service.UserService;
@@ -13,14 +13,14 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
-public class EldercareService {
+public class AiService {
 
     private final UserService userService;
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String API_URL = "http://3.37.125.234:8000/eldercare/feedback"; // 실제 서버 IP/도메인
+    private static final String API_URL = "http://3.37.125.234:8000/ai/generate/feedback"; // 실제 서버 IP/도메인
 
 
-    public PostEldercareFeedbackResponse createElderFeedback(String loginId, PostEldercareFeedbackRequest request){
+    public PostEldercareFeedbackResponse generateFeedback(String loginId, GenerateFeedbackRequest request){
         User user = userService.getUserByLoginIdOrThrow(loginId);
         GenerateEldercareFeedbackRequest generateEldercareFeedbackRequest = new GenerateEldercareFeedbackRequest(
                 user.getId(),
