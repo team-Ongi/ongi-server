@@ -53,8 +53,6 @@ public class ScheduleNotificationService {
 
         //1. 직전 스케줄 status false 일 시 missedSchedule로 체크
         missedScheduleService.detectAndRecordMostRecentMissed(loginId);
-        //TODO: 푸시 알림 보낸 후 currentCnt=0 초기화
-        // 현재 시간 기준 임박한 meal, med 조회
 
         //2. currentIgnoreCnt == ignoreCnt 일 시 푸시 알림 전송, currentIgnoreCnt=0 으로 초기화
         if(user.getIgnoreCnt()<=user.getCurrentIgnoreCnt()){
