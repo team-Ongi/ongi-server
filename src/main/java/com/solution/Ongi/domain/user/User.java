@@ -90,6 +90,7 @@ public class User extends BaseTimeEntity {
 
     public void updateIgnoreCnt(Integer ignoreCnt){ this.ignoreCnt=ignoreCnt;}
 
+    public void updateCurrentIgnoreCnt(Integer currentIgnoreCnt){ this.currentIgnoreCnt=currentIgnoreCnt;}
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
