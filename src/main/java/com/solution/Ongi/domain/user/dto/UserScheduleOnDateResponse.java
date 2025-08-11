@@ -7,6 +7,6 @@ import java.util.List;
 
 public record UserScheduleOnDateResponse(
         List<MedicationScheduleResponse> userMedicationScheduleList,
-        List<MealScheduleResponse> userMealScheudleList
+        List<MealScheduleResponse> userMealScheduleList
 ) {
 }
