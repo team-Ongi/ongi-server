@@ -48,8 +48,8 @@ public class UserScheduleService {
         LocalDate todayDate = LocalDate.now(KST);
         User user = userService.getUserByLoginIdOrThrow(loginId);
         log.debug("현재 날짜: " +  todayDate);
-        List<MedicationScheduleResponse> userMedicationScheduleList = getMedicationSchedulesExactDate(user.getId(),today);
-        List<MealScheduleResponse> userMealScheduleList = getMealSchedulesByExactDate(user.getId(),today);
+        List<MedicationScheduleResponse> userMedicationScheduleList = getMedicationSchedulesExactDate(user.getId(),todayDate);
+        List<MealScheduleResponse> userMealScheduleList = getMealSchedulesByExactDate(user.getId(),todayDate);
 
         return new UserTodayScheduleResponse(userMedicationScheduleList, userMealScheduleList);
     }
