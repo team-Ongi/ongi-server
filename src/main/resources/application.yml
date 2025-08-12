@@ -43,7 +43,7 @@ logging:
     org.springframework.boot.context.config: DEBUG
     org.springframework.core.env: DEBUG
     com.google.firebase: debug
-    com.google.api.client.http: debug
+    com.google.api.client: debug
     com.solution.Ongi: DEBUG
 
 management:
