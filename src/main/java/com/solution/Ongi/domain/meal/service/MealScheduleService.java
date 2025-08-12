@@ -13,26 +13,32 @@ import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class MealScheduleService {
 
     private final MealScheduleRepository mealScheduleRepository;
     private final MealRepository mealRepository;
     private final UserService userService;
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
 
     public MealSchedule createMealSchedule(Meal meal){
+        LocalDate todayKst = LocalDate.now(KST);
+        log.debug("Today Kst: " + todayKst);
         MealSchedule schedule= MealSchedule.builder()
                 .meal(meal)
                 .scheduledTime(meal.getMealTime())
-                .scheduledDate(LocalDate.now())
+                .scheduledDate(LocalDate.now(KST))
                 .status(false)
                 .build();
 
