@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/notification")
 @RequiredArgsConstructor
+@Slf4j
 public class ScheduleNotificationController {
 
     private final ScheduleNotificationService notificationService;
@@ -38,8 +40,8 @@ public class ScheduleNotificationController {
             Authentication authentication
     ){
         UpcomingScheduleResponse next=notificationService.getNext(authentication.getName());
-        if (next == null) {
-            return ResponseEntity.ok(ApiResponse.success(null,SuccessStatus.SUCCESS_204));
+        if (next== null) {
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(ApiResponse.success(next, SuccessStatus.SUCCESS_200));
     }

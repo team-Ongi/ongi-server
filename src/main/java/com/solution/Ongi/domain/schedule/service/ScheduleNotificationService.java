@@ -46,6 +46,7 @@ public class ScheduleNotificationService {
     // currentIgnoreCnt==maxIgnoreCnt 일 시 fcm 알림
     @Transactional
     public UpcomingScheduleResponse getNext(String loginId){
+
         User user=userService.getUserByLoginIdOrThrow(loginId);
 
         LocalDate today=LocalDate.now();
