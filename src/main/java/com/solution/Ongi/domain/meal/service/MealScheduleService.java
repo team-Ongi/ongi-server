@@ -36,7 +36,7 @@ public class MealScheduleService {
         MealSchedule schedule= MealSchedule.builder()
                 .meal(meal)
                 .scheduledTime(meal.getMealTime())
-                .scheduledDate(LocalDate.now())
+                .scheduledDate(LocalDate.now(KST))
                 .status(false)
                 .build();
 
