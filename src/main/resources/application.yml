@@ -60,3 +60,4 @@ coolsms:
 
 firebase:
   service-account-file: ${FIREBASE_SERVICE_ACCOUNT_PATH}
+  
