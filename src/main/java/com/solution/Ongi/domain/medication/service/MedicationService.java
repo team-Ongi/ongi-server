@@ -111,6 +111,7 @@ public class MedicationService {
         return new CreateMedicationResponse(medication.getId());
     }
 
+    @Transactional
     public void updateFixedTimeMedication(String loginId, Long medicationId, UpdateFixedTimeMedicationRequest request) {
         // 유저 정보 가져오기
         userService.getUserByLoginIdOrThrow(loginId);
@@ -133,6 +134,7 @@ public class MedicationService {
         medicationScheduleRepository.saveAll(schedules);
     }
 
+    @Transactional
     public void updateMealBasedMedication(String loginId, Long medicationId, UpdateMealBasedMedicationRequest request) {
         Medication medication = getAuthorizedMedication(loginId, medicationId);
 
