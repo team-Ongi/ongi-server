@@ -1,4 +1,4 @@
-package com.solution.Ongi.domain.eldercare.dto;
+package com.solution.Ongi.domain.ai.dto;
 
 public record PostEldercareFeedbackResponse(
         String walksChange,

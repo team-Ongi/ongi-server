@@ -53,6 +53,11 @@ dependencies {
 	// AWS
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	// SQS
+	implementation platform('io.awspring.cloud:spring-cloud-aws-dependencies:3.1.0')
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
+
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'

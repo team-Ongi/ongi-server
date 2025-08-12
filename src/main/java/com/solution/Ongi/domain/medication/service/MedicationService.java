@@ -17,9 +17,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.solution.Ongi.domain.medication.enums.IntakeTiming.AFTER_MEAL;
+import static com.solution.Ongi.domain.medication.enums.IntakeTiming.BEFORE_MEAL;
 
 @Service
 @RequiredArgsConstructor
@@ -28,26 +32,26 @@ public class MedicationService {
 
     private final UserService userService;
     private final MedicationRepository medicationRepository;
-    private final DateTimeFormatter timeFormatter=DateTimeFormatter.ofPattern("HH:mm");
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final MedicationScheduleRepository medicationScheduleRepository;
     private final MealRepository mealRepository;
 
     // 정시 복용 약 등록
-    public CreateMedicationResponse createFixedTimeMedication(String loginId, CreateFixedTimeMedicationRequest request){
+    public CreateMedicationResponse createFixedTimeMedication(String loginId, CreateFixedTimeMedicationRequest request) {
         // 유저 검증
-        User user=userService.getUserByLoginIdOrThrow(loginId);
+        User user = userService.getUserByLoginIdOrThrow(loginId);
 
         // 약 정보 등록
         Medication medication = Medication.builder()
-            .medicationName(request.medicationName())
-            .medicationType(MedicationType.FIXED_TIME)
-            .medicationTimes(request.timeList().stream()
-                .map(time -> LocalTime.parse(time, timeFormatter))
-                .toList()
-            )
-            .remindAfterMinutes(request.remindAfterMinutes())
-            .user(user)
-            .build();
+                .medicationName(request.medicationName())
+                .medicationType(MedicationType.FIXED_TIME)
+                .medicationTimes(request.timeList().stream()
+                        .map(time -> LocalTime.parse(time, timeFormatter))
+                        .toList()
+                )
+                .remindAfterMinutes(request.remindAfterMinutes())
+                .user(user)
+                .build();
         medicationRepository.save(medication);
 
         // 약 스케줄 등록
@@ -67,19 +71,19 @@ public class MedicationService {
     }
 
     // 식전/식후 복용 약 등록
-    public CreateMedicationResponse createMealBasedMedication(String loginId, CreateMealBasedMedicationRequest request){
+    public CreateMedicationResponse createMealBasedMedication(String loginId, CreateMealBasedMedicationRequest request) {
         // 유저 정보 검증
-        User user=userService.getUserByLoginIdOrThrow(loginId);
+        User user = userService.getUserByLoginIdOrThrow(loginId);
 
         // 약 정보 등록
         Medication medication = Medication.builder()
-            .medicationName(request.medicationName())
-            .medicationType(MedicationType.MEAL_BASED)
-            .intakeTiming(request.intakeTiming())
-            .mealTypes(request.mealTypeList())
-            .remindAfterMinutes(request.remindAfterMinutes())
-            .user(user)
-            .build();
+                .medicationName(request.medicationName())
+                .medicationType(MedicationType.MEAL_BASED)
+                .intakeTiming(request.intakeTiming())
+                .mealTypes(request.mealTypeList())
+                .remindAfterMinutes(request.remindAfterMinutes())
+                .user(user)
+                .build();
         medicationRepository.save(medication);
 
         // 2. 스케줄 생성
@@ -139,15 +143,15 @@ public class MedicationService {
         Medication medication = getAuthorizedMedication(loginId, medicationId);
 
         medication.updateMealBased(
-            request.medicationName(),
-            request.intakeTiming(),
-            request.mealTypes(),
-            request.remindAfterMinutes()
+                request.medicationName(),
+                request.intakeTiming(),
+                request.mealTypes(),
+                request.remindAfterMinutes()
         );
     }
 
     // Medication 삭제
-    public void deleteMedication(String loginId, Long medicationId){
+    public void deleteMedication(String loginId, Long medicationId) {
         Medication medication = getAuthorizedMedication(loginId, medicationId);
         medicationScheduleRepository.deleteByMedication(medication);
         medicationRepository.delete(medication);
@@ -156,14 +160,68 @@ public class MedicationService {
     private Medication getAuthorizedMedication(String loginId, Long medicationId) {
         User user = userService.getUserByLoginIdOrThrow(loginId);
 
-        Medication medication=medicationRepository.findById(medicationId)
-            .orElseThrow(()->new GeneralException(ErrorStatus.MEDICATION_NOT_FOUND));
+        Medication medication = medicationRepository.findById(medicationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEDICATION_NOT_FOUND));
 
-        if (!medication.getUser().getId().equals(user.getId())){
+        if (!medication.getUser().getId().equals(user.getId())) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED_ACCESS);
         }
 
         return medication;
     }
 
+    public void generateMedication(User user, MedicationInfoFromFastAPIResponse response) {
+        List<CreateMealBasedMedicationFromFastAPIRequest> medications = response.medicationInfoFromFastAPIResponse();
+
+        LocalDate today = LocalDate.now();
+
+        for (CreateMealBasedMedicationFromFastAPIRequest data : medications) {
+            // 1. 약 정보 저장
+            Medication medication = saveMedication(user, data);
+
+            // 2. 스케줄 생성 및 저장
+            List<MedicationSchedule> schedules = createMedicationSchedules(user, data, medication, today);
+            medicationScheduleRepository.saveAll(schedules);
+        }
+    }
+
+    private Medication saveMedication(User user, CreateMealBasedMedicationFromFastAPIRequest data) {
+        return medicationRepository.save(
+                Medication.builder()
+                        .medicationName(data.medicationName())
+                        .medicationType(MedicationType.MEAL_BASED)
+                        .intakeTiming(data.intakeTiming())
+                        .mealTypes(data.mealTypeList())
+                        .remindAfterMinutes(data.remindAfterMinutes())
+                        .user(user)
+                        .build()
+        );
+    }
+
+    private List<MedicationSchedule> createMedicationSchedules(User user,
+                                                               CreateMealBasedMedicationFromFastAPIRequest data,
+                                                               Medication medication,
+                                                               LocalDate date) {
+        final int OFFSET_MINUTES = 30;
+        return data.mealTypeList().stream()
+                .map(mealType -> {
+                    Meal meal = mealRepository.findByUserAndMealType(user, mealType)
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.MEAL_SCHEDULE_NOT_REGISTER));
+
+                    LocalTime mealTime = meal.getMealTime();
+                    LocalTime scheduledTime = switch (data.intakeTiming()) {
+                        case AFTER_MEAL -> mealTime.plusMinutes(OFFSET_MINUTES);
+                        case BEFORE_MEAL -> mealTime.minusMinutes(OFFSET_MINUTES);
+
+                    };
+
+                    return MedicationSchedule.builder()
+                            .medication(medication)
+                            .scheduledDate(date)
+                            .scheduledTime(scheduledTime)
+                            .status(false)
+                            .build();
+                })
+                .toList();
+    }
 }
