@@ -18,11 +18,6 @@ import java.util.TimeZone;
 @EnableConfigurationProperties(FirebaseProperties.class)
 public class OngiApplication {
 
-	@PostConstruct
-	public void started() {
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(OngiApplication.class, args);
 	}
