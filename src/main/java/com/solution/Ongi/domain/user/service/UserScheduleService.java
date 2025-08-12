@@ -43,8 +43,9 @@ public class UserScheduleService {
 
     // 유저의 오늘 스케줄 조회
     public UserTodayScheduleResponse getTodaySchedule(String loginId, LocalDate today){
+        LocalDate todayDate = LocalDate.now();
         User user = userService.getUserByLoginIdOrThrow(loginId);
-        log.info("현재 날짜: ", today);
+        log.debug("현재 날짜: " +  todayDate);
         List<MedicationScheduleResponse> userMedicationScheduleList = getMedicationSchedulesExactDate(user.getId(),today);
         List<MealScheduleResponse> userMealScheduleList = getMealSchedulesByExactDate(user.getId(),today);
 

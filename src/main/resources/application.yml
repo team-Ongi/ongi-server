@@ -42,6 +42,7 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.boot.context.config: DEBUG
     org.springframework.core.env: DEBUG
+    com.solution.Ongi: DEBUG
 
 management:
   endpoints:
