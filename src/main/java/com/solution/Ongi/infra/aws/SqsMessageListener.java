@@ -18,7 +18,7 @@ public class SqsMessageListener {
 
     @SqsListener("extract-medication-queue")
     public void receiveMessage(String message) {
-        System.out.println("받은 메시지: " + message);
+        log.info("받은 메시지: " + message);
         try {
             GenerateMedicationToSqsRequest response =
                     objectMapper.readValue(message, GenerateMedicationToSqsRequest.class);
