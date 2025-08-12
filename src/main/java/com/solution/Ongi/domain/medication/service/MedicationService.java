@@ -181,7 +181,7 @@ public class MedicationService {
         deleteMealBasedMedicationRelation(user, MedicationType.MEAL_BASED);
         List<CreateMealBasedMedicationFromFastAPIRequest> medications = response.medicationData().medicationInfoFromFastAPIResponse();
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(KST);
 
         for (CreateMealBasedMedicationFromFastAPIRequest data : medications) {
             // 1. 약 정보 저장
