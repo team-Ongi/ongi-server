@@ -18,6 +18,7 @@ import com.solution.Ongi.global.response.exception.GeneralException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class MedicationService {
     private final MealRepository mealRepository;
     private final MealTypeRepository mealTypeRepository;
     private final MedicationTimeRepository medicationTimeRepository;
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
 
     // 정시 복용 약 등록
     public CreateMedicationResponse createFixedTimeMedication(String loginId, CreateFixedTimeMedicationRequest request) {
@@ -58,7 +60,7 @@ public class MedicationService {
         medicationRepository.save(medication);
 
         // 약 스케줄 등록
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(KST);
         List<MedicationSchedule> schedules = request.timeList().stream()
                 .map(timeStr -> LocalTime.parse(timeStr, DateTimeFormatter.ofPattern("HH:mm")))
                 .map(time -> MedicationSchedule.builder()
@@ -90,7 +92,7 @@ public class MedicationService {
         medicationRepository.save(medication);
 
         // 2. 스케줄 생성
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(KST);
         List<MedicationSchedule> schedules = request.mealTypeList().stream()
                 .map(mealType -> {
                     Meal meal = mealRepository
@@ -128,7 +130,7 @@ public class MedicationService {
         medicationScheduleRepository.deleteAllByMedication(medication);
 
         // 약 스케줄 등록
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(KST);
         List<MedicationSchedule> schedules = request.timeList().stream()
                 .map(timeStr -> LocalTime.parse(timeStr, DateTimeFormatter.ofPattern("HH:mm")))
                 .map(time -> MedicationSchedule.builder()
