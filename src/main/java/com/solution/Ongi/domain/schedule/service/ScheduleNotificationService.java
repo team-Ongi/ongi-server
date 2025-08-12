@@ -52,7 +52,7 @@ public class ScheduleNotificationService {
         User user=userService.getUserByLoginIdOrThrow(loginId);
 
         LocalDate today=LocalDate.now(KST);
-        LocalTime currentTime=LocalTime.now();
+        LocalTime currentTime=LocalTime.now(KST);
 
         //1. 직전 스케줄 status false 일 시 missedSchedule로 체크
         missedScheduleService.detectAndRecordMostRecentMissed(loginId);
