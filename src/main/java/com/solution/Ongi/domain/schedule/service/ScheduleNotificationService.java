@@ -59,6 +59,7 @@ public class ScheduleNotificationService {
             sendNotifyAndClearanceToken(user);
             userService.setUserCurrentIgnoreCnt(user.getLoginId(), 0);
         }
+        log.info("현재 시간: " + today + currentTime);
 
         //3. 현재 시간 기준 다음 임박한 스케줄 조회
         Optional<MealSchedule> nextMeal=mealScheduleRepository
