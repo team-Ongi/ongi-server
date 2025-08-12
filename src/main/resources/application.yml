@@ -34,6 +34,9 @@ spring:
       s3:
         bucket : ${S3_BUCKET_NAME}
 
+  jackson:
+    time-zone: Asia/Seoul
+
 logging:
   level:
     org.springframework.web: DEBUG
