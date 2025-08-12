@@ -14,6 +14,7 @@ import com.solution.Ongi.domain.user.dto.UserScheduleRangeResponse;
 import com.solution.Ongi.domain.user.dto.UserSchedulesResponse;
 import com.solution.Ongi.domain.user.dto.UserTodayScheduleResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserScheduleService {
 
     private final UserService userService;
@@ -42,7 +44,7 @@ public class UserScheduleService {
     // 유저의 오늘 스케줄 조회
     public UserTodayScheduleResponse getTodaySchedule(String loginId, LocalDate today){
         User user = userService.getUserByLoginIdOrThrow(loginId);
-
+        log.info("현재 날짜: ", today);
         List<MedicationScheduleResponse> userMedicationScheduleList = getMedicationSchedulesExactDate(user.getId(),today);
         List<MealScheduleResponse> userMealScheduleList = getMealSchedulesByExactDate(user.getId(),today);
 
@@ -92,6 +94,7 @@ public class UserScheduleService {
 
     // 특정 날짜 medication schedule 조회
     private List<MedicationScheduleResponse> getMedicationSchedulesExactDate(Long userId, LocalDate date) {
+
         return medicationScheduleRepository
                 .findByUserAndDate(userId, date)
                 .stream()
