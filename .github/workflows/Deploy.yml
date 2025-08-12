@@ -48,6 +48,7 @@ jobs:
               --name ongi-server \
               -p 8080:8080 \
               -v /home/ubuntu/backend/firebaseAccountKey.json:/home/ubuntu/backend/firebaseAccountKey.json:ro \
+              -e TZ=Asia/Seoul \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e DB_NAME="${{ secrets.DB_NAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
