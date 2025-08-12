@@ -10,7 +10,7 @@ spring:
       max-request-size: 20MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_URL}:3306/${DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&sessionVariables=time_zone='+09:00'
+    url: jdbc:mysql://${DB_URL}:3306/${DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&sessionVariables=time_zone='Asia/Seoul'
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
