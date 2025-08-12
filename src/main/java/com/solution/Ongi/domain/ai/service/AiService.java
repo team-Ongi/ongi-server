@@ -1,15 +1,14 @@
 package com.solution.Ongi.domain.ai.service;
 
-import com.solution.Ongi.domain.ai.dto.GenerateEldercareFeedbackRequest;
-import com.solution.Ongi.domain.ai.dto.GenerateFeedbackRequest;
-import com.solution.Ongi.domain.ai.dto.GenerateFeedbackResponse;
-import com.solution.Ongi.domain.ai.dto.PostEldercareFeedbackResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solution.Ongi.domain.ai.dto.*;
 import com.solution.Ongi.domain.medication.dto.MedicationInfoFromFastAPIResponse;
 import com.solution.Ongi.domain.medication.service.MedicationService;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.code.ErrorStatus;
 import com.solution.Ongi.global.response.exception.GeneralException;
+import com.solution.Ongi.infra.aws.SqsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -29,6 +28,8 @@ public class AiService {
 
     private final UserService userService;
     private final MedicationService medicationService;
+    private final SqsService sqsService;
+    private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String GENERATE_FEEDBACK_URL = "http://3.37.125.234:8000/ai/generate/feedback"; // AI 기능 1번 호출
     private final WebClient fastApiWebClient;
@@ -62,8 +63,8 @@ public class AiService {
                     .bodyToMono(MedicationInfoFromFastAPIResponse.class)
                     .block();
 
-            assert response != null;
-            medicationService.generateMedication(user, response);
+            GenerateMedicationToSqsRequest request = new GenerateMedicationToSqsRequest(user.getLoginId(),response );
+            sqsService.sendMessage(objectMapper.writeValueAsString(request));
             return "";
         }
         catch(Exception e){

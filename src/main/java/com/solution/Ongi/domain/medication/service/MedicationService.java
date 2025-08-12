@@ -1,13 +1,16 @@
 package com.solution.Ongi.domain.medication.service;
 
+import com.solution.Ongi.domain.ai.dto.GenerateMedicationToSqsRequest;
 import com.solution.Ongi.domain.meal.Meal;
 import com.solution.Ongi.domain.meal.repository.MealRepository;
+import com.solution.Ongi.domain.meal.repository.MealTypeRepository;
 import com.solution.Ongi.domain.medication.Medication;
 import com.solution.Ongi.domain.medication.MedicationSchedule;
 import com.solution.Ongi.domain.medication.dto.*;
 import com.solution.Ongi.domain.medication.enums.MedicationType;
 import com.solution.Ongi.domain.medication.repository.MedicationRepository;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
+import com.solution.Ongi.domain.medication.repository.MedicationTimeRepository;
 import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.domain.user.service.UserService;
 import com.solution.Ongi.global.response.code.ErrorStatus;
@@ -22,8 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.solution.Ongi.domain.medication.enums.IntakeTiming.AFTER_MEAL;
-import static com.solution.Ongi.domain.medication.enums.IntakeTiming.BEFORE_MEAL;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,8 @@ public class MedicationService {
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final MedicationScheduleRepository medicationScheduleRepository;
     private final MealRepository mealRepository;
+    private final MealTypeRepository mealTypeRepository;
+    private final MedicationTimeRepository medicationTimeRepository;
 
     // 정시 복용 약 등록
     public CreateMedicationResponse createFixedTimeMedication(String loginId, CreateFixedTimeMedicationRequest request) {
@@ -170,8 +173,11 @@ public class MedicationService {
         return medication;
     }
 
-    public void generateMedication(User user, MedicationInfoFromFastAPIResponse response) {
-        List<CreateMealBasedMedicationFromFastAPIRequest> medications = response.medicationInfoFromFastAPIResponse();
+    public void generateMedication(GenerateMedicationToSqsRequest response) {
+        User user = userService.getUserByLoginIdOrThrow(response.loginId());
+
+        deleteMealBasedMedicationRelation(user, MedicationType.MEAL_BASED);
+        List<CreateMealBasedMedicationFromFastAPIRequest> medications = response.medicationData().medicationInfoFromFastAPIResponse();
 
         LocalDate today = LocalDate.now();
 
@@ -185,6 +191,21 @@ public class MedicationService {
         }
     }
 
+    @Transactional
+    public void deleteMealBasedMedicationRelation(User user, MedicationType medicationType) {
+        // 유저가 등록한 약 정보 모두 가져오기
+        List<Medication> medicationList = medicationRepository.findAllByUserIdAndMedicationType(user.getId(), medicationType);
+
+        // MealType삭제 -> MedicationSchedule 삭제 -> MedicationTime 삭제 -> user 삭제
+        for (Medication medication : medicationList) {
+            Long medicationId = medication.getId();
+            mealTypeRepository.deleteAllByMedicationId(medicationId);
+            medicationScheduleRepository.deleteAllByMedication(medication);
+            medicationTimeRepository.deleteAllByMedication(medication);
+            medicationRepository.deleteById(medication.getId());
+        }
+    }
+
     private Medication saveMedication(User user, CreateMealBasedMedicationFromFastAPIRequest data) {
         return medicationRepository.save(
                 Medication.builder()
@@ -192,7 +213,7 @@ public class MedicationService {
                         .medicationType(MedicationType.MEAL_BASED)
                         .intakeTiming(data.intakeTiming())
                         .mealTypes(data.mealTypeList())
-                        .remindAfterMinutes(data.remindAfterMinutes())
+                        .remindAfterMinutes(30)
                         .user(user)
                         .build()
         );
@@ -212,7 +233,6 @@ public class MedicationService {
                     LocalTime scheduledTime = switch (data.intakeTiming()) {
                         case AFTER_MEAL -> mealTime.plusMinutes(OFFSET_MINUTES);
                         case BEFORE_MEAL -> mealTime.minusMinutes(OFFSET_MINUTES);
-
                     };
 
                     return MedicationSchedule.builder()
