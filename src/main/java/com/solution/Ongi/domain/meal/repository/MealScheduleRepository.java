@@ -2,7 +2,9 @@ package com.solution.Ongi.domain.meal.repository;
 
 import com.solution.Ongi.domain.meal.MealSchedule;
 import com.solution.Ongi.domain.user.repository.projection.NotTakenMealStatusProjection;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -37,4 +39,20 @@ public interface MealScheduleRepository extends JpaRepository<MealSchedule,Long>
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO meal_schedule " +
+            "(scheduled_date, scheduled_time, status, meal_id, created_at, updated_at) " +
+            "VALUES (:scheduledDate, :scheduledTime, :status, :mealId, NOW(), NOW())",
+            nativeQuery = true)
+    int saveWithNativeQuery(
+            @Param("scheduledDate") LocalDate scheduledDate,
+            @Param("scheduledTime") LocalTime scheduledTime,
+            @Param("status") boolean status,
+            @Param("mealId") Long mealId
+    );
+
+
+
 }

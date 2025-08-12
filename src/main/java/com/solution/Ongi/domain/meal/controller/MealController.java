@@ -6,10 +6,12 @@ import com.solution.Ongi.domain.meal.dto.CreateMealResponse;
 import com.solution.Ongi.domain.meal.dto.UpdateMealRequest;
 import com.solution.Ongi.domain.meal.service.MealService;
 import com.solution.Ongi.global.response.ApiResponse;
+import com.solution.Ongi.global.response.code.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,18 +29,12 @@ public class MealController {
     @Operation(summary = "식사 정보 등록")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "식사 정보 등록 완료", content = @Content(schema = @Schema(implementation = CreateMealResponse.class)))
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저(ID)가 존재하지 않는 경우", content = @Content)
-    public ResponseEntity<CreateMealResponse> createMeal(
+    public ResponseEntity<ApiResponse<String>> createMeal(
             Authentication authentication,
             @RequestBody CreateMealRequest request) {
 
-        Meal meal = mealService.createMeal(authentication.getName(), request);
-
-        //location 헤더 리소스
-        URI location= URI.create("/users/"+authentication.getName()+"/meals/"+meal.getId());
-
-        return ResponseEntity
-                .created(location)
-                .body(new CreateMealResponse(meal.getId(),"식사가 등록되었습니다."));
+        mealService.createMeal(authentication.getName(), request);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("성공", SuccessStatus.SUCCESS_200));
     }
 
     //Meal 삭제 엔드포인트

@@ -32,17 +32,11 @@ public class MealScheduleService {
     private final UserService userService;
     private static final ZoneId KST = ZoneId.of("Asia/Seoul");
 
-    public MealSchedule createMealSchedule(Meal meal){
+    public void createMealSchedule(Meal meal){
         LocalDate todayKst = LocalDate.now(KST);
         log.debug("Today Kst: " + todayKst);
-        MealSchedule schedule= MealSchedule.builder()
-                .meal(meal)
-                .scheduledTime(meal.getMealTime())
-                .scheduledDate(LocalDate.now(KST))
-                .status(false)
-                .build();
-
-        return mealScheduleRepository.save(schedule);
+        mealScheduleRepository.saveWithNativeQuery(
+                todayKst,meal.getMealTime(),false,meal.getId());
     }
 
     //매일 자정 meal schedule 생성

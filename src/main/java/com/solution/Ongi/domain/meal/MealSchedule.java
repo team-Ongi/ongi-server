@@ -16,7 +16,7 @@ import java.time.LocalTime;
 public class MealSchedule extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "meal_schedule_id")
     private Long id;
 
