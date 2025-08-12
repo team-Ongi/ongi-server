@@ -39,7 +39,7 @@ public class ScheduleNotificationController {
     ){
         UpcomingScheduleResponse next=notificationService.getNext(authentication.getName());
         if (next == null) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(ApiResponse.success(null,SuccessStatus.SUCCESS_204));
         }
         return ResponseEntity.ok(ApiResponse.success(next, SuccessStatus.SUCCESS_200));
     }
@@ -49,6 +49,7 @@ public class ScheduleNotificationController {
             description = "현재 표시된 스케줄을 완료(true) 처리하고 즉시 다음 임박 스케줄을 반환합니다."
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "확인 처리 및 다음 스케줄 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UpcomingScheduleResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "임박한 스케줄 없음")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청값이 잘못된 경우", content = @Content)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 경우", content = @Content)
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "스케줄 ID가 존재하지 않는 경우", content = @Content)
@@ -57,7 +58,9 @@ public class ScheduleNotificationController {
             Authentication authentication
     ){
         UpcomingScheduleResponse next=notificationService.confirmAndGetNext(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.success(next,SuccessStatus.SUCCESS_200));
+        return (next==null)
+            ? ResponseEntity.ok(ApiResponse.success(null,SuccessStatus.SUCCESS_204))
+            : ResponseEntity.ok(ApiResponse.success(next,SuccessStatus.SUCCESS_200));
     }
 
     @Operation(
@@ -84,6 +87,7 @@ public class ScheduleNotificationController {
             )
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "거부 처리 및 다음 스케줄 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UpcomingScheduleResponse.class)))
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "임박한 스케줄 없음")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 경우", content = @Content)
     @PostMapping("/next/deny")
     public ResponseEntity<ApiResponse<UpcomingScheduleResponse>> deny(
@@ -91,6 +95,7 @@ public class ScheduleNotificationController {
             @RequestBody DenyRequest request
             ){
         UpcomingScheduleResponse next=notificationService.denyAndGetNext(authentication.getName(),request);
-        return ResponseEntity.ok(ApiResponse.success(next,SuccessStatus.SUCCESS_200));
-    }
+        return (next==null)
+                ? ResponseEntity.ok(ApiResponse.success(null,SuccessStatus.SUCCESS_204))
+                : ResponseEntity.ok(ApiResponse.success(next,SuccessStatus.SUCCESS_200));    }
 }
