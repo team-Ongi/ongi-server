@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Slf4j
@@ -39,6 +40,7 @@ public class ScheduleNotificationService {
 
     private final DeviceTokenService deviceTokenService;
     private final PushNotificationService pushNotificationService;
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
 
 
     // 임박한 스케줄 조회
@@ -49,8 +51,8 @@ public class ScheduleNotificationService {
 
         User user=userService.getUserByLoginIdOrThrow(loginId);
 
-        LocalDate today=LocalDate.now();
-        LocalTime currentTime=LocalTime.now();
+        LocalDate today=LocalDate.now(KST);
+        LocalTime currentTime=LocalTime.now(KST);
 
         //1. 직전 스케줄 status false 일 시 missedSchedule로 체크
         missedScheduleService.detectAndRecordMostRecentMissed(loginId);

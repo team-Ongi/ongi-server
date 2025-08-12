@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -30,6 +31,7 @@ public class UserScheduleService {
     private final MedicationRepository medicationRepository;
     private final MedicationScheduleRepository medicationScheduleRepository;
     private final MealScheduleRepository mealScheduleRepository;
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
 
     // 유저의 Medication && Meal schedule 전체 조회
     public UserSchedulesResponse getAllSchedules(String loginId){
@@ -43,11 +45,11 @@ public class UserScheduleService {
 
     // 유저의 오늘 스케줄 조회
     public UserTodayScheduleResponse getTodaySchedule(String loginId, LocalDate today){
-        LocalDate todayDate = LocalDate.now();
+        LocalDate todayDate = LocalDate.now(KST);
         User user = userService.getUserByLoginIdOrThrow(loginId);
         log.debug("현재 날짜: " +  todayDate);
-        List<MedicationScheduleResponse> userMedicationScheduleList = getMedicationSchedulesExactDate(user.getId(),today);
-        List<MealScheduleResponse> userMealScheduleList = getMealSchedulesByExactDate(user.getId(),today);
+        List<MedicationScheduleResponse> userMedicationScheduleList = getMedicationSchedulesExactDate(user.getId(),todayDate);
+        List<MealScheduleResponse> userMealScheduleList = getMealSchedulesByExactDate(user.getId(),todayDate);
 
         return new UserTodayScheduleResponse(userMedicationScheduleList, userMealScheduleList);
     }
