@@ -40,8 +40,9 @@ public class AuthenticationConfig {
                         "/swagger-resources/**",
                         "/webjars/**"
                     ).permitAll()
-                .requestMatchers("/auth/login", "/auth/signup", "/auth/token/reissue", "/auth/id/duplicate", "/auth/password","/auth/verify-phone", "/auth/verify-phone/confirm", "/auth/find-id").permitAll()
-                .anyRequest().authenticated()
+                    .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
+                    .requestMatchers("/auth/login", "/auth/signup", "/auth/token/reissue", "/auth/id/duplicate", "/auth/password","/auth/verify-phone", "/auth/verify-phone/confirm", "/auth/find-id").permitAll()
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtFilter(secretKey), UsernamePasswordAuthenticationFilter.class);
 
