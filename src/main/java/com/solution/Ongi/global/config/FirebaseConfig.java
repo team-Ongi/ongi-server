@@ -12,9 +12,11 @@ import java.nio.file.Paths;
 import javax.annotation.PostConstruct;
 
 import com.solution.Ongi.infra.firebase.FirebaseProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 @EnableConfigurationProperties(FirebaseProperties.class)
 public class FirebaseConfig {
@@ -37,5 +39,13 @@ public class FirebaseConfig {
                 FirebaseApp.initializeApp(options);
             }
         }
+    }
+
+    @PostConstruct
+    void logFirebaseProject(){
+        var app=FirebaseApp.getInstance();
+        var opts=app.getOptions();
+        log.info("Firebase Admin 초기화 완료. project_id={}",opts.getProjectId());
+
     }
 }
