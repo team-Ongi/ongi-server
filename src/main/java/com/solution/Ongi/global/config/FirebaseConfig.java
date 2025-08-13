@@ -28,24 +28,23 @@ public class FirebaseConfig {
     }
 
     @PostConstruct
-    public void init() throws IOException {
-        Path path = Paths.get(props.getServiceAccountFile());
-        try (InputStream in = Files.newInputStream(path)) {
-            GoogleCredentials credentials = GoogleCredentials.fromStream(in);
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(credentials)
-                    .build();
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options);
-            }
+    public void init() throws Exception{
+        if (!FirebaseApp.getApps().isEmpty()){
+            var app = FirebaseApp.getInstance();
+            log.info("[Firebase] already initialized. projectId={}", app.getOptions().getProjectId());
+            return;
         }
-    }
 
-    @PostConstruct
-    void logFirebaseProject(){
-        var app=FirebaseApp.getInstance();
-        var opts=app.getOptions();
-        log.info("Firebase Admin 초기화 완료. project_id={}",opts.getProjectId());
+        Path path = Paths.get(props.getServiceAccountFile());
+        if (!Files.exists(path)) {
+            throw new IllegalStateException("[Firebase] service account file not found: " + path);
+        }
 
+        try (InputStream in = Files.newInputStream(path)) {
+            var creds = GoogleCredentials.fromStream(in);
+            var options = FirebaseOptions.builder().setCredentials(creds).build();
+            FirebaseApp.initializeApp(options);
+            log.info("[Firebase] initialized. projectId={}", options.getProjectId());
+        }
     }
 }
