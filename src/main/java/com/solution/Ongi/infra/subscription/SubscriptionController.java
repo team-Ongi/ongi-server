@@ -1,12 +1,15 @@
 package com.solution.Ongi.infra.subscription;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.solution.Ongi.domain.push.dto.PushNotificationRequest;
 import com.solution.Ongi.domain.push.service.PushNotificationService;
+import com.solution.Ongi.domain.user.User;
 import com.solution.Ongi.infra.subscription.dto.NotificationRequest;
 import com.solution.Ongi.infra.subscription.dto.SubscriptionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +29,12 @@ public class SubscriptionController {
     public ResponseEntity<String> send(
             @RequestBody NotificationRequest request) throws FirebaseMessagingException {
         String token=subscriptionService.getTokenForUser(request.userId());
-        String messageId=pushNotificationService.sendNotification(token,request.title(),request.body());
+        String messageId=pushNotificationService.sendToToken(
+                new PushNotificationRequest(token)
+        );
         return ResponseEntity.ok(messageId);
     }
+
 
     @Operation(summary = "프론트엔드에서 전달된 registrationToken과 유저를 매핑 저장")
     @PostMapping("/subscribe")

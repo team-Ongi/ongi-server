@@ -8,6 +8,7 @@ import com.solution.Ongi.domain.medication.MedicationSchedule;
 import com.solution.Ongi.domain.medication.dto.UpdateMedicationStatusRequest;
 import com.solution.Ongi.domain.medication.repository.MedicationScheduleRepository;
 import com.solution.Ongi.domain.medication.service.MedicationScheduleService;
+import com.solution.Ongi.domain.push.dto.PushNotificationRequest;
 import com.solution.Ongi.domain.push.service.DeviceTokenService;
 import com.solution.Ongi.domain.push.service.PushNotificationService;
 import com.solution.Ongi.domain.schedule.dto.DenyRequest;
@@ -152,7 +153,7 @@ public class ScheduleNotificationService {
             String title= "알림 무시 최대횟수 도달";
             String body= "알림 무시 최대 횟수에 도달했습니다. 보호자분의 확인이 필요합니다. ";
 
-            var invalid=pushNotificationService.sendToTokens(tokens, title, body);
+            var invalid=pushNotificationService.sendToTokens(tokens);
 
             if(!invalid.isEmpty()){
                 deviceTokenService.deactivateAllByToken(invalid);

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "device_token")
 public class DeviceToken {
 
     @Id
